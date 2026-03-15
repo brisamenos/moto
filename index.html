@@ -2669,8 +2669,9 @@ alter table configuracoes disable row level security;</textarea>
 // Supabase + Full CRUD + Theme + All Pages
 // ════════════════════════════════════════════════════
 
-// ── THEME: aplica dark por padrão; corrigido após Supabase carregar
+// ── THEME: esconde body até tema carregado do Supabase (sem flash)
 document.documentElement.setAttribute('data-theme', 'dark');
+document.documentElement.style.visibility = 'hidden';
 
 // ── SUPABASE
 const SUPABASE_URL = 'https://lhrzwccbvdintqgebisq.supabase.co';
@@ -2765,6 +2766,9 @@ async function loadConfig() {
     console.warn('loadConfig (tabela pode não existir ainda):', e.message);
     const btn = el('theme-btn');
     if(btn) btn.textContent = '☀️';
+  } finally {
+    // Revela a página somente após o tema correto estar aplicado — zero flash
+    document.documentElement.style.visibility = '';
   }
 }
 
@@ -3381,3 +3385,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 </body>
+</html>
