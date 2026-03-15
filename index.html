@@ -113,16 +113,10 @@ body {
   min-height: 100vh;
   display: flex;
   overflow-x: hidden;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
-/* Noise overlay for depth */
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: 1;
-}
+
 
 /* ════════════════════════════════
    SIDEBAR
@@ -1453,6 +1447,7 @@ select:focus { border-color: var(--border-accent); }
   font-weight: 500;
   color: var(--text-primary);
   z-index: 9999;
+  pointer-events: none;
   box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
   transform: translateY(100px);
   opacity: 0;
@@ -2669,9 +2664,8 @@ alter table configuracoes disable row level security;</textarea>
 // Supabase + Full CRUD + Theme + All Pages
 // ════════════════════════════════════════════════════
 
-// ── THEME: esconde body até tema carregado do Supabase (sem flash)
+// ── THEME: dark por padrão, atualizado pelo Supabase em background
 document.documentElement.setAttribute('data-theme', 'dark');
-document.documentElement.style.visibility = 'hidden';
 
 // ── SUPABASE
 const SUPABASE_URL = 'https://lhrzwccbvdintqgebisq.supabase.co';
@@ -2766,9 +2760,6 @@ async function loadConfig() {
     console.warn('loadConfig (tabela pode não existir ainda):', e.message);
     const btn = el('theme-btn');
     if(btn) btn.textContent = '☀️';
-  } finally {
-    // Revela a página somente após o tema correto estar aplicado — zero flash
-    document.documentElement.style.visibility = '';
   }
 }
 
