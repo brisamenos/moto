@@ -1,0 +1,2803 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotoStock — Sistema de Gestão</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #0b0c10;
+    --bg-surface: #13141a;
+    --bg-card: #191b23;
+    --bg-card-hover: #1f2230;
+    --bg-sidebar: #0f1018;
+    --accent: #e8a020;
+    --accent-dim: #c4861a;
+    --accent-glow: rgba(232,160,32,0.15);
+    --accent-soft: rgba(232,160,32,0.08);
+    --text-primary: #f0f0f5;
+    --text-secondary: #8b8fa8;
+    --text-muted: #50546a;
+    --border: rgba(255,255,255,0.06);
+    --border-accent: rgba(232,160,32,0.3);
+    --red: #e85040;
+    --green: #38c87a;
+    --blue: #4a8cff;
+    --purple: #a855f7;
+    --sidebar-w: 260px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0; top: 0;
+    z-index: 100;
+    padding: 0 0 24px;
+  }
+
+  .sidebar-brand {
+    padding: 28px 24px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .brand-icon {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .brand-icon svg { width: 20px; height: 20px; fill: #0b0c10; }
+
+  .brand-text h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .brand-text span {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .sidebar-section {
+    padding: 20px 16px 8px;
+  }
+
+  .sidebar-section-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    color: var(--text-secondary);
+    font-size: 13.5px;
+    font-weight: 500;
+    position: relative;
+    margin-bottom: 2px;
+    text-decoration: none;
+  }
+
+  .nav-item:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  .nav-item.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--border-accent);
+  }
+
+  .nav-item.active .nav-icon svg { fill: var(--accent); }
+
+  .nav-icon {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .nav-icon svg { width: 16px; height: 16px; fill: currentColor; transition: fill 0.18s; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 20px;
+    line-height: 1.4;
+  }
+
+  .nav-badge.green { background: var(--green); }
+  .nav-badge.accent { background: var(--accent); color: #0b0c10; }
+
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 16px;
+  }
+
+  .sidebar-user {
+    margin-top: auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-avatar {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0b0c10;
+    flex-shrink: 0;
+  }
+
+  .user-info h4 { font-size: 13px; font-weight: 600; }
+  .user-info span { font-size: 11px; color: var(--text-muted); }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: 64px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .topbar-breadcrumb {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: 4px;
+    margin-top: 2px;
+  }
+
+  .topbar-spacer { flex: 1; }
+
+  .topbar-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    width: 220px;
+    transition: border-color 0.2s;
+  }
+
+  .topbar-search:focus-within {
+    border-color: var(--border-accent);
+  }
+
+  .topbar-search input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .topbar-search input::placeholder { color: var(--text-muted); }
+
+  .topbar-search svg { width: 14px; height: 14px; fill: var(--text-muted); flex-shrink: 0; }
+
+  .topbar-actions { display: flex; align-items: center; gap: 8px; }
+
+  .topbar-btn {
+    width: 36px; height: 36px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+  }
+
+  .topbar-btn:hover { border-color: var(--border-accent); background: var(--bg-card-hover); }
+  .topbar-btn svg { width: 15px; height: 15px; fill: var(--text-secondary); }
+
+  .topbar-btn .dot {
+    position: absolute;
+    top: 7px; right: 7px;
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    border: 1.5px solid var(--bg-surface);
+  }
+
+  .btn-accent {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 16px;
+    background: var(--accent);
+    color: #0b0c10;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+
+  .btn-accent:hover { background: #f5b340; transform: translateY(-1px); }
+  .btn-accent svg { width: 14px; height: 14px; fill: #0b0c10; }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 32px;
+    display: none;
+    flex-direction: column;
+    gap: 28px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .content.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .page-header h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .page-header p {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  .page-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .btn-outline {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 16px;
+    background: none;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .btn-outline:hover { border-color: var(--border-accent); color: var(--accent); }
+  .btn-outline svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--kpi-color, var(--accent));
+    opacity: 0.7;
+  }
+
+  .kpi-card:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+
+  .kpi-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+
+  .kpi-icon {
+    width: 36px; height: 36px;
+    background: var(--accent-soft);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--kpi-color, var(--accent)) 12%, transparent);
+  }
+
+  .kpi-icon svg { width: 16px; height: 16px; fill: var(--kpi-color, var(--accent)); }
+
+  .kpi-trend {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 20px;
+  }
+
+  .kpi-trend.up { color: var(--green); background: rgba(56,200,122,0.12); }
+  .kpi-trend.down { color: var(--red); background: rgba(232,80,64,0.12); }
+
+  .kpi-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  /* ── GRID LAYOUTS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+  .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .card-body { padding: 20px 22px; }
+
+  .card-actions { display: flex; gap: 8px; }
+
+  .chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    background: none;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .chip.active, .chip:hover {
+    border-color: var(--border-accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: rgba(255,255,255,0.025); }
+
+  tbody td {
+    padding: 12px 14px;
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+
+  tbody td:first-child { color: var(--text-primary); font-weight: 500; }
+
+  .status-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .status-badge.green { background: rgba(56,200,122,0.12); color: var(--green); }
+  .status-badge.red { background: rgba(232,80,64,0.12); color: var(--red); }
+  .status-badge.amber { background: rgba(232,160,32,0.12); color: var(--accent); }
+  .status-badge.blue { background: rgba(74,140,255,0.12); color: var(--blue); }
+
+  /* ── STOCK PROGRESS ── */
+  .stock-bar-wrap { display: flex; align-items: center; gap: 10px; }
+
+  .stock-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .stock-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--green);
+    transition: width 0.4s ease;
+  }
+
+  .stock-bar-fill.low { background: var(--red); }
+  .stock-bar-fill.mid { background: var(--accent); }
+
+  /* ── CHART PLACEHOLDER ── */
+  .chart-area {
+    height: 180px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    padding-bottom: 24px;
+  }
+
+  .chart-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .chart-bar {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    background: var(--accent);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    cursor: pointer;
+  }
+
+  .chart-bar:hover { opacity: 1; }
+  .chart-bar.secondary { background: var(--blue); opacity: 0.4; }
+
+  .chart-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    position: absolute;
+    bottom: 0;
+  }
+
+  .chart-labels {
+    display: flex;
+    gap: 6px;
+    padding-bottom: 0;
+  }
+
+  .chart-labels span {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  /* ── MINI STATS ── */
+  .mini-stat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .mini-stat:last-child { border-bottom: none; }
+
+  .mini-stat-left { display: flex; align-items: center; gap: 10px; }
+
+  .mini-stat-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .mini-stat-name { font-size: 13px; color: var(--text-secondary); }
+
+  .mini-stat-value { font-size: 13px; font-weight: 600; }
+
+  /* ── ACTIVITY FEED ── */
+  .activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .activity-icon svg { width: 14px; height: 14px; fill: currentColor; }
+
+  .activity-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .activity-text strong { color: var(--text-primary); font-weight: 600; }
+  .activity-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── PDV ── */
+  .pdv-grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; height: calc(100vh - 160px); }
+
+  .pdv-products {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .pdv-search {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+  }
+
+  .input-field {
+    flex: 1;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-field:focus { border-color: var(--border-accent); }
+  .input-field::placeholder { color: var(--text-muted); }
+
+  .pdv-cats {
+    padding: 12px 16px;
+    display: flex;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .pdv-items-grid {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .product-tile {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .product-tile:hover {
+    border-color: var(--border-accent);
+    background: var(--bg-card-hover);
+    transform: translateY(-1px);
+  }
+
+  .product-tile-code { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .product-tile-name { font-size: 13px; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
+  .product-tile-price { font-size: 16px; font-weight: 700; color: var(--accent); font-family: 'Barlow Condensed', sans-serif; }
+  .product-tile-stock { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .pdv-cart {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .cart-header {
+    padding: 18px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cart-header h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .cart-client {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .cart-items { flex: 1; overflow-y: auto; padding: 12px; }
+
+  .cart-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--bg-surface);
+    margin-bottom: 8px;
+    transition: background 0.15s;
+  }
+
+  .cart-item:hover { background: var(--bg-card-hover); }
+
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .cart-item-price { font-size: 12px; color: var(--text-muted); }
+
+  .cart-item-qty {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .qty-btn {
+    width: 22px; height: 22px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    line-height: 1;
+  }
+
+  .qty-btn:hover { border-color: var(--border-accent); color: var(--accent); }
+
+  .qty-num { font-size: 13px; font-weight: 600; min-width: 20px; text-align: center; }
+
+  .cart-item-total { font-size: 13px; font-weight: 700; color: var(--accent); align-self: center; }
+
+  .cart-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .cart-totals { margin-bottom: 14px; }
+
+  .cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 4px 0;
+    color: var(--text-secondary);
+  }
+
+  .cart-total-row.main {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'Barlow Condensed', sans-serif;
+    color: var(--text-primary);
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    padding-top: 10px;
+  }
+
+  .payment-methods {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .payment-method {
+    padding: 8px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .payment-method:hover, .payment-method.active {
+    border-color: var(--border-accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .btn-finish {
+    width: 100%;
+    padding: 13px;
+    background: var(--accent);
+    color: #0b0c10;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-finish:hover { background: #f5b340; transform: translateY(-1px); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 520px;
+    max-width: 95vw;
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .modal-close {
+    width: 28px; height: 28px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { color: var(--text-primary); }
+
+  .modal-body { padding: 24px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+  .form-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  /* ── CASH CONTROL ── */
+  .cash-status {
+    background: linear-gradient(135deg, rgba(56,200,122,0.1), rgba(56,200,122,0.04));
+    border: 1px solid rgba(56,200,122,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .cash-status-icon {
+    width: 48px; height: 48px;
+    background: rgba(56,200,122,0.15);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .cash-status-icon svg { width: 22px; height: 22px; fill: var(--green); }
+
+  .cash-status-text h3 { font-size: 16px; font-weight: 600; color: var(--green); }
+  .cash-status-text p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .cash-value {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .cash-value .amount {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .cash-value span { font-size: 12px; color: var(--text-muted); }
+
+  /* ── FINANCIAL SUMMARY ── */
+  .fin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.18s;
+  }
+
+  .fin-card:hover { border-color: var(--border-accent); }
+
+  .fin-card-left { display: flex; align-items: center; gap: 12px; }
+
+  .fin-card-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .fin-card-icon svg { width: 16px; height: 16px; fill: currentColor; }
+
+  .fin-card-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
+
+  .fin-card-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  /* ── PROGRESS RING ── */
+  .progress-ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .progress-ring svg { transform: rotate(-90deg); }
+
+  .progress-ring-text {
+    text-align: center;
+  }
+
+  .progress-ring-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .progress-ring-label { font-size: 12px; color: var(--text-muted); }
+
+  /* ── NF ── */
+  .nf-header {
+    background: linear-gradient(135deg, rgba(74,140,255,0.1), rgba(74,140,255,0.03));
+    border: 1px solid rgba(74,140,255,0.15);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .nf-stat {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 0 20px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .nf-stat:last-child { border-right: none; }
+
+  .nf-stat .value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .nf-stat .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
+
+  /* ── REPORTS ── */
+  .report-module {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .report-module:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+    background: var(--bg-card-hover);
+  }
+
+  .report-module-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .report-module-icon svg { width: 20px; height: 20px; fill: currentColor; }
+
+  .report-module h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .report-module p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--green);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
+  .toast span { font-size: 13px; font-weight: 500; }
+
+  /* ── SELECT ── */
+  select {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  select:focus { border-color: var(--border-accent); }
+
+  option { background: var(--bg-card); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+    </div>
+    <div class="brand-text">
+      <h1>MotoStock</h1>
+      <span>Gestao Completa</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Principal</div>
+    <a class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></span>
+      Painel Geral
+    </a>
+    <a class="nav-item" onclick="showPage('pdv')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></span>
+      PDV — Vendas
+      <span class="nav-badge accent">3</span>
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Gestao</div>
+    <a class="nav-item" onclick="showPage('estoque')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg></span>
+      Estoque
+      <span class="nav-badge">7</span>
+    </a>
+    <a class="nav-item" onclick="showPage('caixa')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></span>
+      Caixa
+    </a>
+    <a class="nav-item" onclick="showPage('financeiro')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg></span>
+      Financeiro
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Operacoes</div>
+    <a class="nav-item" onclick="showPage('nf')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-4h8v2H8v-2zm0-3h8v2H8v-2zm0-3h5v2H8v-2z"/></svg></span>
+      Notas Fiscais
+    </a>
+    <a class="nav-item" onclick="showPage('relatorios')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg></span>
+      Relatorios
+    </a>
+    <a class="nav-item" onclick="showPage('catalogo')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 4h2v5l-1-.75L9 9V4zm9 16H6V4h1v9l3-2.25L13 13V4h5v16z"/></svg></span>
+      Catalogo & Canais
+    </a>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <a class="nav-item" onclick="">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></span>
+      Configuracoes
+    </a>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">AD</div>
+    <div class="user-info">
+      <h4>Admin</h4>
+      <span>Gerente Geral</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Painel Geral</div>
+      <div class="topbar-breadcrumb" id="topbar-sub">Visao geral do negocio</div>
+    </div>
+    <div class="topbar-spacer"></div>
+
+    <div class="topbar-search">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="text" placeholder="Buscar produtos, clientes...">
+    </div>
+
+    <div class="topbar-actions">
+      <div class="topbar-btn">
+        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        <span class="dot"></span>
+      </div>
+      <div class="topbar-btn">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      </div>
+      <button class="btn-outline" onclick="openModal('setup-db')" title="Configurar Banco de Dados" style="padding: 8px 12px; font-size: 11px; color: var(--text-muted)">⚙ Setup BD</button>
+      <button class="btn-accent" onclick="openModal('nova-venda')">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        Nova Venda
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════ DASHBOARD ══════════ -->
+  <div class="content active" id="page-dashboard">
+    <div class="page-header">
+      <div>
+        <h2>Painel de Controle</h2>
+        <p>Visao consolidada do estoque, vendas e caixa. Acompanhe os principais indicadores em tempo real e tome decisoes estrategicas com base em dados precisos.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar</button>
+        <button class="btn-accent"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Atualizar</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--kpi-color: var(--accent)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+          <span class="kpi-trend up">+12.4%</span>
+        </div>
+        <div class="kpi-value" id="kpi-faturamento">R$ 0,00</div>
+        <div class="kpi-label">Vendas do mes</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--green)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg></div>
+          <span class="kpi-trend up">+8.1%</span>
+        </div>
+        <div class="kpi-value" id="kpi-vendas-total">0</div>
+        <div class="kpi-label">Pedidos realizados</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--blue)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg></div>
+          <span class="kpi-trend down">-3.2%</span>
+        </div>
+        <div class="kpi-value" id="kpi-estoque-total">0</div>
+        <div class="kpi-label">Itens em estoque</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--red)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"/></svg></div>
+          <span class="kpi-trend down">+2</span>
+        </div>
+        <div class="kpi-value" id="kpi-rupturas">0</div>
+        <div class="kpi-label">Produtos em ruptura</div>
+      </div>
+    </div>
+
+    <div class="grid-2-1">
+      <!-- Chart -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Vendas por Periodo</div>
+            <div class="card-subtitle">Comparativo mensal — 2025</div>
+          </div>
+          <div class="card-actions">
+            <button class="chip active">Mensal</button>
+            <button class="chip">Semanal</button>
+            <button class="chip">Diario</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-area">
+            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:55%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:62%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:48%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:70%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:58%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:80%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:65%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:74%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:88%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:92%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:79%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:100%"></div></div>
+          </div>
+          <div class="chart-labels">
+            <span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span>
+            <span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span>
+            <span>Set</span><span>Out</span><span>Nov</span><span>Dez</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Products -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Top Produtos</div>
+            <div class="card-subtitle">Mais vendidos este mes</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mini-stat">
+            <div class="mini-stat-left">
+              <div class="mini-stat-dot" style="background: var(--accent)"></div>
+              <div class="mini-stat-name">Filtro de Oleo Honda CG</div>
+            </div>
+            <div class="mini-stat-value">134 un</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-left">
+              <div class="mini-stat-dot" style="background: var(--blue)"></div>
+              <div class="mini-stat-name">Pastilha de Freio Yamaha</div>
+            </div>
+            <div class="mini-stat-value">98 un</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-left">
+              <div class="mini-stat-dot" style="background: var(--green)"></div>
+              <div class="mini-stat-name">Cabo Acelerador Universal</div>
+            </div>
+            <div class="mini-stat-value">87 un</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-left">
+              <div class="mini-stat-dot" style="background: var(--purple)"></div>
+              <div class="mini-stat-name">Correia Dentada Titan 150</div>
+            </div>
+            <div class="mini-stat-value">72 un</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-left">
+              <div class="mini-stat-dot" style="background: var(--red)"></div>
+              <div class="mini-stat-name">Vela NGK Honda Bros</div>
+            </div>
+            <div class="mini-stat-value">64 un</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity + Recent Sales -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Ultimas Vendas</div>
+            <div class="card-subtitle" id="dashboard-vendas-sub">Hoje — 0 transacoes</div>
+          </div>
+          <button class="btn-outline" onclick="showPage('pdv')">Ver PDV</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pedido</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Pagamento</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="vendas-recentes-tbody">
+              <tr>
+                <!-- will be rendered by JS -->
+              <td>#4821</td>
+                <td>Joao Pereira</td>
+                <td>R$ 348,00</td>
+                <td>PIX</td>
+                <td><span class="status-badge green">Pago</span></td>
+              </tr>
+              <tr>
+                <td>#4820</td>
+                <td>Marcos Alves</td>
+                <td>R$ 127,50</td>
+                <td>Cartao</td>
+                <td><span class="status-badge green">Pago</span></td>
+              </tr>
+              <tr>
+                <td>#4819</td>
+                <td>Felipe Souza</td>
+                <td>R$ 589,00</td>
+                <td>Dinheiro</td>
+                <td><span class="status-badge green">Pago</span></td>
+              </tr>
+              <tr>
+                <td>#4818</td>
+                <td>Ana Lima</td>
+                <td>R$ 215,00</td>
+                <td>PIX</td>
+                <td><span class="status-badge amber">Pendente</span></td>
+              </tr>
+              <tr>
+                <td>#4817</td>
+                <td>Carlos Mota</td>
+                <td>R$ 74,90</td>
+                <td>Dinheiro</td>
+                <td><span class="status-badge green">Pago</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Atividade Recente</div>
+            <div class="card-subtitle">Movimentacoes do sistema</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="activity-item">
+            <div class="activity-icon" style="background: rgba(56,200,122,0.12); color: var(--green)">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+            </div>
+            <div>
+              <div class="activity-text"><strong>Novo cliente cadastrado</strong> — Rodrigo Santos adicionado ao sistema</div>
+              <div class="activity-time">Agora mesmo</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background: rgba(232,160,32,0.12); color: var(--accent)">
+              <svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg>
+            </div>
+            <div>
+              <div class="activity-text"><strong>Entrada de estoque</strong> — 50 un de Filtro de Ar CG 160 recebidas</div>
+              <div class="activity-time">12 min atras</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background: rgba(232,80,64,0.12); color: var(--red)">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm4.59 14L12 11.41 7.41 16 6 14.59 10.59 10 6 5.41 7.41 4 12 8.59 16.59 4 18 5.41 13.41 10 18 14.59z"/></svg>
+            </div>
+            <div>
+              <div class="activity-text"><strong>Alerta de ruptura</strong> — Correia Honda Biz 100 sem estoque</div>
+              <div class="activity-time">34 min atras</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background: rgba(74,140,255,0.12); color: var(--blue)">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </div>
+            <div>
+              <div class="activity-text"><strong>NF-e emitida</strong> — Nota #2847 enviada para Marcos Alves</div>
+              <div class="activity-time">1h 10min atras</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background: rgba(168,85,247,0.12); color: var(--purple)">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            </div>
+            <div>
+              <div class="activity-text"><strong>Relatorio exportado</strong> — Vendas de novembro em PDF</div>
+              <div class="activity-time">2h 30min atras</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ PDV ══════════ -->
+  <div class="content" id="page-pdv">
+    <div class="page-header">
+      <div>
+        <h2>PDV — Ponto de Venda</h2>
+        <p>Vendas no PDV fisico, catalogo online e marketplaces centralizados em um unico lugar. Gere orcamentos, processe vendas com agilidade e controle o estoque em tempo real.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"/></svg> Orcamento</button>
+        <button class="btn-accent" onclick="openModal('nova-venda')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Nova Venda</button>
+      </div>
+    </div>
+
+    <div class="pdv-grid">
+      <div class="pdv-products">
+        <div class="pdv-search">
+          <input class="input-field" type="text" id="pdv-search" placeholder="Buscar por nome, codigo ou referencia..." oninput="filterPDV()">
+          <select style="flex-shrink:0">
+            <option>Todos</option>
+            <option>Filtros</option>
+            <option>Freios</option>
+            <option>Motor</option>
+          </select>
+        </div>
+        <div class="pdv-cats">
+          <button class="chip active">Todos</button>
+          <button class="chip">Filtros</button>
+          <button class="chip">Freios</button>
+          <button class="chip">Motor</button>
+          <button class="chip">Suspensao</button>
+          <button class="chip">Transmissao</button>
+          <button class="chip">Eletrica</button>
+          <button class="chip">Acessorios</button>
+        </div>
+        <div class="pdv-items-grid" id="pdv-items-grid">
+          <div class="product-tile" onclick="addToCart('Filtro de Oleo Honda CG', 28.90)">
+            <div class="product-tile-code">FLT-001 | Honda</div>
+            <div class="product-tile-name">Filtro de Oleo CG 150/160</div>
+            <div class="product-tile-price">R$ 28,90</div>
+            <div class="product-tile-stock">Estoque: 47 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Pastilha de Freio Yamaha', 45.00)">
+            <div class="product-tile-code">FRE-014 | Yamaha</div>
+            <div class="product-tile-name">Pastilha Freio Dianteiro Factor 150</div>
+            <div class="product-tile-price">R$ 45,00</div>
+            <div class="product-tile-stock">Estoque: 22 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Cabo Acelerador Universal', 32.50)">
+            <div class="product-tile-code">CAB-007 | Universal</div>
+            <div class="product-tile-name">Cabo Acelerador 1000mm Universal</div>
+            <div class="product-tile-price">R$ 32,50</div>
+            <div class="product-tile-stock">Estoque: 15 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Correia Dentada Titan 150', 89.00)">
+            <div class="product-tile-code">COR-022 | Honda</div>
+            <div class="product-tile-name">Kit Relacao Titan 150 ESD</div>
+            <div class="product-tile-price">R$ 89,00</div>
+            <div class="product-tile-stock">Estoque: 8 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Vela NGK Honda Bros', 18.50)">
+            <div class="product-tile-code">VEL-003 | NGK</div>
+            <div class="product-tile-name">Vela Iridium CR8EIX Bros 160</div>
+            <div class="product-tile-price">R$ 18,50</div>
+            <div class="product-tile-stock">Estoque: 31 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Amortecedor Traseiro CG', 135.00)">
+            <div class="product-tile-code">SUS-009 | Honda</div>
+            <div class="product-tile-name">Amortecedor Traseiro CG 160</div>
+            <div class="product-tile-price">R$ 135,00</div>
+            <div class="product-tile-stock">Estoque: 5 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Rolamento Roda Dianteira', 22.00)">
+            <div class="product-tile-code">ROL-011 | SKF</div>
+            <div class="product-tile-name">Rolamento Roda Dianteira 6202</div>
+            <div class="product-tile-price">R$ 22,00</div>
+            <div class="product-tile-stock">Estoque: 18 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Filtro de Ar Pop 100', 19.90)">
+            <div class="product-tile-code">FLT-008 | Honda</div>
+            <div class="product-tile-name">Filtro de Ar Pop 100 / Biz 100</div>
+            <div class="product-tile-price">R$ 19,90</div>
+            <div class="product-tile-stock">Estoque: 29 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Retentores de Forcella', 38.00)">
+            <div class="product-tile-code">RET-004 | Japan</div>
+            <div class="product-tile-name">Retentor Forcella CG/NXR 30mm</div>
+            <div class="product-tile-price">R$ 38,00</div>
+            <div class="product-tile-stock">Estoque: 12 un</div>
+          </div>
+          <div class="product-tile" onclick="addToCart('Jogo de Juntas Motor', 54.90)">
+            <div class="product-tile-code">JNT-016 | Vedamotors</div>
+            <div class="product-tile-name">Jogo de Juntas Motor CG 150</div>
+            <div class="product-tile-price">R$ 54,90</div>
+            <div class="product-tile-stock">Estoque: 7 un</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CART -->
+      <div class="pdv-cart">
+        <div class="cart-header">
+          <h3>Carrinho de Venda</h3>
+          <div class="cart-client">
+            <input class="input-field" type="text" placeholder="Cliente (opcional)..." style="flex:1; font-size:12px; padding: 7px 12px;">
+          </div>
+        </div>
+        <div class="cart-items" id="cart-items">
+          <div id="cart-empty" style="text-align:center; padding: 40px 20px; color: var(--text-muted); font-size: 13px;">
+            Nenhum produto adicionado.<br>Clique em um produto para adicionar.
+          </div>
+        </div>
+        <div class="cart-footer">
+          <div class="cart-totals">
+            <div class="cart-total-row"><span>Subtotal</span><span id="subtotal">R$ 0,00</span></div>
+            <div class="cart-total-row"><span>Desconto</span><span style="color: var(--green)">- R$ 0,00</span></div>
+            <div class="cart-total-row main"><span>Total</span><span id="total-val">R$ 0,00</span></div>
+          </div>
+          <div class="payment-methods">
+            <div class="payment-method active" onclick="selectPayment(this)">DINHEIRO</div>
+            <div class="payment-method" onclick="selectPayment(this)">CARTAO</div>
+            <div class="payment-method" onclick="selectPayment(this)">PIX</div>
+          </div>
+          <button class="btn-finish" onclick="finalizeSale()">Finalizar Venda</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ ESTOQUE ══════════ -->
+  <div class="content" id="page-estoque">
+    <div class="page-header">
+      <div>
+        <h2>Controle de Estoque</h2>
+        <p>Gerencie com eficiencia a disponibilidade de produtos, evitando rupturas. Acompanhe movimentacoes de entrada e saida, realize inventarios e gere relatorios estrategicos.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar</button>
+        <button class="btn-accent" onclick="openModal('add-produto')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Novo Produto</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--kpi-color: var(--blue)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg></div>
+          <span class="kpi-trend up">+47</span>
+        </div>
+        <div class="kpi-value">1.243</div>
+        <div class="kpi-label">Total em estoque</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--accent)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></div>
+          <span class="kpi-trend up">+12</span>
+        </div>
+        <div class="kpi-value">318</div>
+        <div class="kpi-label">Entradas hoje</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--red)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg></div>
+          <span class="kpi-trend down">+2</span>
+        </div>
+        <div class="kpi-value" id="kpi-rupturas">0</div>
+        <div class="kpi-label">Produtos em ruptura</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--green)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+          <span class="kpi-trend up">+4.2%</span>
+        </div>
+        <div class="kpi-value">R$ 87.4k</div>
+        <div class="kpi-label">Valor do estoque</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Catalogo de Produtos</div>
+          <div class="card-subtitle">328 produtos cadastrados</div>
+        </div>
+        <div class="card-actions">
+          <input class="input-field" type="text" placeholder="Filtrar..." style="width:180px; padding: 7px 12px; font-size:12px;">
+          <select style="font-size: 12px; padding: 7px 12px;">
+            <option>Todas as categorias</option>
+            <option>Filtros</option><option>Freios</option><option>Motor</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Codigo</th>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th>Custo</th>
+              <th>Preco</th>
+              <th>Estoque</th>
+              <th>Minimo</th>
+              <th>Situacao</th>
+            </tr>
+          </thead>
+          <tbody id="estoque-tbody">
+            <tr>
+              <td>FLT-001</td><td>Filtro de Oleo Honda CG 150/160</td><td>Filtros</td>
+              <td>R$ 14,20</td><td>R$ 28,90</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <span>47</span>
+                  <div class="stock-bar"><div class="stock-bar-fill" style="width:94%"></div></div>
+                </div>
+              </td>
+              <td>10</td><td><span class="status-badge green">Normal</span></td>
+            </tr>
+            <tr>
+              <td>FRE-014</td><td>Pastilha Freio Dianteiro Factor 150</td><td>Freios</td>
+              <td>R$ 22,00</td><td>R$ 45,00</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <span>22</span>
+                  <div class="stock-bar"><div class="stock-bar-fill mid" style="width:44%"></div></div>
+                </div>
+              </td>
+              <td>15</td><td><span class="status-badge amber">Baixo</span></td>
+            </tr>
+            <tr>
+              <td>COR-022</td><td>Kit Relacao Titan 150 ESD</td><td>Transmissao</td>
+              <td>R$ 48,00</td><td>R$ 89,00</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <span>8</span>
+                  <div class="stock-bar"><div class="stock-bar-fill mid" style="width:16%"></div></div>
+                </div>
+              </td>
+              <td>10</td><td><span class="status-badge amber">Baixo</span></td>
+            </tr>
+            <tr>
+              <td>CAB-007</td><td>Cabo Acelerador 1000mm Universal</td><td>Cabos</td>
+              <td>R$ 15,00</td><td>R$ 32,50</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <span>15</span>
+                  <div class="stock-bar"><div class="stock-bar-fill" style="width:75%"></div></div>
+                </div>
+              </td>
+              <td>8</td><td><span class="status-badge green">Normal</span></td>
+            </tr>
+            <tr>
+              <td>SUS-009</td><td>Amortecedor Traseiro CG 160</td><td>Suspensao</td>
+              <td>R$ 72,00</td><td>R$ 135,00</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <span>2</span>
+                  <div class="stock-bar"><div class="stock-bar-fill low" style="width:10%"></div></div>
+                </div>
+              </td>
+              <td>5</td><td><span class="status-badge red">Critico</span></td>
+            </tr>
+            <tr>
+              <td>VEL-003</td><td>Vela Iridium CR8EIX Bros 160</td><td>Motor</td>
+              <td>R$ 9,80</td><td>R$ 18,50</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <span>31</span>
+                  <div class="stock-bar"><div class="stock-bar-fill" style="width:77%"></div></div>
+                </div>
+              </td>
+              <td>20</td><td><span class="status-badge green">Normal</span></td>
+            </tr>
+            <tr>
+              <td>JNT-016</td><td>Jogo de Juntas Motor CG 150</td><td>Motor</td>
+              <td>R$ 28,00</td><td>R$ 54,90</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <span>0</span>
+                  <div class="stock-bar"><div class="stock-bar-fill low" style="width:0%"></div></div>
+                </div>
+              </td>
+              <td>5</td><td><span class="status-badge red">Ruptura</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ CAIXA ══════════ -->
+  <div class="content" id="page-caixa">
+    <div class="page-header">
+      <div>
+        <h2>Controle de Caixa</h2>
+        <p>Controle completo do fluxo de caixa com abertura e fechamento automatico, registro detalhado de entradas e saidas, e integracao com relatorios financeiros.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Relatorio</button>
+        <button class="btn-accent" onclick="openModal('lancamento')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Lancamento</button>
+      </div>
+    </div>
+
+    <div class="cash-status">
+      <div class="cash-status-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+      <div class="cash-status-text">
+        <h3>Caixa Aberto</h3>
+        <p>Aberto em 14/03/2025 as 08:00 — Operador: Admin</p>
+      </div>
+      <div style="margin-left: auto; display: flex; gap: 24px; align-items: center;">
+        <div class="cash-value" style="text-align:center; padding: 0 20px; border-right: 1px solid rgba(255,255,255,0.06)">
+          <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;">Abertura</div>
+          <div class="amount" style="font-size: 22px; color: var(--text-secondary)">R$ 500,00</div>
+        </div>
+        <div class="cash-value">
+          <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;">Saldo Atual</div>
+          <div class="amount" id="caixa-saldo">R$ 0,00</div>
+        </div>
+        <button class="btn-outline" style="flex-shrink:0">Fechar Caixa</button>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="fin-card" id="caixa-entradas">
+        <div class="fin-card-left">
+          <div class="fin-card-icon" style="background: rgba(56,200,122,0.12); color: var(--green)"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+          <div>
+            <div class="fin-card-label">Entradas Hoje</div>
+            <div class="fin-card-value" style="color: var(--green)" id="val-entradas">R$ 0,00</div>
+          </div>
+        </div>
+        <span class="kpi-trend up">+18%</span>
+      </div>
+      <div class="fin-card" id="caixa-saidas">
+        <div class="fin-card-left">
+          <div class="fin-card-icon" style="background: rgba(232,80,64,0.12); color: var(--red)"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg></div>
+          <div>
+            <div class="fin-card-label">Saidas Hoje</div>
+            <div class="fin-card-value" style="color: var(--red)" id="val-saidas">R$ 0,00</div>
+          </div>
+        </div>
+        <span class="kpi-trend down">+5%</span>
+      </div>
+      <div class="fin-card" id="caixa-resultado">
+        <div class="fin-card-left">
+          <div class="fin-card-icon" style="background: rgba(232,160,32,0.12); color: var(--accent)"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+          <div>
+            <div class="fin-card-label">Resultado do Dia</div>
+            <div class="fin-card-value" style="color: var(--accent)" id="val-resultado">R$ 0,00</div>
+          </div>
+        </div>
+        <span class="kpi-trend up">+22%</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Movimentacoes do Dia</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Hora</th><th>Tipo</th><th>Descricao</th><th>Forma</th><th>Valor</th></tr></thead>
+            <tbody id="caixa-tbody"></tbody>
+            <tbody id="caixa-tbody-static" style="display:none">
+            <tbody>
+              <tr><td>15:42</td><td><span class="status-badge green">Entrada</span></td><td>Venda #4821</td><td>PIX</td><td style="color:var(--green); font-weight:600">+R$ 348,00</td></tr>
+              <tr><td>15:18</td><td><span class="status-badge green">Entrada</span></td><td>Venda #4820</td><td>Cartao</td><td style="color:var(--green); font-weight:600">+R$ 127,50</td></tr>
+              <tr><td>14:55</td><td><span class="status-badge red">Saida</span></td><td>Pagto. Fornecedor</td><td>Transf.</td><td style="color:var(--red); font-weight:600">-R$ 450,00</td></tr>
+              <tr><td>14:30</td><td><span class="status-badge green">Entrada</span></td><td>Venda #4819</td><td>Dinheiro</td><td style="color:var(--green); font-weight:600">+R$ 589,00</td></tr>
+              <tr><td>13:10</td><td><span class="status-badge red">Saida</span></td><td>Despesas Operac.</td><td>Dinheiro</td><td style="color:var(--red); font-weight:600">-R$ 120,00</td></tr>
+              <tr><td>11:22</td><td><span class="status-badge green">Entrada</span></td><td>Venda #4818</td><td>PIX</td><td style="color:var(--green); font-weight:600">+R$ 215,00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Formas de Pagamento</div><div class="card-subtitle">Distribuicao do dia</div></div>
+        <div class="card-body">
+          <div class="mini-stat">
+            <div class="mini-stat-left">
+              <div class="mini-stat-dot" style="background: var(--accent)"></div>
+              <div class="mini-stat-name">PIX</div>
+            </div>
+            <div>
+              <div class="mini-stat-value">R$ 1.820,00</div>
+              <div style="font-size: 11px; color: var(--text-muted)">43% das vendas</div>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-left">
+              <div class="mini-stat-dot" style="background: var(--blue)"></div>
+              <div class="mini-stat-name">Cartao de Credito/Debito</div>
+            </div>
+            <div>
+              <div class="mini-stat-value">R$ 1.340,00</div>
+              <div style="font-size: 11px; color: var(--text-muted)">32% das vendas</div>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-left">
+              <div class="mini-stat-dot" style="background: var(--green)"></div>
+              <div class="mini-stat-name">Dinheiro</div>
+            </div>
+            <div>
+              <div class="mini-stat-value">R$ 1.070,00</div>
+              <div style="font-size: 11px; color: var(--text-muted)">25% das vendas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ FINANCEIRO ══════════ -->
+  <div class="content" id="page-financeiro">
+    <div class="page-header">
+      <div>
+        <h2>Controle Financeiro</h2>
+        <p>Visao completa do fluxo de caixa, lucros, despesas e investimentos. Relatorios avancados com analises de rentabilidade por produto, cliente e periodo.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar PDF</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--kpi-color: var(--green)"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><span class="kpi-trend up">+14.2%</span></div><div class="kpi-value">R$ 24.830</div><div class="kpi-label">Faturamento mes</div></div>
+      <div class="kpi-card" style="--kpi-color: var(--red)"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg></div><span class="kpi-trend down">-8.1%</span></div><div class="kpi-value">R$ 14.200</div><div class="kpi-label">Custo / Despesas</div></div>
+      <div class="kpi-card" style="--kpi-color: var(--accent)"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><span class="kpi-trend up">+28.4%</span></div><div class="kpi-value">R$ 10.630</div><div class="kpi-label">Lucro liquido</div></div>
+      <div class="kpi-card" style="--kpi-color: var(--purple)"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg></div><span class="kpi-trend up">+3.8%</span></div><div class="kpi-value">42.8%</div><div class="kpi-label">Margem de lucro</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Evolucao Financeira</div><div class="card-subtitle">Faturamento x Custo — 2025</div></div>
+        <div class="card-body">
+          <div class="chart-area">
+            <div class="chart-bar-group"><div class="chart-bar" style="height:55%"></div><div class="chart-bar secondary" style="height:38%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:62%"></div><div class="chart-bar secondary" style="height:42%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:48%"></div><div class="chart-bar secondary" style="height:35%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:70%"></div><div class="chart-bar secondary" style="height:48%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:78%"></div><div class="chart-bar secondary" style="height:52%"></div></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:88%"></div><div class="chart-bar secondary" style="height:58%"></div></div>
+          </div>
+          <div class="chart-labels">
+            <span>Jul</span><span>Ago</span><span>Set</span><span>Out</span><span>Nov</span><span>Dez</span>
+          </div>
+          <div style="display: flex; gap: 16px; margin-top: 14px;">
+            <div style="display:flex; align-items:center; gap:6px; font-size:12px; color: var(--text-secondary)"><div style="width:10px;height:10px;border-radius:2px;background:var(--accent)"></div> Faturamento</div>
+            <div style="display:flex; align-items:center; gap:6px; font-size:12px; color: var(--text-secondary)"><div style="width:10px;height:10px;border-radius:2px;background:var(--blue); opacity:0.6"></div> Custo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Contas a Receber</div><div class="card-subtitle">Vencimentos proximos</div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Ana Lima</td><td>16/03</td><td>R$ 215,00</td><td><span class="status-badge amber">Vence Amanha</span></td></tr>
+              <tr><td>Moto Center</td><td>18/03</td><td>R$ 1.200,00</td><td><span class="status-badge blue">A Vencer</span></td></tr>
+              <tr><td>Jose Mendes</td><td>20/03</td><td>R$ 380,00</td><td><span class="status-badge blue">A Vencer</span></td></tr>
+              <tr><td>Rogerio Auto</td><td>10/03</td><td>R$ 540,00</td><td><span class="status-badge red">Vencido</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ NF ══════════ -->
+  <div class="content" id="page-nf">
+    <div class="page-header">
+      <div>
+        <h2>Notas Fiscais</h2>
+        <p>Emita NF-e e NFC-e com total conformidade fiscal. Conexao automatica com a Receita Federal, templates personalizados, controle de series e numeracoes.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar XML</button>
+        <button class="btn-accent" onclick="openModal('emitir-nf')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Emitir Nota</button>
+      </div>
+    </div>
+
+    <div class="nf-header">
+      <div style="width:44px;height:44px;background:rgba(74,140,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:22px;height:22px;fill:var(--blue)" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+      <div class="nf-stat"><div class="value">2.847</div><div class="label">NF-e Emitidas</div></div>
+      <div class="nf-stat"><div class="value">312</div><div class="label">NFC-e Emitidas</div></div>
+      <div class="nf-stat"><div class="value" style="color:var(--green)">3.159</div><div class="label">Total Autorizadas</div></div>
+      <div class="nf-stat"><div class="value" style="color:var(--red)">4</div><div class="label">Com Erro</div></div>
+      <div class="nf-stat"><div class="value" style="color:var(--accent)">R$ 892k</div><div class="label">Valor Total Emitido</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Ultimas Notas Emitidas</div></div>
+        <div class="card-actions">
+          <button class="chip active">NF-e</button>
+          <button class="chip">NFC-e</button>
+          <button class="chip">Todas</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Numero</th><th>Serie</th><th>Tipo</th><th>Destinatario</th><th>Emissao</th><th>Valor</th><th>Situacao</th><th>Acoes</th></tr></thead>
+          <tbody>
+            <tr><td>002847</td><td>001</td><td>NF-e</td><td>Marcos Alves</td><td>14/03 15:18</td><td>R$ 127,50</td><td><span class="status-badge green">Autorizada</span></td><td><button class="chip">XML</button></td></tr>
+            <tr><td>002846</td><td>001</td><td>NFC-e</td><td>Consumidor</td><td>14/03 14:55</td><td>R$ 589,00</td><td><span class="status-badge green">Autorizada</span></td><td><button class="chip">XML</button></td></tr>
+            <tr><td>002845</td><td>001</td><td>NF-e</td><td>Moto Center LTDA</td><td>14/03 13:10</td><td>R$ 1.200,00</td><td><span class="status-badge green">Autorizada</span></td><td><button class="chip">XML</button></td></tr>
+            <tr><td>002844</td><td>001</td><td>NF-e</td><td>Auto Pecas Silva</td><td>13/03 17:42</td><td>R$ 348,00</td><td><span class="status-badge red">Rejeitada</span></td><td><button class="chip">Corrigir</button></td></tr>
+            <tr><td>002843</td><td>001</td><td>NFC-e</td><td>Consumidor</td><td>13/03 15:30</td><td>R$ 74,90</td><td><span class="status-badge green">Autorizada</span></td><td><button class="chip">XML</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ RELATORIOS ══════════ -->
+  <div class="content" id="page-relatorios">
+    <div class="page-header">
+      <div>
+        <h2>Relatorios e Dashboards</h2>
+        <p>Transforme dados em insights estrategicos com relatorios personalizaveis. Visualize performance de vendas, estoque, comportamento de clientes e indicadores financeiros.</p>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="report-module">
+        <div class="report-module-icon" style="background: rgba(232,160,32,0.12); color: var(--accent)"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg></div>
+        <h4>Relatorio de Vendas</h4>
+        <p>Analise completa de vendas por periodo, produto, cliente e canal. Identifique tendencias e oportunidades de crescimento.</p>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+      </div>
+      <div class="report-module">
+        <div class="report-module-icon" style="background: rgba(74,140,255,0.12); color: var(--blue)"><svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg></div>
+        <h4>Curva ABC de Estoque</h4>
+        <p>Classificacao de produtos por valor de venda, giro e margem. Otimize compras com base na curva ABC.</p>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+      </div>
+      <div class="report-module">
+        <div class="report-module-icon" style="background: rgba(56,200,122,0.12); color: var(--green)"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+        <h4>DRE Gerencial</h4>
+        <p>Demonstrativo de Resultado do Exercicio completo com receitas, custos, despesas e lucro operacional.</p>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+      </div>
+      <div class="report-module">
+        <div class="report-module-icon" style="background: rgba(168,85,247,0.12); color: var(--purple)"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"/></svg></div>
+        <h4>Inadimplencia</h4>
+        <p>Controle de clientes em atraso, historico de pagamentos e gestao da carteira de recebíveis.</p>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+      </div>
+      <div class="report-module">
+        <div class="report-module-icon" style="background: rgba(232,80,64,0.12); color: var(--red)"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+        <h4>Fechamento de Caixa</h4>
+        <p>Relatorios de fechamento diario, mensal e anual com conciliacao bancaria e controle fiscal.</p>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+      </div>
+      <div class="report-module">
+        <div class="report-module-icon" style="background: rgba(232,160,32,0.12); color: var(--accent)"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+        <h4>Margem por Produto</h4>
+        <p>Analise de rentabilidade detalhada por produto, fornecedor e categoria com margem bruta e liquida.</p>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ CATALOGO ══════════ -->
+  <div class="content" id="page-catalogo">
+    <div class="page-header">
+      <div>
+        <h2>Catalogo e Canais de Venda</h2>
+        <p>Centralize todas as suas vendas em uma unica plataforma. PDV fisico, catalogo online, Mercado Livre, Shopee e outros marketplaces com estoque sincronizado em tempo real.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-accent"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Publicar Produto</button>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="kpi-card" style="--kpi-color: var(--accent)"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 4h2v5l-1-.75L9 9V4zm9 16H6V4h1v9l3-2.25L13 13V4h5v16z"/></svg></div><span class="kpi-trend up">+5</span></div><div class="kpi-value">213</div><div class="kpi-label">Catalogo Online</div></div>
+      <div class="kpi-card" style="--kpi-color: #2DB9E7"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7 17h11v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H15c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 19.5 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div><span class="kpi-trend up">+12</span></div><div class="kpi-value">189</div><div class="kpi-label">Mercado Livre</div></div>
+      <div class="kpi-card" style="--kpi-color: #EE4D2D"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/></svg></div><span class="kpi-trend up">+8</span></div><div class="kpi-value">94</div><div class="kpi-label">Shopee</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Pedidos dos Canais</div><div class="card-subtitle">Centralizacao de todos os marketplaces</div></div>
+        <div class="card-actions">
+          <button class="chip active">Todos</button>
+          <button class="chip">Mercado Livre</button>
+          <button class="chip">Shopee</button>
+          <button class="chip">Catalogo</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pedido</th><th>Canal</th><th>Cliente</th><th>Produto</th><th>Valor</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>#ML-82471</td><td><span class="status-badge blue">Mercado Livre</span></td><td>Usuario ML</td><td>Filtro de Oleo CG 150</td><td>R$ 32,90</td><td><span class="status-badge amber">Aguardando</span></td></tr>
+            <tr><td>#SHP-44201</td><td><span class="status-badge red">Shopee</span></td><td>Luiz Costa</td><td>Pastilha Freio Yamaha</td><td>R$ 47,50</td><td><span class="status-badge green">Pago</span></td></tr>
+            <tr><td>#CAT-00841</td><td><span class="status-badge green">Catalogo</span></td><td>Pedro Farias</td><td>Kit Relacao Titan 150</td><td>R$ 89,00</td><td><span class="status-badge green">Pago</span></td></tr>
+            <tr><td>#ML-82469</td><td><span class="status-badge blue">Mercado Livre</span></td><td>Usuario ML</td><td>Vela NGK Honda Bros</td><td>R$ 21,00</td><td><span class="status-badge blue">Enviado</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ══════════ MODALS ══════════ -->
+<div class="modal-overlay" id="modal-nova-venda">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Nova Venda / Orcamento</div><div class="modal-close" onclick="closeModal('nova-venda')">✕</div></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select><option>Venda</option><option>Orcamento</option><option>Pedido</option></select></div><div class="form-group"><label class="form-label">Canal</label><select><option>PDV</option><option>Catalogo</option><option>Mercado Livre</option><option>Shopee</option></select></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Cliente</label><input class="input-field" type="text" placeholder="Buscar ou cadastrar cliente..."></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Produto</label><input class="input-field" type="text" placeholder="Buscar produto por nome ou codigo..."></div></div>
+      <div class="form-row three"><div class="form-group"><label class="form-label">Quantidade</label><input class="input-field" type="number" value="1"></div><div class="form-group"><label class="form-label">Preco Un.</label><input class="input-field" type="text" value="R$ 0,00"></div><div class="form-group"><label class="form-label">Desconto</label><input class="input-field" type="text" value="0%"></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-outline" onclick="closeModal('nova-venda')">Cancelar</button><button class="btn-accent" onclick="closeModal('nova-venda'); showToast('Venda registrada com sucesso!')">Registrar Venda</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-produto">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Novo Produto</div><div class="modal-close" onclick="closeModal('add-produto')">✕</div></div>
+    <div class="modal-body">
+      <div class="form-row full"><div class="form-group"><label class="form-label">Nome do Produto</label><input class="input-field" id="prod-nome" type="text" placeholder="Ex: Filtro de Oleo Honda CG 150/160"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="prod-sku" type="text" placeholder="FLT-001"></div><div class="form-group"><label class="form-label">Categoria</label><select id="prod-categoria"><option>Filtros</option><option>Freios</option><option>Motor</option><option>Suspensao</option><option>Transmissao</option></select></div></div>
+      <div class="form-row three"><div class="form-group"><label class="form-label">Custo (R$)</label><input class="input-field" id="prod-custo" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Preco Venda (R$)</label><input class="input-field" id="prod-preco" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Estoque Inicial</label><input class="input-field" id="prod-estoque" type="number" value="0"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Estoque Minimo</label><input class="input-field" id="prod-estoque-min" type="number" value="5"></div><div class="form-group"><label class="form-label">Marca / Fabricante</label><input class="input-field" id="prod-marca" type="text" placeholder="Honda, Yamaha, NGK..."></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-outline" onclick="closeModal('add-produto')">Cancelar</button><button class="btn-accent" onclick="saveProduto()">Salvar Produto</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-lancamento">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Lancamento de Caixa</div><div class="modal-close" onclick="closeModal('lancamento')">✕</div></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select id="lanc-tipo"><option value="entrada">Entrada</option><option value="saida">Saida</option></select></div><div class="form-group"><label class="form-label">Forma de Pagamento</label><select id="lanc-forma"><option>Dinheiro</option><option>PIX</option><option>Cartao</option><option>Transferencia</option></select></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Descricao</label><input class="input-field" id="lanc-descricao" type="text" placeholder="Descricao do lancamento..."></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Valor (R$)</label><input class="input-field" id="lanc-valor" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Data</label><input class="input-field" id="lanc-data" type="date"></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-outline" onclick="closeModal('lancamento')">Cancelar</button><button class="btn-accent" onclick="saveLancamento()">Registrar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-emitir-nf">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Emitir Nota Fiscal</div><div class="modal-close" onclick="closeModal('emitir-nf')">✕</div></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Tipo de Nota</label><select><option>NF-e (55)</option><option>NFC-e (65)</option></select></div><div class="form-group"><label class="form-label">Natureza de Operacao</label><select><option>Venda de Mercadoria</option><option>Remessa</option><option>Devolucao</option></select></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Destinatario / CPF / CNPJ</label><input class="input-field" type="text" placeholder="Nome ou documento do destinatario..."></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Produtos / Servicos</label><input class="input-field" type="text" placeholder="Adicionar itens a nota..."></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Valor Total (R$)</label><input class="input-field" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Forma Pagamento</label><select><option>Dinheiro</option><option>PIX</option><option>Cartao</option></select></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-outline" onclick="closeModal('emitir-nf')">Cancelar</button><button class="btn-accent" onclick="closeModal('emitir-nf'); showToast('Nota fiscal emitida e autorizada!')">Emitir Nota</button></div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="modal-setup-db">
+  <div class="modal" style="max-width: 700px">
+    <div class="modal-header">
+      <div class="modal-title">⚙ Configurar Banco de Dados — Supabase</div>
+      <div class="modal-close" onclick="closeModal('setup-db')">✕</div>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">
+        Execute o SQL abaixo no <strong style="color:var(--accent)">SQL Editor</strong> do seu projeto Supabase 
+        para criar as tabelas necessarias. Acesse: <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px;font-size:11px">supabase.com → Seu projeto → SQL Editor</code>
+      </p>
+      <textarea readonly style="width:100%;height:320px;background:var(--bg-base);border:1px solid var(--border);border-radius:8px;padding:16px;color:var(--green);font-family:monospace;font-size:11px;resize:vertical;outline:none;line-height:1.7">-- Execute este SQL no editor do Supabase
+create table if not exists produtos (
+  id uuid default gen_random_uuid() primary key,
+  sku text not null,
+  nome text not null,
+  categoria text default 'Geral',
+  marca text default '',
+  custo numeric(10,2) default 0,
+  preco_venda numeric(10,2) default 0,
+  estoque integer default 0,
+  estoque_minimo integer default 5,
+  created_at timestamptz default now()
+);
+
+create table if not exists vendas (
+  id uuid default gen_random_uuid() primary key,
+  numero bigint generated always as identity,
+  cliente text default 'Consumidor',
+  total numeric(10,2) default 0,
+  forma_pagamento text default 'dinheiro',
+  status text default 'pago',
+  created_at timestamptz default now()
+);
+
+create table if not exists venda_itens (
+  id uuid default gen_random_uuid() primary key,
+  venda_id uuid references vendas(id) on delete cascade,
+  produto_id uuid references produtos(id) on delete set null,
+  nome_produto text,
+  preco numeric(10,2),
+  quantidade integer,
+  total numeric(10,2),
+  created_at timestamptz default now()
+);
+
+create table if not exists caixa_lancamentos (
+  id uuid default gen_random_uuid() primary key,
+  tipo text check (tipo in ('entrada','saida')),
+  descricao text,
+  forma_pagamento text,
+  valor numeric(10,2),
+  data date default current_date,
+  hora text,
+  created_at timestamptz default now()
+);
+
+-- Desabilitar RLS para ambiente de desenvolvimento (opcional)
+alter table produtos disable row level security;
+alter table vendas disable row level security;
+alter table venda_itens disable row level security;
+alter table caixa_lancamentos disable row level security;</textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('setup-db')">Fechar</button>
+      <button class="btn-accent" onclick="navigator.clipboard.writeText(document.querySelector('#modal-setup-db textarea').value); showToast('SQL copiado!')">Copiar SQL</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="dot"></div>
+  <span id="toast-msg">Operacao realizada com sucesso!</span>
+</div>
+
+
+<script>
+  // ══════════════════════════════════════════════
+  // SUPABASE CONFIG
+  // ══════════════════════════════════════════════
+  const SUPABASE_URL = 'https://lhrzwccbvdintqgebisq.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxocnp3Y2NidmRpbnRxZ2ViaXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODY0NzEsImV4cCI6MjA4OTE2MjQ3MX0.gbljgt0rzOf9eBoTcXxxfl0e_0Y-6XYxve-HGY7meJo';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  /*
+  ═══════════ SQL PARA CRIAR AS TABELAS NO SUPABASE ═══════════
+  Execute no SQL Editor do seu projeto Supabase:
+
+  create table if not exists produtos (
+    id uuid default gen_random_uuid() primary key,
+    sku text not null,
+    nome text not null,
+    categoria text default 'Geral',
+    marca text default '',
+    custo numeric(10,2) default 0,
+    preco_venda numeric(10,2) default 0,
+    estoque integer default 0,
+    estoque_minimo integer default 5,
+    created_at timestamptz default now()
+  );
+
+  create table if not exists vendas (
+    id uuid default gen_random_uuid() primary key,
+    numero bigint generated always as identity,
+    cliente text default 'Consumidor',
+    total numeric(10,2) default 0,
+    forma_pagamento text default 'dinheiro',
+    status text default 'pago',
+    created_at timestamptz default now()
+  );
+
+  create table if not exists venda_itens (
+    id uuid default gen_random_uuid() primary key,
+    venda_id uuid references vendas(id) on delete cascade,
+    produto_id uuid references produtos(id) on delete set null,
+    nome_produto text,
+    preco numeric(10,2),
+    quantidade integer,
+    total numeric(10,2),
+    created_at timestamptz default now()
+  );
+
+  create table if not exists caixa_lancamentos (
+    id uuid default gen_random_uuid() primary key,
+    tipo text check (tipo in ('entrada','saida')),
+    descricao text,
+    forma_pagamento text,
+    valor numeric(10,2),
+    data date default current_date,
+    hora text,
+    created_at timestamptz default now()
+  );
+
+  -- Habilitar RLS (Row Level Security) - opcional para desenvolvimento
+  -- alter table produtos enable row level security;
+  -- create policy "allow all" on produtos for all using (true);
+  -- (repita para cada tabela)
+  ═════════════════════════════════════════════════
+  */
+
+  // ── NAVIGATION
+  const pages = ['dashboard','pdv','estoque','caixa','financeiro','nf','relatorios','catalogo'];
+  const titles = {
+    dashboard: ['Painel Geral', 'Visao geral do negocio'],
+    pdv: ['PDV — Vendas', 'Ponto de Venda e Marketplaces'],
+    estoque: ['Controle de Estoque', 'Gestao de produtos e inventario'],
+    caixa: ['Controle de Caixa', 'Fluxo de entradas e saidas'],
+    financeiro: ['Controle Financeiro', 'DRE, lucros e analise financeira'],
+    nf: ['Notas Fiscais', 'Emissao de NF-e e NFC-e'],
+    relatorios: ['Relatorios Gerenciais', 'Dashboards e analise de dados'],
+    catalogo: ['Catalogo & Canais', 'Marketplaces e vendas online'],
+  };
+
+  function showPage(id) {
+    pages.forEach(p => document.getElementById('page-'+p).classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-'+id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if(n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+id+"'")) {
+        n.classList.add('active');
+      }
+    });
+    document.getElementById('topbar-title').textContent = titles[id][0];
+    document.getElementById('topbar-sub').textContent = titles[id][1];
+    // Load data per page
+    if (id === 'dashboard') loadDashboard();
+    if (id === 'pdv') loadProdutos();
+    if (id === 'estoque') loadProdutos();
+    if (id === 'caixa') loadCaixa();
+  }
+
+  // ── MODAL
+  function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); }
+  function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+      m.addEventListener('click', function(e) {
+        if(e.target === this) this.classList.remove('open');
+      });
+    });
+  });
+
+  // ── TOAST
+  function showToast(msg, type = 'default') {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── LOADING INDICATOR
+  function setLoading(elId, on) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (on) {
+      el.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted)">⟳ Carregando...</td></tr>';
+    }
+  }
+
+  // ── FORMAT CURRENCY
+  const fmt = v => 'R$ ' + (v || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  // ══════════════════════════════════════════════
+  // DASHBOARD
+  // ══════════════════════════════════════════════
+  async function loadDashboard() {
+    const today = new Date().toISOString().split('T')[0];
+    try {
+      // Today sales
+      const { data: vendas } = await sb.from('vendas')
+        .select('total, created_at, numero, cliente, forma_pagamento, status')
+        .gte('created_at', today + 'T00:00:00');
+
+      const totalHoje = vendas?.reduce((s, v) => s + Number(v.total), 0) || 0;
+      const numVendas = vendas?.length || 0;
+
+      // Products
+      const { count: totalProdos } = await sb.from('produtos')
+        .select('estoque', { count: 'exact', head: false });
+
+      const { data: prodData } = await sb.from('produtos').select('estoque');
+      const totalEstoque = prodData?.reduce((s, p) => s + Number(p.estoque), 0) || 0;
+      const rupturas = prodData?.filter(p => Number(p.estoque) <= 0).length || 0;
+
+      // Update KPIs
+      const kpiFat = document.getElementById('kpi-faturamento');
+      const kpiVend = document.getElementById('kpi-vendas-total');
+      const kpiEst = document.getElementById('kpi-estoque-total');
+      const kpiRup = document.getElementById('kpi-rupturas');
+      if (kpiFat) kpiFat.textContent = fmt(totalHoje);
+      if (kpiVend) kpiVend.textContent = numVendas;
+      if (kpiEst) kpiEst.textContent = totalEstoque.toLocaleString('pt-BR');
+      if (kpiRup) kpiRup.textContent = rupturas;
+
+      // Sub label
+      const sub = document.getElementById('dashboard-vendas-sub');
+      if (sub) sub.textContent = 'Hoje — ' + numVendas + ' transacoes';
+
+      // Recent sales
+      const tbody = document.getElementById('vendas-recentes-tbody');
+      if (tbody && vendas) {
+        const recent = [...vendas].sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
+        if (recent.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted)">Nenhuma venda hoje.</td></tr>';
+        } else {
+          tbody.innerHTML = recent.map(v => `
+            <tr>
+              <td>#${v.numero || v.id.slice(0,6).toUpperCase()}</td>
+              <td>${v.cliente || 'Consumidor'}</td>
+              <td>${fmt(v.total)}</td>
+              <td>${(v.forma_pagamento || '').toUpperCase()}</td>
+              <td><span class="status-badge ${v.status === 'pago' ? 'green' : 'amber'}">${v.status === 'pago' ? 'Pago' : 'Pendente'}</span></td>
+            </tr>
+          `).join('');
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao carregar dashboard:', e);
+    }
+  }
+
+  // ══════════════════════════════════════════════
+  // PRODUTOS
+  // ══════════════════════════════════════════════
+  let allProdutos = [];
+
+  async function loadProdutos() {
+    setLoading('pdv-items-grid', true);
+    setLoading('estoque-tbody', true);
+    try {
+      const { data, error } = await sb.from('produtos').select('*').order('nome');
+      if (error) throw error;
+      allProdutos = data || [];
+      renderPDVGrid(allProdutos);
+      renderEstoqueTable(allProdutos);
+      // Update estoque KPIs
+      const totalEst = allProdutos.reduce((s, p) => s + Number(p.estoque), 0);
+      const rupturas = allProdutos.filter(p => Number(p.estoque) <= 0).length;
+      const baixos = allProdutos.filter(p => Number(p.estoque) > 0 && Number(p.estoque) <= Number(p.estoque_minimo)).length;
+      const kpiTotal = document.querySelector('#page-estoque .kpi-grid .kpi-card:nth-child(1) .kpi-value');
+      const kpiRup = document.querySelector('#page-estoque .kpi-grid .kpi-card:nth-child(3) .kpi-value');
+      if (kpiTotal) kpiTotal.textContent = totalEst.toLocaleString('pt-BR');
+      if (kpiRup) kpiRup.textContent = rupturas;
+    } catch (e) {
+      showToast('Erro ao carregar produtos. Verifique as tabelas no Supabase.');
+      console.error(e);
+      renderPDVGrid([]);
+      renderEstoqueTable([]);
+    }
+  }
+
+  function filterPDV() {
+    const q = (document.getElementById('pdv-search')?.value || '').toLowerCase();
+    const filtered = q ? allProdutos.filter(p => p.nome.toLowerCase().includes(q) || (p.sku || '').toLowerCase().includes(q)) : allProdutos;
+    renderPDVGrid(filtered);
+  }
+
+  function renderPDVGrid(produtos) {
+    const el = document.getElementById('pdv-items-grid');
+    if (!el) return;
+    if (produtos.length === 0) {
+      el.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-muted);font-size:13px;">Nenhum produto cadastrado.<br>Adicione produtos no Estoque.</div>';
+      return;
+    }
+    el.innerHTML = produtos.map(p => {
+      const nome_safe = (p.nome || '').replace(/'/g, "\'").replace(/"/g, '&quot;');
+      const stockColor = Number(p.estoque) <= 0 ? 'var(--red)' : Number(p.estoque) <= Number(p.estoque_minimo) ? 'var(--accent)' : 'var(--text-muted)';
+      return `
+        <div class="product-tile" onclick="addToCart('${nome_safe}', ${Number(p.preco_venda)}, '${p.id}')">
+          <div class="product-tile-code">${p.sku || '-'} | ${p.marca || ''}</div>
+          <div class="product-tile-name">${p.nome}</div>
+          <div class="product-tile-price">${fmt(p.preco_venda)}</div>
+          <div class="product-tile-stock" style="color:${stockColor}">Estoque: ${p.estoque} un</div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderEstoqueTable(produtos) {
+    const tbody = document.getElementById('estoque-tbody');
+    if (!tbody) return;
+    if (produtos.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted)">Nenhum produto cadastrado. Clique em "Novo Produto".</td></tr>';
+      return;
+    }
+    tbody.innerHTML = produtos.map(p => {
+      const est = Number(p.estoque);
+      const min = Number(p.estoque_minimo);
+      const max = Math.max(min * 5, est, 1);
+      const pct = Math.min(100, Math.round((est / max) * 100));
+      let fillClass = '', status;
+      if (est <= 0)      { fillClass = 'low'; status = '<span class="status-badge red">Ruptura</span>'; }
+      else if (est <= min) { fillClass = 'low'; status = '<span class="status-badge red">Critico</span>'; }
+      else if (est <= min * 2) { fillClass = 'mid'; status = '<span class="status-badge amber">Baixo</span>'; }
+      else { status = '<span class="status-badge green">Normal</span>'; }
+      return `
+        <tr>
+          <td>${p.sku || '-'}</td>
+          <td>${p.nome}</td>
+          <td>${p.categoria || '-'}</td>
+          <td>${fmt(p.custo)}</td>
+          <td>${fmt(p.preco_venda)}</td>
+          <td>
+            <div class="stock-bar-wrap">
+              <span>${est}</span>
+              <div class="stock-bar"><div class="stock-bar-fill ${fillClass}" style="width:${pct}%"></div></div>
+            </div>
+          </td>
+          <td>${min}</td>
+          <td>${status}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  // Save produto
+  async function saveProduto() {
+    const nome = document.getElementById('prod-nome')?.value?.trim();
+    const sku  = document.getElementById('prod-sku')?.value?.trim();
+    const categoria = document.getElementById('prod-categoria')?.value;
+    const custo = parseFloat((document.getElementById('prod-custo')?.value || '0').replace(',','.')) || 0;
+    const preco_venda = parseFloat((document.getElementById('prod-preco')?.value || '0').replace(',','.')) || 0;
+    const estoque = parseInt(document.getElementById('prod-estoque')?.value || '0');
+    const estoque_minimo = parseInt(document.getElementById('prod-estoque-min')?.value || '5');
+    const marca = document.getElementById('prod-marca')?.value?.trim() || '';
+
+    if (!nome || !sku) { showToast('Preencha pelo menos o Nome e o Codigo do produto.'); return; }
+
+    const { error } = await sb.from('produtos').insert({ nome, sku, categoria, custo, preco_venda, estoque, estoque_minimo, marca });
+    if (error) { showToast('Erro ao salvar: ' + error.message); return; }
+
+    // Clear form
+    ['prod-nome','prod-sku','prod-custo','prod-preco','prod-marca'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    closeModal('add-produto');
+    showToast('Produto cadastrado com sucesso!');
+    loadProdutos();
+  }
+
+  // ══════════════════════════════════════════════
+  // PDV CART
+  // ══════════════════════════════════════════════
+  let cart = [];
+
+  function addToCart(name, price, produto_id) {
+    const existing = cart.find(i => i.produto_id === produto_id);
+    if (existing) {
+      existing.qty++;
+    } else {
+      cart.push({ name, price: Number(price), qty: 1, produto_id });
+    }
+    renderCart();
+    showToast(name + ' adicionado ao carrinho.');
+  }
+
+  function changeQty(idx, delta) {
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    renderCart();
+  }
+
+  function renderCart() {
+    const el = document.getElementById('cart-items');
+    if (cart.length === 0) {
+      el.innerHTML = '<div style="text-align:center; padding: 40px 20px; color: var(--text-muted); font-size: 13px;">Nenhum produto adicionado.<br>Clique em um produto para adicionar.</div>';
+      document.getElementById('subtotal').textContent = fmt(0);
+      document.getElementById('total-val').textContent = fmt(0);
+      return;
+    }
+    let total = 0;
+    el.innerHTML = cart.map((item, i) => {
+      const itemTotal = item.price * item.qty;
+      total += itemTotal;
+      return `
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">${fmt(item.price)}</div>
+          </div>
+          <div class="cart-item-qty">
+            <div class="qty-btn" onclick="changeQty(${i},-1)">-</div>
+            <div class="qty-num">${item.qty}</div>
+            <div class="qty-btn" onclick="changeQty(${i},1)">+</div>
+          </div>
+          <div class="cart-item-total">${fmt(itemTotal)}</div>
+        </div>`;
+    }).join('');
+    document.getElementById('subtotal').textContent = fmt(total);
+    document.getElementById('total-val').textContent = fmt(total);
+  }
+
+  function selectPayment(el) {
+    document.querySelectorAll('.payment-method').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  async function finalizeSale() {
+    if (cart.length === 0) { showToast('Adicione produtos ao carrinho.'); return; }
+
+    const cliente = document.querySelector('.cart-client input')?.value?.trim() || 'Consumidor';
+    const formaEl = document.querySelector('.payment-method.active');
+    const forma_pagamento = formaEl ? formaEl.textContent.trim().toLowerCase() : 'dinheiro';
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+    try {
+      // Create sale
+      const { data: venda, error: errVenda } = await sb.from('vendas')
+        .insert({ cliente, total, forma_pagamento, status: 'pago' })
+        .select().single();
+
+      if (errVenda) throw errVenda;
+
+      // Create sale items
+      const itens = cart.map(i => ({
+        venda_id: venda.id,
+        produto_id: i.produto_id || null,
+        nome_produto: i.name,
+        preco: i.price,
+        quantidade: i.qty,
+        total: i.price * i.qty
+      }));
+      await sb.from('venda_itens').insert(itens);
+
+      // Update product stock
+      for (const item of cart) {
+        if (item.produto_id) {
+          const { data: prod } = await sb.from('produtos').select('estoque').eq('id', item.produto_id).single();
+          if (prod) {
+            await sb.from('produtos').update({ estoque: Math.max(0, Number(prod.estoque) - item.qty) }).eq('id', item.produto_id);
+          }
+        }
+      }
+
+      // Register in caixa
+      await sb.from('caixa_lancamentos').insert({
+        tipo: 'entrada',
+        descricao: 'Venda PDV — ' + cliente,
+        forma_pagamento,
+        valor: total,
+        data: new Date().toISOString().split('T')[0],
+        hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      });
+
+      cart = [];
+      renderCart();
+      showToast('Venda #' + (venda.numero || '') + ' finalizada com sucesso!');
+      loadDashboard();
+      loadProdutos();
+    } catch (e) {
+      showToast('Erro ao finalizar venda: ' + e.message);
+      console.error(e);
+    }
+  }
+
+  // ══════════════════════════════════════════════
+  // CAIXA
+  // ══════════════════════════════════════════════
+  async function loadCaixa() {
+    const today = new Date().toISOString().split('T')[0];
+    const tbody = document.getElementById('caixa-tbody');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted)">⟳ Carregando...</td></tr>';
+
+    try {
+      const { data, error } = await sb.from('caixa_lancamentos')
+        .select('*').eq('data', today).order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const lancamentos = data || [];
+
+      if (tbody) {
+        if (lancamentos.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted)">Nenhum lancamento hoje.</td></tr>';
+        } else {
+          tbody.innerHTML = lancamentos.map(l => `
+            <tr>
+              <td>${l.hora || '--:--'}</td>
+              <td><span class="status-badge ${l.tipo === 'entrada' ? 'green' : 'red'}">${l.tipo === 'entrada' ? 'Entrada' : 'Saida'}</span></td>
+              <td>${l.descricao || '-'}</td>
+              <td>${(l.forma_pagamento || '-').toUpperCase()}</td>
+              <td style="color:var(--${l.tipo === 'entrada' ? 'green' : 'red'}); font-weight:600">
+                ${l.tipo === 'entrada' ? '+' : '-'}${fmt(l.valor)}
+              </td>
+            </tr>`).join('');
+        }
+      }
+
+      const entradas = lancamentos.filter(l => l.tipo === 'entrada').reduce((s, l) => s + Number(l.valor), 0);
+      const saidas = lancamentos.filter(l => l.tipo === 'saida').reduce((s, l) => s + Number(l.valor), 0);
+
+      const valEnt = document.getElementById('val-entradas');
+      const valSai = document.getElementById('val-saidas');
+      const valRes = document.getElementById('val-resultado');
+      const saldo  = document.getElementById('caixa-saldo');
+      if (valEnt) valEnt.textContent = fmt(entradas);
+      if (valSai) valSai.textContent = fmt(saidas);
+      if (valRes) valRes.textContent = fmt(entradas - saidas);
+      if (saldo)  saldo.textContent  = fmt(500 + entradas - saidas);
+    } catch (e) {
+      showToast('Erro ao carregar caixa: ' + e.message);
+      console.error(e);
+    }
+  }
+
+  async function saveLancamento() {
+    const tipo = document.getElementById('lanc-tipo')?.value || 'entrada';
+    const forma_pagamento = (document.getElementById('lanc-forma')?.value || 'dinheiro').toLowerCase();
+    const descricao = document.getElementById('lanc-descricao')?.value?.trim();
+    const valor = parseFloat((document.getElementById('lanc-valor')?.value || '0').replace(',','.')) || 0;
+    const data = document.getElementById('lanc-data')?.value || new Date().toISOString().split('T')[0];
+
+    if (!descricao) { showToast('Informe a descricao do lancamento.'); return; }
+    if (!valor || valor <= 0) { showToast('Informe um valor valido.'); return; }
+
+    const { error } = await sb.from('caixa_lancamentos').insert({
+      tipo, descricao, forma_pagamento, valor, data,
+      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    });
+
+    if (error) { showToast('Erro ao registrar: ' + error.message); return; }
+
+    document.getElementById('lanc-descricao').value = '';
+    document.getElementById('lanc-valor').value = '';
+    closeModal('lancamento');
+    showToast('Lancamento registrado com sucesso!');
+    loadCaixa();
+    loadDashboard();
+  }
+
+  // ── CHIP TOGGLE
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.pdv-cats .chip').forEach(c => {
+      c.addEventListener('click', function() {
+        this.closest('.pdv-cats').querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+        this.classList.add('active');
+        const cat = this.textContent.trim();
+        const filtered = cat === 'Todos' ? allProdutos : allProdutos.filter(p => p.categoria === cat);
+        renderPDVGrid(filtered);
+      });
+    });
+
+    document.querySelectorAll('.card-actions .chip').forEach(c => {
+      c.addEventListener('click', function() {
+        const parent = this.closest('.card-actions');
+        if (!parent) return;
+        parent.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.chart-area .chart-bar-group').forEach(b => {
+      b.addEventListener('click', function() {
+        const bar = this.querySelector('.chart-bar');
+        const h = bar.style.height;
+        const val = Math.round(parseFloat(h) / 100 * 30000);
+        showToast('Valor aprox.: ' + fmt(val));
+      });
+    });
+
+    // Initial load
+    loadDashboard();
+    loadProdutos();
+  });
+</script>
+</body>
