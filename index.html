@@ -6,7 +6,7 @@
 <title>MotoStock — Gestão de Peças</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 /* ═══════════════════════════════════════════════
@@ -16,40 +16,41 @@
 
 /* ── DARK THEME (default) ── */
 :root {
-  --bg-base:       #07090f;
-  --bg-surface:    #0c0f1a;
-  --bg-card:       #101420;
-  --bg-card-hover: #141829;
-  --bg-sidebar:    #090c16;
-  --bg-input:      #0c0f1a;
+  --bg-base:       #0d1117;
+  --bg-surface:    #131922;
+  --bg-card:       #181f2e;
+  --bg-card-hover: #1d2436;
+  --bg-sidebar:    #0f1420;
+  --bg-input:      #131922;
 
   --accent:        #f0a500;
   --accent-dim:    #c98800;
   --accent-bright: #ffbb1c;
   --accent-glow:   rgba(240,165,0,0.18);
-  --accent-soft:   rgba(240,165,0,0.07);
+  --accent-soft:   rgba(240,165,0,0.09);
   --accent-rgb:    240,165,0;
 
-  --blue:          #3b8bff;
-  --blue-soft:     rgba(59,139,255,0.1);
-  --green:         #00d68f;
-  --green-soft:    rgba(0,214,143,0.1);
-  --red:           #ff4d6d;
-  --red-soft:      rgba(255,77,109,0.1);
-  --purple:        #b06eff;
-  --purple-soft:   rgba(176,110,255,0.1);
+  --blue:          #4d9fff;
+  --blue-soft:     rgba(77,159,255,0.12);
+  --green:         #10e89e;
+  --green-soft:    rgba(16,232,158,0.12);
+  --red:           #ff5c7a;
+  --red-soft:      rgba(255,92,122,0.12);
+  --purple:        #c084ff;
+  --purple-soft:   rgba(192,132,255,0.12);
 
-  --text-primary:   #eef2ff;
-  --text-secondary: #7c84a3;
-  --text-muted:     #3d4461;
+  /* ✅ Improved contrast: all text levels significantly brighter */
+  --text-primary:   #f0f4ff;
+  --text-secondary: #b0bada;
+  --text-muted:     #6b7599;
 
-  --border:         rgba(255,255,255,0.055);
-  --border-strong:  rgba(255,255,255,0.1);
-  --border-accent:  rgba(240,165,0,0.35);
+  --border:         rgba(255,255,255,0.08);
+  --border-strong:  rgba(255,255,255,0.14);
+  --border-accent:  rgba(240,165,0,0.4);
 
-  --shadow-card:    0 4px 24px rgba(0,0,0,0.5);
-  --shadow-accent:  0 0 32px rgba(240,165,0,0.12);
-  --shadow-hover:   0 8px 40px rgba(0,0,0,0.6);
+  --shadow-card:    0 4px 24px rgba(0,0,0,0.45);
+  --shadow-accent:  0 0 32px rgba(240,165,0,0.14);
+  --shadow-hover:   0 8px 40px rgba(0,0,0,0.55);
 
   --sidebar-w: 268px;
   --topbar-h:  66px;
@@ -58,52 +59,53 @@
   --radius-lg: 16px;
 
   --gradient-accent: linear-gradient(135deg, #f0a500 0%, #ff6b35 100%);
-  --gradient-dark:   linear-gradient(180deg, #101420 0%, #0c0f1a 100%);
+  --gradient-dark:   linear-gradient(180deg, #181f2e 0%, #131922 100%);
 }
 
 /* ── LIGHT THEME ── */
 [data-theme="light"] {
-  --bg-base:       #f0f2f8;
-  --bg-surface:    #f8f9fd;
+  --bg-base:       #eef1f8;
+  --bg-surface:    #f7f8fc;
   --bg-card:       #ffffff;
-  --bg-card-hover: #f4f6fc;
-  --bg-sidebar:    #0c0f1a;
-  --bg-input:      #f0f2f8;
+  --bg-card-hover: #f3f5fb;
+  --bg-sidebar:    #0f1420;
+  --bg-input:      #eef1f8;
 
-  --accent:        #d4870a;
-  --accent-dim:    #b87008;
-  --accent-bright: #f0a500;
-  --accent-glow:   rgba(212,135,10,0.15);
-  --accent-soft:   rgba(212,135,10,0.08);
+  --accent:        #c47a00;
+  --accent-dim:    #a86600;
+  --accent-bright: #e09600;
+  --accent-glow:   rgba(196,122,0,0.15);
+  --accent-soft:   rgba(196,122,0,0.1);
 
-  --blue:          #2563eb;
-  --blue-soft:     rgba(37,99,235,0.08);
-  --green:         #059669;
-  --green-soft:    rgba(5,150,105,0.08);
-  --red:           #dc2626;
-  --red-soft:      rgba(220,38,38,0.08);
-  --purple:        #7c3aed;
-  --purple-soft:   rgba(124,58,237,0.08);
+  --blue:          #1d5fd6;
+  --blue-soft:     rgba(29,95,214,0.1);
+  --green:         #047857;
+  --green-soft:    rgba(4,120,87,0.1);
+  --red:           #c81c2e;
+  --red-soft:      rgba(200,28,46,0.1);
+  --purple:        #6d28d9;
+  --purple-soft:   rgba(109,40,217,0.1);
 
-  --text-primary:   #0f1629;
-  --text-secondary: #4b5680;
-  --text-muted:     #9ba3c4;
+  /* ✅ Light theme: strong contrast on white/light backgrounds */
+  --text-primary:   #0d1629;
+  --text-secondary: #374163;
+  --text-muted:     #7880a0;
 
-  --border:         rgba(0,0,0,0.07);
-  --border-strong:  rgba(0,0,0,0.13);
-  --border-accent:  rgba(212,135,10,0.35);
+  --border:         rgba(0,0,0,0.09);
+  --border-strong:  rgba(0,0,0,0.16);
+  --border-accent:  rgba(196,122,0,0.4);
 
-  --shadow-card:    0 2px 16px rgba(0,0,0,0.07);
-  --shadow-accent:  0 0 24px rgba(212,135,10,0.08);
-  --shadow-hover:   0 8px 32px rgba(0,0,0,0.12);
+  --shadow-card:    0 2px 16px rgba(0,0,0,0.08);
+  --shadow-accent:  0 0 24px rgba(196,122,0,0.1);
+  --shadow-hover:   0 8px 32px rgba(0,0,0,0.14);
 
-  --gradient-dark: linear-gradient(180deg, #ffffff 0%, #f8f9fd 100%);
+  --gradient-dark: linear-gradient(180deg, #ffffff 0%, #f7f8fc 100%);
 }
 
 /* ── RESET & BASE ── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { font-size: 14px; }
+html { font-size: 15px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 body {
   background: var(--bg-base);
@@ -178,19 +180,20 @@ body {
 .brand-icon svg { width: 22px; height: 22px; fill: #09090b; }
 
 .brand-text h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
-  letter-spacing: 3px;
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
   color: #eef2ff;
   line-height: 1;
 }
 
 .brand-text span {
-  font-size: 10px;
-  color: #3d4461;
+  font-size: 10.5px;
+  color: #5d6888;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .sidebar-section {
@@ -198,13 +201,13 @@ body {
 }
 
 .sidebar-section-label {
-  font-size: 9px;
-  letter-spacing: 2.5px;
+  font-size: 10px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  color: #3d4461;
+  color: #5d6888;
   padding: 0 10px;
   margin-bottom: 5px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .nav-item {
@@ -215,8 +218,8 @@ body {
   border-radius: 9px;
   cursor: pointer;
   transition: all 0.18s ease;
-  color: #7c84a3;
-  font-size: 13px;
+  color: #8d96b5;
+  font-size: 13.5px;
   font-weight: 500;
   position: relative;
   margin-bottom: 1px;
@@ -302,7 +305,7 @@ body {
 }
 
 .user-info h4 { font-size: 13px; font-weight: 700; color: #eef2ff; }
-.user-info span { font-size: 10.5px; color: #3d4461; }
+.user-info span { font-size: 11px; color: #5d6888; font-weight: 500; }
 
 /* ════════════════════════════════
    MAIN CONTENT AREA
@@ -336,15 +339,16 @@ body {
 }
 
 .topbar-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
-  letter-spacing: 2px;
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   color: var(--text-primary);
   line-height: 1;
 }
 
 .topbar-breadcrumb {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-muted);
   margin-top: 3px;
   letter-spacing: 0.3px;
@@ -506,10 +510,11 @@ body {
 }
 
 .page-header h2 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 38px;
-  letter-spacing: 2px;
-  line-height: 1;
+  font-family: 'Syne', sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.05;
   background: var(--gradient-accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -613,10 +618,10 @@ body {
 }
 
 .kpi-label {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 1.2px;
+  letter-spacing: 1px;
   font-weight: 600;
 }
 
@@ -652,16 +657,17 @@ body {
 }
 
 .card-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 17px;
-  letter-spacing: 1.5px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
   color: var(--text-primary);
 }
 
 .card-subtitle {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 3px;
   letter-spacing: 0.2px;
 }
 
@@ -702,9 +708,9 @@ table {
 
 thead th {
   text-align: left;
-  padding: 11px 16px;
-  font-size: 10px;
-  letter-spacing: 1.5px;
+  padding: 12px 16px;
+  font-size: 11px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--text-muted);
   font-weight: 700;
@@ -722,17 +728,17 @@ tbody tr:last-child { border-bottom: none; }
 tbody tr:hover { background: color-mix(in srgb, var(--accent) 3%, var(--bg-card-hover)); }
 
 tbody td {
-  padding: 13px 16px;
+  padding: 14px 16px;
   color: var(--text-secondary);
   vertical-align: middle;
-  font-size: 13px;
+  font-size: 13.5px;
 }
 
 tbody td:first-child {
   color: var(--text-primary);
   font-weight: 600;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 12.5px;
 }
 
 /* ── STATUS BADGES ── */
@@ -852,7 +858,7 @@ tbody td:first-child {
   box-shadow: 0 0 8px currentColor;
 }
 
-.mini-stat-name  { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.mini-stat-name  { font-size: 13.5px; color: var(--text-secondary); font-weight: 500; }
 .mini-stat-value { font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text-primary); }
 
 /* ════════════════════════════════
@@ -876,9 +882,9 @@ tbody td:first-child {
 
 .activity-icon svg { width: 15px; height: 15px; fill: currentColor; }
 
-.activity-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.activity-text { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
 .activity-text strong { color: var(--text-primary); font-weight: 600; }
-.activity-time { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+.activity-time { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
 
 /* ════════════════════════════════
    PDV
@@ -1011,9 +1017,10 @@ select:focus { border-color: var(--border-accent); }
 }
 
 .cart-header h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  letter-spacing: 2px;
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
   color: var(--text-primary);
 }
 
@@ -1175,9 +1182,10 @@ select:focus { border-color: var(--border-accent); }
 .cash-status-icon svg { width: 22px; height: 22px; fill: var(--green); }
 
 .cash-status-text h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  letter-spacing: 1.5px;
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
   color: var(--green);
 }
 
@@ -1271,9 +1279,10 @@ select:focus { border-color: var(--border-accent); }
 }
 
 .modal-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  letter-spacing: 2px;
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
   color: var(--text-primary);
 }
 
@@ -1312,12 +1321,12 @@ select:focus { border-color: var(--border-accent); }
 
 .form-group label.form-label {
   display: block;
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  margin-bottom: 7px;
 }
 
 .form-group .input-field { width: 100%; }
@@ -1485,6 +1494,88 @@ select:focus { border-color: var(--border-accent); }
 /* ── DIVIDER ── */
 .section-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
+/* ── IMPROVED READABILITY OVERRIDES ── */
+
+/* Report modules: better heading contrast */
+.report-module h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.report-module p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Channel label: more visible */
+.channel-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+/* Channel name: switch to Plus Jakarta Sans for legibility */
+.channel-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--text-primary);
+}
+
+/* Cash status text better visibility */
+.cash-status-text p { font-size: 12.5px; color: var(--text-secondary); margin-top: 3px; }
+
+/* Product tile: better name readability */
+.product-tile-name  { font-size: 13px; font-weight: 600; margin-bottom: 10px; line-height: 1.4; color: var(--text-primary); }
+.product-tile-code  { font-size: 10.5px; color: var(--text-muted); margin-bottom: 7px; letter-spacing: 0.5px; font-family: 'JetBrains Mono', monospace; }
+.product-tile-stock { font-size: 11px; color: var(--text-secondary); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+
+/* Page header description */
+.page-header p {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* NF-e list items */
+.nf-info-name  { font-size: 13.5px; font-weight: 500; color: var(--text-primary); }
+.nf-info-date  { font-size: 11.5px; color: var(--text-secondary); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+.nf-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Input font size for readability */
+.input-field { font-size: 13.5px; }
+select { font-size: 13.5px; }
+
+/* Toast message font */
+.toast { font-size: 13.5px; font-weight: 500; }
+
+/* Sidebar overrides: stronger muted text */
+.sidebar, .sidebar * {
+  --text-muted: #5d6888;
+  --text-secondary: #8d96b5;
+}
+
+/* fin-card label & value */
+.fin-card-label { font-size: 11.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 4px; }
+.fin-card-value { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.5px; line-height: 1.1; }
+
+/* stock number next to bar */
+.stock-bar-wrap span { font-size: 13px; font-weight: 600; color: var(--text-secondary); min-width: 26px; text-align: right; font-family: 'JetBrains Mono', monospace; }
+
 /* ════════════════════════════════
    RESPONSIVE ADJUSTMENTS
 ════════════════════════════════ */
@@ -1506,6 +1597,97 @@ select:focus { border-color: var(--border-accent); }
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
+
+/* ────────────────────────────────
+   CATALOGO ADMIN CARDS
+──────────────────────────────── */
+.cat-prod-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.22s;
+  box-shadow: var(--shadow-card);
+}
+
+.cat-prod-card:hover { border-color: var(--border-strong); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+.cat-prod-img-wrap {
+  position: relative;
+  height: 140px;
+  background: var(--bg-surface);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+.cat-prod-img-placeholder { font-size: 40px; opacity: 0.35; }
+
+.cat-promo-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--red); color: #fff;
+  font-size: 10px; font-weight: 800;
+  padding: 3px 8px; border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.cat-prod-actions {
+  position: absolute; top: 6px; left: 6px;
+  display: flex; gap: 4px;
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+
+.cat-prod-card:hover .cat-prod-actions { opacity: 1; }
+
+.cat-toggle-btn.active svg { fill: var(--green) !important; }
+.cat-toggle-btn svg { fill: var(--text-muted) !important; }
+
+.cat-prod-body { padding: 12px 14px 14px; }
+.cat-prod-cat-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 4px; }
+.cat-prod-name { font-size: 13.5px; font-weight: 600; color: var(--text-primary); line-height: 1.35; }
+.cat-prod-price { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.5px; color: var(--accent); }
+.cat-prod-price-old { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
+.cat-prod-stock-info { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+/* ────────────────────────────────
+   CATALOGO CLIENT CARDS
+──────────────────────────────── */
+.cat-client-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.22s;
+}
+
+.cat-client-card:hover { border-color: var(--border-accent); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+.cat-client-img {
+  height: 120px;
+  background: var(--bg-surface);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.cat-client-body { padding: 12px 14px; }
+.cat-client-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 4px; }
+.cat-client-name { font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.35; }
+.cat-client-price { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--accent); }
+.cat-client-old { font-size: 11px; color: var(--text-muted); text-decoration: line-through; }
+.cat-client-promo { display:inline-block; background: var(--red); color: #fff; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.5px; margin: 4px 0 6px; }
+.cat-client-btn {
+  width: 100%; padding: 8px; margin-top: 8px;
+  background: var(--accent-soft); border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm); color: var(--accent);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px;
+}
+.cat-client-btn:hover { background: var(--accent); color: #09090b; }
+
+/* ────────────────────────────────
+   CAIXA OPEN/CLOSED STATUS
+──────────────────────────────── */
+.cash-status.closed { border-left-color: var(--red) !important; }
+.cash-status.open   { border-left-color: var(--green) !important; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
@@ -1885,93 +2067,87 @@ select:focus { border-color: var(--border-accent); }
   <div class="content" id="page-pdv">
     <div class="page-header">
       <div>
-        <h2>PDV — Ponto de Venda</h2>
-        <p>Vendas no PDV fisico, catalogo online e marketplaces centralizados em um unico lugar. Gere orcamentos, processe vendas com agilidade e controle o estoque em tempo real.</p>
+        <h2>Vendas & Orcamentos</h2>
+        <p>Registre vendas rapidas ou gere orcamentos para enviar ao cliente.</p>
       </div>
       <div class="page-actions">
-        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"/></svg> Orcamento</button>
-        <button class="btn-accent" onclick="openModal('nova-venda')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Nova Venda</button>
+        <div style="display:flex; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
+          <button id="pdv-tab-venda" onclick="pdvSwitchTab('venda')" style="padding:9px 20px; background:var(--gradient-accent); color:#09090b; border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s;">
+            💰 Venda
+          </button>
+          <button id="pdv-tab-orc" onclick="pdvSwitchTab('orcamento')" style="padding:9px 20px; background:none; color:var(--text-secondary); border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;">
+            📋 Orcamento
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="pdv-grid">
+      <!-- PRODUCT SEARCH PANEL -->
       <div class="pdv-products">
         <div class="pdv-search">
-          <input class="input-field" type="text" id="pdv-search" placeholder="Buscar por nome, codigo ou referencia..." oninput="filterPDV()">
-          <select style="flex-shrink:0">
-            <option>Todos</option>
-            <option>Filtros</option>
-            <option>Freios</option>
-            <option>Motor</option>
-          </select>
+          <input class="input-field" type="text" id="pdv-search" placeholder="Buscar produto por nome ou codigo..." oninput="filterPDV()" style="flex:1">
         </div>
         <div class="pdv-cats">
-          <button class="chip active">Todos</button>
-          <button class="chip">Filtros</button>
-          <button class="chip">Freios</button>
-          <button class="chip">Motor</button>
-          <button class="chip">Suspensao</button>
-          <button class="chip">Transmissao</button>
-          <button class="chip">Eletrica</button>
-          <button class="chip">Acessorios</button>
+          <button class="chip active" onclick="pdvFilterCat(this,'')">Todos</button>
+          <button class="chip" onclick="pdvFilterCat(this,'Filtros')">Filtros</button>
+          <button class="chip" onclick="pdvFilterCat(this,'Freios')">Freios</button>
+          <button class="chip" onclick="pdvFilterCat(this,'Motor')">Motor</button>
+          <button class="chip" onclick="pdvFilterCat(this,'Suspensao')">Suspensao</button>
+          <button class="chip" onclick="pdvFilterCat(this,'Transmissao')">Transmissao</button>
+          <button class="chip" onclick="pdvFilterCat(this,'Eletrica')">Eletrica</button>
         </div>
         <div class="pdv-items-grid" id="pdv-items-grid">
-          <div class="product-tile" onclick="addToCart('Filtro de Oleo Honda CG', 28.90)">
-            <div class="product-tile-code">FLT-001 | Honda</div>
+          <div class="product-tile" onclick="pdvAddItem('Filtro de Oleo CG 150/160','FLT-001',28.90)">
+            <div class="product-tile-code">FLT-001 · Honda</div>
             <div class="product-tile-name">Filtro de Oleo CG 150/160</div>
             <div class="product-tile-price">R$ 28,90</div>
             <div class="product-tile-stock">Estoque: 47 un</div>
           </div>
-          <div class="product-tile" onclick="addToCart('Pastilha de Freio Yamaha', 45.00)">
-            <div class="product-tile-code">FRE-014 | Yamaha</div>
+          <div class="product-tile" onclick="pdvAddItem('Pastilha Freio Factor 150','FRE-014',45.00)">
+            <div class="product-tile-code">FRE-014 · Yamaha</div>
             <div class="product-tile-name">Pastilha Freio Dianteiro Factor 150</div>
             <div class="product-tile-price">R$ 45,00</div>
             <div class="product-tile-stock">Estoque: 22 un</div>
           </div>
-          <div class="product-tile" onclick="addToCart('Cabo Acelerador Universal', 32.50)">
-            <div class="product-tile-code">CAB-007 | Universal</div>
+          <div class="product-tile" onclick="pdvAddItem('Cabo Acelerador Universal','CAB-007',32.50)">
+            <div class="product-tile-code">CAB-007 · Universal</div>
             <div class="product-tile-name">Cabo Acelerador 1000mm Universal</div>
             <div class="product-tile-price">R$ 32,50</div>
             <div class="product-tile-stock">Estoque: 15 un</div>
           </div>
-          <div class="product-tile" onclick="addToCart('Correia Dentada Titan 150', 89.00)">
-            <div class="product-tile-code">COR-022 | Honda</div>
+          <div class="product-tile" onclick="pdvAddItem('Kit Relacao Titan 150 ESD','COR-022',89.00)">
+            <div class="product-tile-code">COR-022 · Honda</div>
             <div class="product-tile-name">Kit Relacao Titan 150 ESD</div>
             <div class="product-tile-price">R$ 89,00</div>
             <div class="product-tile-stock">Estoque: 8 un</div>
           </div>
-          <div class="product-tile" onclick="addToCart('Vela NGK Honda Bros', 18.50)">
-            <div class="product-tile-code">VEL-003 | NGK</div>
+          <div class="product-tile" onclick="pdvAddItem('Vela Iridium CR8EIX','VEL-003',18.50)">
+            <div class="product-tile-code">VEL-003 · NGK</div>
             <div class="product-tile-name">Vela Iridium CR8EIX Bros 160</div>
             <div class="product-tile-price">R$ 18,50</div>
             <div class="product-tile-stock">Estoque: 31 un</div>
           </div>
-          <div class="product-tile" onclick="addToCart('Amortecedor Traseiro CG', 135.00)">
-            <div class="product-tile-code">SUS-009 | Honda</div>
+          <div class="product-tile" onclick="pdvAddItem('Amortecedor Traseiro CG 160','SUS-009',135.00)">
+            <div class="product-tile-code">SUS-009 · Honda</div>
             <div class="product-tile-name">Amortecedor Traseiro CG 160</div>
             <div class="product-tile-price">R$ 135,00</div>
             <div class="product-tile-stock">Estoque: 5 un</div>
           </div>
-          <div class="product-tile" onclick="addToCart('Rolamento Roda Dianteira', 22.00)">
-            <div class="product-tile-code">ROL-011 | SKF</div>
+          <div class="product-tile" onclick="pdvAddItem('Rolamento Roda Dianteira 6202','ROL-011',22.00)">
+            <div class="product-tile-code">ROL-011 · SKF</div>
             <div class="product-tile-name">Rolamento Roda Dianteira 6202</div>
             <div class="product-tile-price">R$ 22,00</div>
             <div class="product-tile-stock">Estoque: 18 un</div>
           </div>
-          <div class="product-tile" onclick="addToCart('Filtro de Ar Pop 100', 19.90)">
-            <div class="product-tile-code">FLT-008 | Honda</div>
+          <div class="product-tile" onclick="pdvAddItem('Filtro de Ar Pop 100','FLT-008',19.90)">
+            <div class="product-tile-code">FLT-008 · Honda</div>
             <div class="product-tile-name">Filtro de Ar Pop 100 / Biz 100</div>
             <div class="product-tile-price">R$ 19,90</div>
             <div class="product-tile-stock">Estoque: 29 un</div>
           </div>
-          <div class="product-tile" onclick="addToCart('Retentores de Forcella', 38.00)">
-            <div class="product-tile-code">RET-004 | Japan</div>
-            <div class="product-tile-name">Retentor Forcella CG/NXR 30mm</div>
-            <div class="product-tile-price">R$ 38,00</div>
-            <div class="product-tile-stock">Estoque: 12 un</div>
-          </div>
-          <div class="product-tile" onclick="addToCart('Jogo de Juntas Motor', 54.90)">
-            <div class="product-tile-code">JNT-016 | Vedamotors</div>
+          <div class="product-tile" onclick="pdvAddItem('Jogo de Juntas Motor CG 150','JNT-016',54.90)">
+            <div class="product-tile-code">JNT-016 · Vedamotors</div>
             <div class="product-tile-name">Jogo de Juntas Motor CG 150</div>
             <div class="product-tile-price">R$ 54,90</div>
             <div class="product-tile-stock">Estoque: 7 un</div>
@@ -1979,31 +2155,56 @@ select:focus { border-color: var(--border-accent); }
         </div>
       </div>
 
-      <!-- CART -->
+      <!-- CART / QUOTE PANEL -->
       <div class="pdv-cart">
         <div class="cart-header">
-          <h3>Carrinho de Venda</h3>
+          <h3 id="pdv-cart-title">Carrinho de Venda</h3>
           <div class="cart-client">
-            <input class="input-field" type="text" placeholder="Cliente (opcional)..." style="flex:1; font-size:12px; padding: 7px 12px;">
+            <input class="input-field" id="pdv-cliente" type="text" placeholder="Nome do cliente (opcional)..." style="flex:1; font-size:13px; padding: 8px 12px;">
+          </div>
+          <!-- Extra field for quote: validity -->
+          <div id="pdv-orc-extra" style="display:none; margin-top:8px;">
+            <input class="input-field" id="pdv-orc-validade" type="text" placeholder="Validade do orcamento (ex: 3 dias)..." style="width:100%; font-size:13px; padding:8px 12px;">
           </div>
         </div>
-        <div class="cart-items" id="cart-items">
-          <div id="cart-empty" style="text-align:center; padding: 40px 20px; color: var(--text-muted); font-size: 13px;">
-            Nenhum produto adicionado.<br>Clique em um produto para adicionar.
+
+        <div class="cart-items" id="pdv-cart-items">
+          <div id="pdv-cart-empty" style="text-align:center; padding: 48px 20px; color: var(--text-muted);">
+            <div style="font-size:32px; margin-bottom:10px; opacity:0.4">🛒</div>
+            <div style="font-size:13.5px; font-weight:500;">Nenhum produto adicionado</div>
+            <div style="font-size:12px; margin-top:4px; opacity:0.7">Clique em um produto ao lado</div>
           </div>
         </div>
+
         <div class="cart-footer">
+          <!-- Discount input -->
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <label style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); white-space:nowrap;">Desconto R$</label>
+            <input class="input-field" id="pdv-desconto" type="number" min="0" value="0" style="width:100px; padding:6px 10px; font-size:13px;" oninput="pdvUpdateTotals()">
+          </div>
+
           <div class="cart-totals">
-            <div class="cart-total-row"><span>Subtotal</span><span id="subtotal">R$ 0,00</span></div>
-            <div class="cart-total-row"><span>Desconto</span><span style="color: var(--green)">- R$ 0,00</span></div>
-            <div class="cart-total-row main"><span>Total</span><span id="total-val">R$ 0,00</span></div>
+            <div class="cart-total-row"><span>Subtotal</span><span id="pdv-subtotal">R$ 0,00</span></div>
+            <div class="cart-total-row"><span>Desconto</span><span id="pdv-desc-val" style="color: var(--green)">- R$ 0,00</span></div>
+            <div class="cart-total-row main"><span>Total</span><span id="pdv-total-val">R$ 0,00</span></div>
           </div>
-          <div class="payment-methods">
-            <div class="payment-method active" onclick="selectPayment(this)">DINHEIRO</div>
-            <div class="payment-method" onclick="selectPayment(this)">CARTAO</div>
-            <div class="payment-method" onclick="selectPayment(this)">PIX</div>
+
+          <!-- Payment methods (only shown in venda mode) -->
+          <div id="pdv-payment-section">
+            <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); margin-bottom:6px;">Forma de Pagamento</div>
+            <div class="payment-methods">
+              <div class="payment-method active" onclick="selectPayment(this)" data-forma="dinheiro">DINHEIRO</div>
+              <div class="payment-method" onclick="selectPayment(this)" data-forma="cartao">CARTAO</div>
+              <div class="payment-method" onclick="selectPayment(this)" data-forma="pix">PIX</div>
+            </div>
           </div>
-          <button class="btn-finish" onclick="finalizeSale()">Finalizar Venda</button>
+
+          <div style="display:flex; gap:8px; margin-top:4px;">
+            <button class="btn-outline" onclick="pdvClearCart()" style="flex:0 0 auto; padding:10px 14px;">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <button class="btn-finish" id="pdv-action-btn" onclick="pdvFinalize()" style="flex:1;">Finalizar Venda</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2177,115 +2378,134 @@ select:focus { border-color: var(--border-accent); }
     <div class="page-header">
       <div>
         <h2>Controle de Caixa</h2>
-        <p>Controle completo do fluxo de caixa com abertura e fechamento automatico, registro detalhado de entradas e saidas, e integracao com relatorios financeiros.</p>
-      </div>
-      <div class="page-actions">
-        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Relatorio</button>
-        <button class="btn-accent" onclick="openModal('lancamento')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Lancamento</button>
+        <p>Abra o caixa no inicio do dia, registre entradas e saidas, e feche ao final do expediente.</p>
       </div>
     </div>
 
-    <div class="cash-status">
-      <div class="cash-status-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+    <!-- STATUS BAR: Open or Closed -->
+    <div id="caixa-status-bar" class="cash-status" style="cursor:default;">
+      <div class="cash-status-icon" id="caixa-status-icon">
+        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+      </div>
       <div class="cash-status-text">
-        <h3>Caixa Aberto</h3>
-        <p>Aberto em 14/03/2025 as 08:00 — Operador: Admin</p>
+        <h3 id="caixa-status-title">Caixa Fechado</h3>
+        <p id="caixa-status-sub">Clique em "Abrir Caixa" para iniciar o expediente</p>
       </div>
-      <div style="margin-left: auto; display: flex; gap: 24px; align-items: center;">
-        <div class="cash-value" style="text-align:center; padding: 0 20px; border-right: 1px solid rgba(255,255,255,0.06)">
-          <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;">Abertura</div>
-          <div class="amount" style="font-size: 22px; color: var(--text-secondary)">R$ 500,00</div>
+      <div style="margin-left:auto; display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+        <div style="text-align:center; padding:0 20px; border-right:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:4px;">Troco Inicial</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--text-secondary)" id="caixa-abertura-val">R$ —</div>
         </div>
-        <div class="cash-value">
-          <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;">Saldo Atual</div>
-          <div class="amount" id="caixa-saldo">R$ 0,00</div>
+        <div style="text-align:center; padding:0 20px; border-right:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:4px;">Saldo Atual</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--accent)" id="caixa-saldo">R$ 0,00</div>
         </div>
-        <button class="btn-outline" style="flex-shrink:0">Fechar Caixa</button>
+        <div style="display:flex; gap:8px; flex-shrink:0;">
+          <button id="btn-abrir-caixa" class="btn-accent" onclick="abrirCaixa()" style="padding:10px 20px;">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            Abrir Caixa
+          </button>
+          <button id="btn-fechar-caixa" class="btn-outline" onclick="fecharCaixa()" style="display:none; border-color:var(--red); color:var(--red);">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>
+            Fechar Caixa
+          </button>
+        </div>
       </div>
     </div>
 
+    <!-- SUMMARY CARDS -->
     <div class="grid-3">
-      <div class="fin-card" id="caixa-entradas">
+      <div class="fin-card">
         <div class="fin-card-left">
-          <div class="fin-card-icon" style="background: rgba(56,200,122,0.12); color: var(--green)"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+          <div class="fin-card-icon" style="background:rgba(16,232,158,0.12); color:var(--green)">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          </div>
           <div>
             <div class="fin-card-label">Entradas Hoje</div>
-            <div class="fin-card-value" style="color: var(--green)" id="val-entradas">R$ 0,00</div>
+            <div class="fin-card-value" style="color:var(--green)" id="val-entradas">R$ 0,00</div>
           </div>
         </div>
-        <span class="kpi-trend up">+18%</span>
       </div>
-      <div class="fin-card" id="caixa-saidas">
+      <div class="fin-card">
         <div class="fin-card-left">
-          <div class="fin-card-icon" style="background: rgba(232,80,64,0.12); color: var(--red)"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg></div>
+          <div class="fin-card-icon" style="background:rgba(255,92,122,0.12); color:var(--red)">
+            <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+          </div>
           <div>
             <div class="fin-card-label">Saidas Hoje</div>
-            <div class="fin-card-value" style="color: var(--red)" id="val-saidas">R$ 0,00</div>
+            <div class="fin-card-value" style="color:var(--red)" id="val-saidas">R$ 0,00</div>
           </div>
         </div>
-        <span class="kpi-trend down">+5%</span>
       </div>
-      <div class="fin-card" id="caixa-resultado">
+      <div class="fin-card">
         <div class="fin-card-left">
-          <div class="fin-card-icon" style="background: rgba(232,160,32,0.12); color: var(--accent)"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+          <div class="fin-card-icon" style="background:rgba(240,165,0,0.12); color:var(--accent)">
+            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          </div>
           <div>
             <div class="fin-card-label">Resultado do Dia</div>
-            <div class="fin-card-value" style="color: var(--accent)" id="val-resultado">R$ 0,00</div>
+            <div class="fin-card-value" style="color:var(--accent)" id="val-resultado">R$ 0,00</div>
           </div>
         </div>
-        <span class="kpi-trend up">+22%</span>
       </div>
     </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-header">
+    <!-- MOVEMENTS TABLE + NEW LAUNCH BUTTON -->
+    <div class="card">
+      <div class="card-header">
+        <div>
           <div class="card-title">Movimentacoes do Dia</div>
+          <div class="card-subtitle" id="caixa-mov-sub">Nenhum lancamento hoje</div>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Hora</th><th>Tipo</th><th>Descricao</th><th>Forma</th><th>Valor</th></tr></thead>
-            <tbody id="caixa-tbody">
-            <tbody>
-
-            </tbody>
-          </table>
-        </div>
+        <button class="btn-accent" onclick="openModal('lancamento')">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Novo Lancamento
+        </button>
       </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Hora</th>
+              <th>Tipo</th>
+              <th>Descricao</th>
+              <th>Forma</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody id="caixa-tbody">
+            <tr>
+              <td colspan="5" style="text-align:center; padding:32px; color:var(--text-muted);">Nenhum lancamento ainda hoje.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-      <div class="card">
-        <div class="card-header"><div class="card-title">Formas de Pagamento</div><div class="card-subtitle">Distribuicao do dia</div></div>
-        <div class="card-body">
-          <div class="mini-stat">
-            <div class="mini-stat-left">
-              <div class="mini-stat-dot" style="background: var(--accent)"></div>
-              <div class="mini-stat-name">PIX</div>
-            </div>
-            <div>
-              <div class="mini-stat-value">R$ 1.820,00</div>
-              <div style="font-size: 11px; color: var(--text-muted)">43% das vendas</div>
-            </div>
+    <!-- FECHAMENTO MODAL (shown when closing) -->
+    <div id="caixa-fechamento-panel" style="display:none;" class="card">
+      <div class="card-header">
+        <div class="card-title" style="color:var(--red)">⚠ Fechamento do Caixa</div>
+        <div class="card-subtitle">Confira os valores antes de fechar</div>
+      </div>
+      <div class="card-body">
+        <div class="grid-3" style="gap:12px; margin-bottom:16px;">
+          <div style="background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; text-align:center;">
+            <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Troco Inicial</div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--text-primary)" id="fech-abertura">R$ 0,00</div>
           </div>
-          <div class="mini-stat">
-            <div class="mini-stat-left">
-              <div class="mini-stat-dot" style="background: var(--blue)"></div>
-              <div class="mini-stat-name">Cartao de Credito/Debito</div>
-            </div>
-            <div>
-              <div class="mini-stat-value">R$ 1.340,00</div>
-              <div style="font-size: 11px; color: var(--text-muted)">32% das vendas</div>
-            </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; text-align:center;">
+            <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Total Vendido</div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--green)" id="fech-entradas">R$ 0,00</div>
           </div>
-          <div class="mini-stat">
-            <div class="mini-stat-left">
-              <div class="mini-stat-dot" style="background: var(--green)"></div>
-              <div class="mini-stat-name">Dinheiro</div>
-            </div>
-            <div>
-              <div class="mini-stat-value">R$ 1.070,00</div>
-              <div style="font-size: 11px; color: var(--text-muted)">25% das vendas</div>
-            </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; text-align:center;">
+            <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Saldo Final</div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--accent)" id="fech-saldo">R$ 0,00</div>
           </div>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button class="btn-outline" onclick="document.getElementById('caixa-fechamento-panel').style.display='none'">Cancelar</button>
+          <button class="btn-accent" style="background:var(--red); box-shadow:none;" onclick="confirmarFechamento()">Confirmar Fechamento</button>
         </div>
       </div>
     </div>
@@ -2449,40 +2669,215 @@ select:focus { border-color: var(--border-accent); }
   <div class="content" id="page-catalogo">
     <div class="page-header">
       <div>
-        <h2>Catalogo e Canais de Venda</h2>
-        <p>Centralize todas as suas vendas em uma unica plataforma. PDV fisico, catalogo online, Mercado Livre, Shopee e outros marketplaces com estoque sincronizado em tempo real.</p>
+        <h2>Catalogo de Produtos</h2>
+        <p>Adicione produtos com fotos, precos e promocoes. Compartilhe o link para seus clientes verem os produtos disponiveis.</p>
       </div>
       <div class="page-actions">
-        <button class="btn-accent"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Publicar Produto</button>
+        <button class="btn-outline" onclick="copiarLinkCatalogo()" id="btn-link-catalogo">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+          Copiar Link do Cliente
+        </button>
+        <button class="btn-accent" onclick="openModal('add-catalogo-produto')">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Adicionar Produto
+        </button>
       </div>
     </div>
 
-    <div class="grid-3">
-      <div class="kpi-card" style="--kpi-color: var(--accent)"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 4h2v5l-1-.75L9 9V4zm9 16H6V4h1v9l3-2.25L13 13V4h5v16z"/></svg></div><span class="kpi-trend up">+5</span></div><div class="kpi-value">213</div><div class="kpi-label">Catalogo Online</div></div>
-      <div class="kpi-card" style="--kpi-color: #2DB9E7"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7 17h11v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H15c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 19.5 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div><span class="kpi-trend up">+12</span></div><div class="kpi-value">189</div><div class="kpi-label">Mercado Livre</div></div>
-      <div class="kpi-card" style="--kpi-color: #EE4D2D"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/></svg></div><span class="kpi-trend up">+8</span></div><div class="kpi-value">94</div><div class="kpi-label">Shopee</div></div>
+    <!-- TABS: Admin view vs Preview of client view -->
+    <div style="display:flex; gap:0; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; align-self:flex-start; margin-bottom:4px;">
+      <button id="cat-tab-admin" onclick="catSwitchTab('admin')" style="padding:9px 22px; background:var(--gradient-accent); color:#09090b; border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer;">
+        ⚙ Gerenciar
+      </button>
+      <button id="cat-tab-preview" onclick="catSwitchTab('preview')" style="padding:9px 22px; background:none; color:var(--text-secondary); border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;">
+        👁 Preview do Cliente
+      </button>
     </div>
 
-    <div class="card">
-      <div class="card-header">
-        <div><div class="card-title">Pedidos dos Canais</div><div class="card-subtitle">Centralizacao de todos os marketplaces</div></div>
-        <div class="card-actions">
-          <button class="chip active">Todos</button>
-          <button class="chip">Mercado Livre</button>
-          <button class="chip">Shopee</button>
-          <button class="chip">Catalogo</button>
+    <!-- ADMIN VIEW -->
+    <div id="cat-admin-view">
+      <!-- Filter / search bar -->
+      <div class="card" style="padding:0; overflow:visible;">
+        <div class="card-header" style="flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; gap:8px; flex:1; min-width:200px;">
+            <input class="input-field" id="cat-search" type="text" placeholder="Buscar produto..." style="flex:1; padding:8px 14px;" oninput="filterCatalogo()">
+            <select id="cat-filter-cat" style="padding:8px 12px; font-size:13px;" onchange="filterCatalogo()">
+              <option value="">Todas as categorias</option>
+              <option>Filtros</option><option>Freios</option><option>Motor</option>
+              <option>Suspensao</option><option>Transmissao</option><option>Cabos</option><option>Eletrica</option><option>Acessorios</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span style="font-size:12px; color:var(--text-muted);">Mostrar:</span>
+            <button class="chip active" onclick="catFilterStatus(this,'todos')" data-status="todos">Todos</button>
+            <button class="chip" onclick="catFilterStatus(this,'ativo')" data-status="ativo">Ativos</button>
+            <button class="chip" onclick="catFilterStatus(this,'inativo')" data-status="inativo">Ocultos</button>
+          </div>
         </div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Pedido</th><th>Canal</th><th>Cliente</th><th>Produto</th><th>Valor</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>#ML-82471</td><td><span class="status-badge blue">Mercado Livre</span></td><td>Usuario ML</td><td>Filtro de Oleo CG 150</td><td>R$ 32,90</td><td><span class="status-badge amber">Aguardando</span></td></tr>
-            <tr><td>#SHP-44201</td><td><span class="status-badge red">Shopee</span></td><td>Luiz Costa</td><td>Pastilha Freio Yamaha</td><td>R$ 47,50</td><td><span class="status-badge green">Pago</span></td></tr>
-            <tr><td>#CAT-00841</td><td><span class="status-badge green">Catalogo</span></td><td>Pedro Farias</td><td>Kit Relacao Titan 150</td><td>R$ 89,00</td><td><span class="status-badge green">Pago</span></td></tr>
-            <tr><td>#ML-82469</td><td><span class="status-badge blue">Mercado Livre</span></td><td>Usuario ML</td><td>Vela NGK Honda Bros</td><td>R$ 21,00</td><td><span class="status-badge blue">Enviado</span></td></tr>
-          </tbody>
-        </table>
+
+      <!-- Product grid (admin) -->
+      <div id="cat-admin-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px;">
+
+        <!-- Product card template - active with promo -->
+        <div class="cat-prod-card" data-cat="Filtros" data-status="ativo">
+          <div class="cat-prod-img-wrap">
+            <div class="cat-prod-img-placeholder">📷</div>
+            <span class="cat-promo-badge">-15%</span>
+            <div class="cat-prod-actions">
+              <button class="icon-btn" title="Editar" onclick="editCatProd(this)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="icon-btn" title="Foto" onclick="uploadFoto(this)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>
+              <button class="icon-btn cat-toggle-btn active" title="Ocultar do catalogo" onclick="toggleCatProd(this)"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>
+            </div>
+          </div>
+          <div class="cat-prod-body">
+            <div class="cat-prod-cat-tag">Filtros</div>
+            <div class="cat-prod-name">Filtro de Oleo CG 150/160</div>
+            <div style="display:flex; align-items:baseline; gap:8px; margin-top:6px;">
+              <span class="cat-prod-price">R$ 24,60</span>
+              <span class="cat-prod-price-old">R$ 28,90</span>
+            </div>
+            <div class="cat-prod-stock-info">Estoque: 47 un · Cod: FLT-001</div>
+          </div>
+        </div>
+
+        <!-- Product without promo -->
+        <div class="cat-prod-card" data-cat="Freios" data-status="ativo">
+          <div class="cat-prod-img-wrap">
+            <div class="cat-prod-img-placeholder">📷</div>
+            <div class="cat-prod-actions">
+              <button class="icon-btn" title="Editar" onclick="editCatProd(this)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="icon-btn" title="Foto" onclick="uploadFoto(this)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>
+              <button class="icon-btn cat-toggle-btn active" title="Ocultar do catalogo" onclick="toggleCatProd(this)"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>
+            </div>
+          </div>
+          <div class="cat-prod-body">
+            <div class="cat-prod-cat-tag">Freios</div>
+            <div class="cat-prod-name">Pastilha Freio Dianteiro Factor 150</div>
+            <div style="display:flex; align-items:baseline; gap:8px; margin-top:6px;">
+              <span class="cat-prod-price">R$ 45,00</span>
+            </div>
+            <div class="cat-prod-stock-info">Estoque: 22 un · Cod: FRE-014</div>
+          </div>
+        </div>
+
+        <!-- Hidden product -->
+        <div class="cat-prod-card" data-cat="Motor" data-status="inativo" style="opacity:0.5">
+          <div class="cat-prod-img-wrap">
+            <div class="cat-prod-img-placeholder" style="background:var(--bg-base)">🚫</div>
+            <span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:var(--text-muted);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;">Oculto</span>
+            <div class="cat-prod-actions">
+              <button class="icon-btn" title="Editar" onclick="editCatProd(this)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="icon-btn cat-toggle-btn" title="Mostrar no catalogo" onclick="toggleCatProd(this)"><svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg></button>
+            </div>
+          </div>
+          <div class="cat-prod-body">
+            <div class="cat-prod-cat-tag">Motor</div>
+            <div class="cat-prod-name">Jogo de Juntas Motor CG 150</div>
+            <div style="display:flex; align-items:baseline; gap:8px; margin-top:6px;">
+              <span class="cat-prod-price">R$ 54,90</span>
+            </div>
+            <div class="cat-prod-stock-info">Estoque: 0 un · Cod: JNT-016</div>
+          </div>
+        </div>
+
+        <!-- Add new card -->
+        <div onclick="openModal('add-catalogo-produto')" style="border:2px dashed var(--border); border-radius:var(--radius); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; min-height:260px; cursor:pointer; transition:all 0.2s; color:var(--text-muted);" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+          <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:currentColor;opacity:0.5"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <span style="font-size:13px; font-weight:600;">Adicionar Produto</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENT PREVIEW -->
+    <div id="cat-preview-view" style="display:none;">
+      <div style="background:var(--bg-card); border:1px solid var(--border-accent); border-radius:var(--radius); padding:14px 20px; display:flex; align-items:center; gap:12px; margin-bottom:4px;">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--accent);flex-shrink:0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <span style="font-size:13px; color:var(--text-secondary);">Esta e a visao que <strong style="color:var(--text-primary)">o seu cliente ve</strong> ao acessar o link. Produtos ocultos nao aparecem aqui.</span>
+        <button class="btn-outline" style="margin-left:auto; flex-shrink:0;" onclick="copiarLinkCatalogo()">Copiar Link</button>
+      </div>
+
+      <!-- Client storefront preview -->
+      <div style="background:var(--bg-base); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;">
+        <!-- Store header -->
+        <div style="background:linear-gradient(135deg, #1a1f35 0%, #0d1117 100%); padding:32px 32px 24px; border-bottom:1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
+            <div style="width:48px;height:48px; background:var(--gradient-accent); border-radius:12px; display:flex;align-items:center;justify-content:center; box-shadow:0 4px 16px rgba(240,165,0,0.4);">
+              <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#09090b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            </div>
+            <div>
+              <div style="font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:#f0f4ff;">MotoStock</div>
+              <div style="font-size:12px; color:#6b7599; margin-top:2px;">Pecas e Acessorios para Motos</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="chip active" style="font-size:12px;">Todos</button>
+            <button class="chip" style="font-size:12px;">Filtros</button>
+            <button class="chip" style="font-size:12px;">Freios</button>
+            <button class="chip" style="font-size:12px;">Motor</button>
+            <button class="chip" style="font-size:12px;">Suspensao</button>
+          </div>
+        </div>
+
+        <!-- Client product grid -->
+        <div style="padding:24px; display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px;">
+
+          <div class="cat-client-card">
+            <div class="cat-client-img"><span style="font-size:28px;">🔧</span></div>
+            <div class="cat-client-body">
+              <div class="cat-client-tag">Filtros</div>
+              <div class="cat-client-name">Filtro de Oleo CG 150/160</div>
+              <div style="display:flex; align-items:baseline; gap:6px; margin-top:6px;">
+                <span class="cat-client-price">R$ 24,60</span>
+                <span class="cat-client-old">R$ 28,90</span>
+              </div>
+              <span class="cat-client-promo">PROMO</span>
+              <button class="cat-client-btn" onclick="toast('Entre em contato para encomendar!')">Consultar</button>
+            </div>
+          </div>
+
+          <div class="cat-client-card">
+            <div class="cat-client-img"><span style="font-size:28px;">🛞</span></div>
+            <div class="cat-client-body">
+              <div class="cat-client-tag">Freios</div>
+              <div class="cat-client-name">Pastilha Freio Dianteiro Factor 150</div>
+              <div style="margin-top:6px;"><span class="cat-client-price">R$ 45,00</span></div>
+              <button class="cat-client-btn" onclick="toast('Entre em contato para encomendar!')">Consultar</button>
+            </div>
+          </div>
+
+          <div class="cat-client-card">
+            <div class="cat-client-img"><span style="font-size:28px;">⚡</span></div>
+            <div class="cat-client-body">
+              <div class="cat-client-tag">Motor</div>
+              <div class="cat-client-name">Vela Iridium CR8EIX Bros 160</div>
+              <div style="margin-top:6px;"><span class="cat-client-price">R$ 18,50</span></div>
+              <button class="cat-client-btn" onclick="toast('Entre em contato para encomendar!')">Consultar</button>
+            </div>
+          </div>
+
+          <div class="cat-client-card">
+            <div class="cat-client-img"><span style="font-size:28px;">🔩</span></div>
+            <div class="cat-client-body">
+              <div class="cat-client-tag">Transmissao</div>
+              <div class="cat-client-name">Kit Relacao Titan 150 ESD</div>
+              <div style="margin-top:6px;"><span class="cat-client-price">R$ 89,00</span></div>
+              <button class="cat-client-btn" onclick="toast('Entre em contato para encomendar!')">Consultar</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Store footer -->
+        <div style="border-top:1px solid var(--border); padding:16px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <span style="font-size:12px; color:var(--text-muted);">📍 Entre em contato para encomendas e disponibilidade</span>
+          <div style="display:flex; gap:8px;">
+            <a href="#" style="background:var(--green); color:#fff; padding:8px 16px; border-radius:var(--radius-sm); font-size:12px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:6px; transition:opacity 0.2s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.075-.3-.15-1.263-.465-2.403-1.485-.888-.795-1.484-1.77-1.66-2.07-.174-.3-.019-.465.13-.615.136-.135.301-.345.451-.523.146-.181.194-.301.297-.496.1-.21.049-.375-.025-.524-.075-.15-.672-1.62-.922-2.206-.24-.584-.487-.51-.672-.51-.172-.015-.371-.015-.571-.015-.2 0-.523.074-.797.359-.273.3-1.045 1.02-1.045 2.475s1.07 2.865 1.219 3.075c.149.195 2.105 3.195 5.1 4.485.714.3 1.27.48 1.704.629.714.227 1.365.195 1.88.121.574-.091 1.767-.721 2.016-1.426.255-.705.255-1.29.18-1.425-.074-.135-.27-.21-.57-.345z"/><path d="M20.52 3.449C12.831-3.984.106 1.407.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c8.646 4.221 18.682-1.967 18.686-11.486.003-5.079-2.487-9.53-4.501-7.413z"/></svg>
+              WhatsApp
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2541,6 +2936,111 @@ select:focus { border-color: var(--border-accent); }
       <input type="hidden" id="delete-prod-id">
     </div>
     <div class="modal-footer"><button class="btn-outline" onclick="closeModal('confirm-delete')">Cancelar</button><button class="btn-accent" style="background:var(--red);box-shadow:none" onclick="confirmDelete()">Excluir Produto</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-abrir-caixa">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <div class="modal-title">Abrir Caixa</div>
+      <div class="modal-close" onclick="closeModal('abrir-caixa')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Troco / Dinheiro Inicial (R$)</label>
+          <input class="input-field" id="abertura-valor" type="number" min="0" step="0.01" placeholder="Ex: 200.00" style="width:100%; font-size:15px; padding:12px 14px;">
+        </div>
+      </div>
+      <p style="font-size:12.5px; color:var(--text-muted); margin-top:8px; line-height:1.5;">Este valor representa o dinheiro disponivel no caixa ao inicio do expediente.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('abrir-caixa')">Cancelar</button>
+      <button class="btn-accent" onclick="confirmarAbertura()">Abrir Agora</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-catalogo-produto">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <div class="modal-title">Adicionar ao Catalogo</div>
+      <div class="modal-close" onclick="closeModal('add-catalogo-produto')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Nome do Produto</label>
+          <input class="input-field" id="cat-nome" type="text" placeholder="Ex: Filtro de Oleo Honda CG 150" style="width:100%">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Categoria</label>
+          <select id="cat-categoria" style="width:100%"><option>Filtros</option><option>Freios</option><option>Motor</option><option>Suspensao</option><option>Transmissao</option><option>Cabos</option><option>Eletrica</option><option>Acessorios</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Codigo / SKU</label>
+          <input class="input-field" id="cat-sku" type="text" placeholder="FLT-001" style="width:100%">
+        </div>
+      </div>
+      <div class="form-row three">
+        <div class="form-group">
+          <label class="form-label">Preco Normal (R$)</label>
+          <input class="input-field" id="cat-preco" type="number" min="0" step="0.01" placeholder="0,00" style="width:100%">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preco Promo (R$)</label>
+          <input class="input-field" id="cat-preco-promo" type="number" min="0" step="0.01" placeholder="Opcional" style="width:100%">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mostrar Estoque</label>
+          <select id="cat-mostrar-estoque" style="width:100%"><option value="nao">Nao mostrar</option><option value="disponivel">So "Disponivel"</option><option value="sim">Quantidade exata</option></select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Descricao (opcional)</label>
+          <input class="input-field" id="cat-descricao" type="text" placeholder="Descricao curta do produto..." style="width:100%">
+        </div>
+      </div>
+      <div style="border:2px dashed var(--border); border-radius:var(--radius-sm); padding:24px; text-align:center; cursor:pointer; transition:all 0.2s; margin-top:4px;" onclick="document.getElementById('cat-img-input').click()" id="cat-img-drop" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <input type="file" id="cat-img-input" accept="image/*" style="display:none" onchange="previewCatImg(this)">
+        <div id="cat-img-preview-wrap">
+          <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:var(--text-muted);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+          <div style="font-size:13px; font-weight:600; color:var(--text-secondary);">Clique para adicionar foto</div>
+          <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">JPG, PNG ou WEBP</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; margin-top:14px;">
+        <label style="font-size:13px; color:var(--text-secondary); font-weight:500; cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="cat-visivel" checked style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;">
+          Visivel no catalogo publico
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('add-catalogo-produto')">Cancelar</button>
+      <button class="btn-accent" onclick="saveCatProduto()">Salvar no Catalogo</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-orcamento-print">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <div class="modal-title">Orcamento Gerado</div>
+      <div class="modal-close" onclick="closeModal('orcamento-print')">✕</div>
+    </div>
+    <div class="modal-body" id="orc-print-content" style="font-size:13.5px; color:var(--text-secondary); line-height:1.6;">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('orcamento-print')">Fechar</button>
+      <button class="btn-accent" onclick="window.print()">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Imprimir / PDF
+      </button>
+    </div>
   </div>
 </div>
 
@@ -3417,6 +3917,405 @@ function copiarSQL() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // INIT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PDV SIMPLIFICADO
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var pdvCart = [];
+var pdvMode = 'venda'; // 'venda' ou 'orcamento'
+
+function pdvSwitchTab(mode) {
+  pdvMode = mode;
+  var btnV  = $('pdv-tab-venda');
+  var btnO  = $('pdv-tab-orc');
+  var title = $('pdv-cart-title');
+  var extra = $('pdv-orc-extra');
+  var pay   = $('pdv-payment-section');
+  var actBtn = $('pdv-action-btn');
+  if (mode === 'venda') {
+    btnV.style.background = 'var(--gradient-accent)'; btnV.style.color = '#09090b';
+    btnO.style.background = 'none'; btnO.style.color = 'var(--text-secondary)';
+    title.textContent = 'Carrinho de Venda';
+    extra.style.display = 'none';
+    pay.style.display = '';
+    actBtn.textContent = 'Finalizar Venda';
+  } else {
+    btnO.style.background = 'var(--gradient-accent)'; btnO.style.color = '#09090b';
+    btnV.style.background = 'none'; btnV.style.color = 'var(--text-secondary)';
+    title.textContent = 'Itens do Orcamento';
+    extra.style.display = '';
+    pay.style.display = 'none';
+    actBtn.textContent = 'Gerar Orcamento PDF';
+  }
+}
+
+function pdvAddItem(nome, cod, preco) {
+  var existing = pdvCart.find(function(i){ return i.cod === cod; });
+  if (existing) { existing.qty++; }
+  else { pdvCart.push({ nome: nome, cod: cod, preco: preco, qty: 1 }); }
+  pdvRenderCart();
+  toast(nome + ' adicionado!');
+}
+
+function pdvChangeQty(cod, delta) {
+  var idx = pdvCart.findIndex(function(i){ return i.cod === cod; });
+  if (idx === -1) return;
+  pdvCart[idx].qty += delta;
+  if (pdvCart[idx].qty <= 0) pdvCart.splice(idx, 1);
+  pdvRenderCart();
+}
+
+function pdvRenderCart() {
+  var el = $('pdv-cart-items');
+  var empty = $('pdv-cart-empty');
+  if (!pdvCart.length) {
+    el.innerHTML = '';
+    if (empty) el.appendChild(empty);
+    empty.style.display = '';
+    pdvUpdateTotals();
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  var html = '';
+  pdvCart.forEach(function(i) {
+    html += '<div class="cart-item">' +
+      '<div class="cart-item-info"><div class="cart-item-name">' + i.nome + '</div><div class="cart-item-price">' + i.cod + ' · ' + fmt(i.preco) + ' / un</div></div>' +
+      '<div class="cart-item-qty">' +
+        '<div class="qty-btn" onclick="pdvChangeQty(\'' + i.cod + '\',-1)">−</div>' +
+        '<span class="qty-num">' + i.qty + '</span>' +
+        '<div class="qty-btn" onclick="pdvChangeQty(\'' + i.cod + '\',1)">+</div>' +
+      '</div>' +
+      '<div class="cart-item-total">' + fmt(i.preco * i.qty) + '</div>' +
+    '</div>';
+  });
+  el.innerHTML = html;
+  pdvUpdateTotals();
+}
+
+function pdvUpdateTotals() {
+  var sub = pdvCart.reduce(function(s,i){ return s + i.preco * i.qty; }, 0);
+  var desc = parseFloat(($('pdv-desconto') ? $('pdv-desconto').value : 0)) || 0;
+  var total = Math.max(0, sub - desc);
+  set('pdv-subtotal', fmt(sub));
+  set('pdv-desc-val', '- ' + fmt(desc));
+  set('pdv-total-val', fmt(total));
+}
+
+function pdvClearCart() {
+  pdvCart = [];
+  if ($('pdv-desconto')) $('pdv-desconto').value = 0;
+  if ($('pdv-cliente')) $('pdv-cliente').value = '';
+  pdvRenderCart();
+}
+
+async function pdvFinalize() {
+  if (!pdvCart.length) { toast('Adicione produtos primeiro.', 'y'); return; }
+  if (pdvMode === 'orcamento') {
+    gerarOrcamento();
+    return;
+  }
+  // Venda
+  var cli   = ($('pdv-cliente')  ? $('pdv-cliente').value.trim()  : '') || 'Consumidor';
+  var forma = document.querySelector('.payment-method.active[data-forma]');
+  var formaPag = forma ? forma.getAttribute('data-forma') : 'dinheiro';
+  var desc  = parseFloat(($('pdv-desconto') ? $('pdv-desconto').value : 0)) || 0;
+  var total = Math.max(0, pdvCart.reduce(function(s,i){ return s+i.preco*i.qty; },0) - desc);
+  try {
+    var rv = await sb.from('vendas').insert({ cliente: cli, total: total, forma_pagamento: formaPag, status: 'pago' }).select().single();
+    if (rv.error) throw rv.error;
+    var itens = pdvCart.map(function(i){ return { venda_id: rv.data.id, produto_id: null, nome_produto: i.nome, preco: i.preco, quantidade: i.qty, total: i.preco * i.qty }; });
+    await sb.from('venda_itens').insert(itens);
+    await sb.from('caixa_lancamentos').insert({ tipo: 'entrada', descricao: 'Venda #' + rv.data.numero + ' — ' + cli, forma_pagamento: formaPag, valor: total, data: today(), hora: timeNow() });
+    pdvClearCart();
+    toast('Venda registrada! Total: ' + fmt(total));
+    loadDashboard();
+  } catch(e) {
+    toast('Erro: ' + e.message, 'r');
+  }
+}
+
+function gerarOrcamento() {
+  var cli      = ($('pdv-cliente')     ? $('pdv-cliente').value.trim()     : '') || 'Cliente';
+  var validade = ($('pdv-orc-validade') ? $('pdv-orc-validade').value.trim() : '') || '3 dias';
+  var desc     = parseFloat(($('pdv-desconto') ? $('pdv-desconto').value : 0)) || 0;
+  var sub      = pdvCart.reduce(function(s,i){ return s+i.preco*i.qty; },0);
+  var total    = Math.max(0, sub - desc);
+  var num      = 'ORC-' + String(Date.now()).slice(-5);
+  var data     = new Date().toLocaleDateString('pt-BR');
+
+  var itensHtml = pdvCart.map(function(i) {
+    return '<tr style="border-bottom:1px solid #ddd">' +
+      '<td style="padding:8px 6px">' + i.nome + '</td>' +
+      '<td style="padding:8px 6px;text-align:center">' + i.qty + '</td>' +
+      '<td style="padding:8px 6px;text-align:right">' + fmt(i.preco) + '</td>' +
+      '<td style="padding:8px 6px;text-align:right;font-weight:700">' + fmt(i.preco*i.qty) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  $('orc-print-content').innerHTML =
+    '<div style="border:1px solid var(--border);border-radius:8px;padding:20px;background:var(--bg-surface)">' +
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">' +
+      '<div><div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:var(--accent)">MotoStock</div>' +
+      '<div style="font-size:11px;color:var(--text-muted)">Pecas e Acessorios para Motos</div></div>' +
+      '<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">' + num + '</div>' +
+      '<div style="font-size:11px;color:var(--text-muted)">Data: ' + data + '</div>' +
+      '<div style="font-size:11px;color:var(--text-muted)">Valido por: ' + validade + '</div></div>' +
+    '</div>' +
+    '<div style="margin-bottom:12px"><span style="font-size:12px;color:var(--text-muted)">Cliente: </span><strong>' + cli + '</strong></div>' +
+    '<table style="width:100%;border-collapse:collapse;font-size:13px">' +
+    '<thead><tr style="background:var(--bg-card)"><th style="padding:8px 6px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)">Produto</th><th style="padding:8px 6px;text-align:center;font-size:10px;text-transform:uppercase;color:var(--text-muted)">Qtd</th><th style="padding:8px 6px;text-align:right;font-size:10px;text-transform:uppercase;color:var(--text-muted)">Preco</th><th style="padding:8px 6px;text-align:right;font-size:10px;text-transform:uppercase;color:var(--text-muted)">Total</th></tr></thead>' +
+    '<tbody>' + itensHtml + '</tbody>' +
+    '</table>' +
+    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">' +
+      (desc > 0 ? '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Subtotal</span><span>' + fmt(sub) + '</span></div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;color:var(--green)"><span>Desconto</span><span>- ' + fmt(desc) + '</span></div>' : '') +
+      '<div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:var(--accent)"><span>TOTAL</span><span>' + fmt(total) + '</span></div>' +
+    '</div>' +
+    '</div>';
+  openModal('orcamento-print');
+}
+
+function pdvFilterCat(btn, cat) {
+  document.querySelectorAll('.pdv-cats .chip').forEach(function(c){ c.classList.remove('active'); });
+  btn.classList.add('active');
+  var tiles = document.querySelectorAll('#pdv-items-grid .product-tile');
+  tiles.forEach(function(t) {
+    var code = t.querySelector('.product-tile-code') ? t.querySelector('.product-tile-code').textContent : '';
+    t.style.display = (!cat || code.toLowerCase().includes(cat.toLowerCase())) ? '' : 'none';
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CAIXA ABERTURA / FECHAMENTO
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var caixaAberto = false;
+var caixaAberturaVal = 0;
+
+function abrirCaixa() {
+  openModal('abrir-caixa');
+  if ($('abertura-valor')) $('abertura-valor').value = '';
+  setTimeout(function(){ if ($('abertura-valor')) $('abertura-valor').focus(); }, 300);
+}
+
+function confirmarAbertura() {
+  var val = parseFloat(($('abertura-valor') ? $('abertura-valor').value : 0)) || 0;
+  caixaAberturaVal = val;
+  caixaAberto = true;
+  closeModal('abrir-caixa');
+  updateCaixaStatusUI();
+  toast('Caixa aberto! Troco inicial: ' + fmt(val));
+  loadCaixa();
+}
+
+function fecharCaixa() {
+  if (!caixaAberto) { toast('O caixa ja esta fechado.', 'y'); return; }
+  // show summary panel
+  set('fech-abertura', fmt(caixaAberturaVal));
+  var ent = parseFloat((document.getElementById('val-entradas') ? document.getElementById('val-entradas').textContent.replace('R$','').replace('.','').replace(',','.').trim() : '0')) || 0;
+  set('fech-entradas', document.getElementById('val-entradas') ? document.getElementById('val-entradas').textContent : 'R$ 0,00');
+  set('fech-saldo', fmt(caixaAberturaVal + ent));
+  document.getElementById('caixa-fechamento-panel').style.display = '';
+}
+
+function confirmarFechamento() {
+  caixaAberto = false;
+  document.getElementById('caixa-fechamento-panel').style.display = 'none';
+  updateCaixaStatusUI();
+  toast('Caixa fechado com sucesso!');
+}
+
+function updateCaixaStatusUI() {
+  var icon  = $('caixa-status-icon');
+  var title = $('caixa-status-title');
+  var sub   = $('caixa-status-sub');
+  var btnA  = $('btn-abrir-caixa');
+  var btnF  = $('btn-fechar-caixa');
+  var bar   = $('caixa-status-bar');
+  var aval  = $('caixa-abertura-val');
+
+  if (caixaAberto) {
+    title.textContent = 'Caixa Aberto';
+    sub.textContent   = 'Aberto hoje as ' + timeNow() + ' — Operador: Admin';
+    icon.style.background   = 'var(--green-soft)';
+    icon.style.borderColor  = 'rgba(16,232,158,0.2)';
+    bar.style.borderLeftColor = 'var(--green)';
+    if (icon.querySelector('svg')) icon.querySelector('svg').style.fill = 'var(--green)';
+    btnA.style.display = 'none';
+    btnF.style.display = '';
+    aval.textContent   = fmt(caixaAberturaVal);
+  } else {
+    title.textContent = 'Caixa Fechado';
+    sub.textContent   = 'Clique em "Abrir Caixa" para iniciar o expediente';
+    icon.style.background   = 'var(--red-soft)';
+    icon.style.borderColor  = 'rgba(255,92,122,0.2)';
+    bar.style.borderLeftColor = 'var(--red)';
+    if (icon.querySelector('svg')) icon.querySelector('svg').style.fill = 'var(--red)';
+    btnA.style.display = '';
+    btnF.style.display = 'none';
+    aval.textContent   = 'R$ —';
+    set('caixa-saldo', 'R$ 0,00');
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CATALOGO ADMIN
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function catSwitchTab(tab) {
+  var adminBtn   = $('cat-tab-admin');
+  var previewBtn = $('cat-tab-preview');
+  var adminView  = $('cat-admin-view');
+  var previewView= $('cat-preview-view');
+
+  if (tab === 'admin') {
+    adminBtn.style.background = 'var(--gradient-accent)'; adminBtn.style.color = '#09090b';
+    previewBtn.style.background = 'none'; previewBtn.style.color = 'var(--text-secondary)';
+    adminView.style.display = ''; previewView.style.display = 'none';
+  } else {
+    previewBtn.style.background = 'var(--gradient-accent)'; previewBtn.style.color = '#09090b';
+    adminBtn.style.background = 'none'; adminBtn.style.color = 'var(--text-secondary)';
+    adminView.style.display = 'none'; previewView.style.display = '';
+  }
+}
+
+function filterCatalogo() {
+  var q   = ($('cat-search') ? $('cat-search').value.toLowerCase() : '');
+  var cat = ($('cat-filter-cat') ? $('cat-filter-cat').value : '');
+  var statusFilter = document.querySelector('[data-status].chip.active') ? document.querySelector('[data-status].chip.active').getAttribute('data-status') : 'todos';
+  document.querySelectorAll('.cat-prod-card').forEach(function(c) {
+    var name   = (c.querySelector('.cat-prod-name')    ? c.querySelector('.cat-prod-name').textContent.toLowerCase()    : '');
+    var catTag = (c.querySelector('.cat-prod-cat-tag') ? c.querySelector('.cat-prod-cat-tag').textContent : '');
+    var status = c.getAttribute('data-status') || 'ativo';
+    var match  = (!q || name.includes(q)) && (!cat || catTag === cat) && (statusFilter === 'todos' || status === statusFilter);
+    c.style.display = match ? '' : 'none';
+  });
+}
+
+function catFilterStatus(btn, status) {
+  document.querySelectorAll('[data-status].chip').forEach(function(c){ c.classList.remove('active'); });
+  btn.classList.add('active');
+  filterCatalogo();
+}
+
+function toggleCatProd(btn) {
+  var card   = btn.closest('.cat-prod-card');
+  var active = btn.classList.contains('active');
+  if (active) {
+    btn.classList.remove('active');
+    btn.title = 'Mostrar no catalogo';
+    card.setAttribute('data-status','inativo');
+    card.style.opacity = '0.5';
+    var badge = document.createElement('span');
+    badge.className = 'cat-oculto-badge';
+    badge.style.cssText = 'position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:var(--text-muted);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;';
+    badge.textContent = 'Oculto';
+    card.querySelector('.cat-prod-img-wrap').appendChild(badge);
+    toast('Produto ocultado do catalogo.', 'y');
+  } else {
+    btn.classList.add('active');
+    btn.title = 'Ocultar do catalogo';
+    card.setAttribute('data-status','ativo');
+    card.style.opacity = '';
+    var existBadge = card.querySelector('.cat-oculto-badge');
+    if (existBadge) existBadge.remove();
+    toast('Produto visivel no catalogo.');
+  }
+}
+
+function editCatProd(btn) {
+  var card = btn.closest('.cat-prod-card');
+  var nome = card.querySelector('.cat-prod-name') ? card.querySelector('.cat-prod-name').textContent : '';
+  toast('Editar: ' + nome + ' — em breve!', 'y');
+}
+
+function uploadFoto(btn) {
+  var input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = function() {
+    if (!input.files.length) return;
+    var card = btn.closest('.cat-prod-card');
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var wrap = card.querySelector('.cat-prod-img-wrap');
+      var placeholder = wrap.querySelector('.cat-prod-img-placeholder');
+      if (placeholder) placeholder.remove();
+      var img = wrap.querySelector('img');
+      if (!img) { img = document.createElement('img'); img.style.cssText = 'width:100%;height:100%;object-fit:cover;'; wrap.insertBefore(img, wrap.firstChild); }
+      img.src = e.target.result;
+      toast('Foto atualizada!');
+    };
+    reader.readAsDataURL(input.files[0]);
+  };
+  input.click();
+}
+
+function previewCatImg(input) {
+  if (!input.files.length) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var wrap = $('cat-img-preview-wrap');
+    wrap.innerHTML = '<img src="' + e.target.result + '" style="max-height:140px;max-width:100%;border-radius:6px;object-fit:contain;">';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function saveCatProduto() {
+  var nome = $('cat-nome') ? $('cat-nome').value.trim() : '';
+  if (!nome) { toast('Informe o nome do produto.', 'y'); return; }
+  var cat     = $('cat-categoria') ? $('cat-categoria').value : '';
+  var sku     = $('cat-sku')       ? $('cat-sku').value.trim() : '';
+  var preco   = parseFloat(($('cat-preco')       ? $('cat-preco').value       : 0)) || 0;
+  var promo   = parseFloat(($('cat-preco-promo') ? $('cat-preco-promo').value : 0)) || 0;
+  var visivel = $('cat-visivel') ? $('cat-visivel').checked : true;
+
+  // Add card to grid visually
+  var grid    = $('cat-admin-grid');
+  var addCard = grid ? grid.lastElementChild : null;
+  var card    = document.createElement('div');
+  card.className = 'cat-prod-card';
+  card.setAttribute('data-cat', cat);
+  card.setAttribute('data-status', visivel ? 'ativo' : 'inativo');
+  if (!visivel) card.style.opacity = '0.5';
+
+  var promoHtml = (promo > 0 && promo < preco) ? '<span class="cat-promo-badge">PROMO</span>' : '';
+  var precoHtml = (promo > 0 && promo < preco)
+    ? '<span class="cat-prod-price">' + fmt(promo) + '</span><span class="cat-prod-price-old">' + fmt(preco) + '</span>'
+    : '<span class="cat-prod-price">' + fmt(preco) + '</span>';
+
+  card.innerHTML =
+    '<div class="cat-prod-img-wrap">' +
+      '<div class="cat-prod-img-placeholder">📷</div>' +
+      promoHtml +
+      '<div class="cat-prod-actions">' +
+        '<button class="icon-btn" title="Editar" onclick="editCatProd(this)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
+        '<button class="icon-btn" title="Foto" onclick="uploadFoto(this)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>' +
+        '<button class="icon-btn cat-toggle-btn' + (visivel ? ' active' : '') + '" onclick="toggleCatProd(this)"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="cat-prod-body">' +
+      '<div class="cat-prod-cat-tag">' + cat + '</div>' +
+      '<div class="cat-prod-name">' + nome + '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:8px;margin-top:6px;">' + precoHtml + '</div>' +
+      '<div class="cat-prod-stock-info">Cod: ' + (sku || '—') + '</div>' +
+    '</div>';
+
+  if (addCard) grid.insertBefore(card, addCard);
+  else if (grid) grid.appendChild(card);
+
+  closeModal('add-catalogo-produto');
+  // reset
+  ['cat-nome','cat-sku','cat-preco','cat-preco-promo','cat-descricao'].forEach(function(id){ if ($(id)) $(id).value=''; });
+  if ($('cat-visivel')) $('cat-visivel').checked = true;
+  if ($('cat-img-preview-wrap')) $('cat-img-preview-wrap').innerHTML = '<svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:var(--text-muted);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Clique para adicionar foto</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px;">JPG, PNG ou WEBP</div>';
+  toast('Produto adicionado ao catalogo!');
+}
+
+function copiarLinkCatalogo() {
+  var link = window.location.origin + window.location.pathname + '?catalogo=publico';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(function(){ toast('Link copiado! Envie para o cliente.'); }).catch(function(){ toast('Link: ' + link, 'y'); });
+  } else {
+    toast('Link: ' + link, 'y');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   // Restaurar tema do Supabase
   loadConfig();
