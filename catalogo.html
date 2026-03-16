@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Produtos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root {
+  --bg-base:      #0d1117;
+  --bg-surface:   #131922;
+  --bg-card:      #181f2e;
+  --accent:       #f0a500;
+  --accent-soft:  rgba(240,165,0,0.09);
+  --green:        #10e89e;
+  --red:          #ff5c7a;
+  --text-primary:   #f0f4ff;
+  --text-secondary: #b0bada;
+  --text-muted:     #6b7599;
+  --border:         rgba(255,255,255,0.08);
+  --border-accent:  rgba(240,165,0,0.35);
+  --radius:    12px;
+  --radius-sm: 8px;
+  --gradient-accent: linear-gradient(135deg,#f0a500 0%,#ff6b35 100%);
+}
+[data-theme="light"] {
+  --bg-base:      #f0f2f8;
+  --bg-surface:   #ffffff;
+  --bg-card:      #ffffff;
+  --accent:       #c47a00;
+  --accent-soft:  rgba(196,122,0,0.08);
+  --text-primary:   #0d1629;
+  --text-secondary: #374163;
+  --text-muted:     #7880a0;
+  --border:         rgba(0,0,0,0.09);
+  --border-accent:  rgba(196,122,0,0.4);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px;-webkit-font-smoothing:antialiased}
+body{background:var(--bg-base);color:var(--text-primary);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar {
+  background:var(--bg-surface);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  height:64px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  backdrop-filter:blur(12px);
+}
+.brand {
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+}
+.brand-icon {
+  width:34px;height:34px;
+  background:var(--gradient-accent);
+  border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;flex-shrink:0;
+}
+.brand-icon img{width:100%;height:100%;object-fit:cover;display:none;}
+.brand-icon svg{width:18px;height:18px;fill:#09090b;}
+.brand-name {
+  font-family:'Syne',sans-serif;
+  font-size:18px;
+  font-weight:800;
+  color:var(--text-primary);
+  letter-spacing:0.3px;
+}
+.brand-sub {
+  font-size:10px;
+  color:var(--text-muted);
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  font-weight:600;
+}
+.topbar-spacer{flex:1}
+.theme-btn {
+  width:36px;height:36px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.theme-btn:hover{border-color:var(--border-accent);}
+
+/* ── HERO ── */
+.hero {
+  background:linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+  border-bottom:1px solid var(--border);
+  padding:40px 24px 32px;
+  text-align:center;
+}
+.hero h1 {
+  font-family:'Syne',sans-serif;
+  font-size:32px;
+  font-weight:800;
+  background:var(--gradient-accent);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:8px;
+}
+.hero p{font-size:14px;color:var(--text-muted);max-width:480px;margin:0 auto;}
+
+/* ── FILTROS ── */
+.filters {
+  padding:20px 24px 8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  max-width:1200px;
+  margin:0 auto;
+}
+.search-wrap {
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:9px 14px;
+  flex:1;min-width:200px;
+  transition:border-color 0.2s;
+}
+.search-wrap:focus-within{border-color:var(--border-accent);}
+.search-wrap input{
+  background:none;border:none;outline:none;
+  color:var(--text-primary);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;width:100%;
+}
+.search-wrap input::placeholder{color:var(--text-muted);}
+.search-wrap svg{width:14px;height:14px;fill:var(--text-muted);flex-shrink:0;}
+.cats-scroll{
+  display:flex;gap:6px;flex-wrap:wrap;
+  padding:0 24px 16px;
+  max-width:1200px;margin:0 auto;
+}
+.chip {
+  padding:6px 14px;
+  border-radius:99px;
+  font-size:12px;font-weight:600;
+  border:1px solid var(--border);
+  background:var(--bg-card);
+  color:var(--text-muted);
+  cursor:pointer;
+  transition:all 0.18s;
+  white-space:nowrap;
+}
+.chip:hover{border-color:var(--border-accent);color:var(--accent);}
+.chip.active{background:var(--accent-soft);border-color:var(--border-accent);color:var(--accent);}
+
+/* ── GRID ── */
+.grid-wrap{
+  padding:0 24px 40px;
+  max-width:1200px;
+  margin:0 auto;
+}
+.produtos-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:16px;
+}
+.produto-card {
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  transition:all 0.22s ease;
+  cursor:pointer;
+}
+.produto-card:hover {
+  border-color:var(--border-accent);
+  transform:translateY(-3px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.produto-img {
+  width:100%;height:180px;
+  background:var(--bg-surface);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;
+  overflow:hidden;
+  position:relative;
+}
+.produto-img img{width:100%;height:100%;object-fit:cover;}
+.produto-promo-badge {
+  position:absolute;top:10px;left:10px;
+  background:var(--red);color:#fff;
+  font-size:10px;font-weight:800;
+  padding:3px 8px;border-radius:4px;
+  letter-spacing:0.5px;
+}
+.produto-body{padding:14px;}
+.produto-cat{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--accent);margin-bottom:5px;
+}
+.produto-nome{
+  font-size:13px;font-weight:600;
+  color:var(--text-primary);
+  line-height:1.4;margin-bottom:8px;
+}
+.produto-preco{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;letter-spacing:0.5px;
+  color:var(--accent);
+}
+.produto-preco-old{
+  font-size:11px;color:var(--text-muted);
+  text-decoration:line-through;margin-left:4px;
+}
+.produto-btn {
+  width:100%;margin-top:10px;
+  padding:9px;
+  background:none;
+  border:1px solid var(--border-accent);
+  border-radius:var(--radius-sm);
+  color:var(--accent);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:700;
+  cursor:pointer;
+  transition:all 0.18s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.produto-btn:hover{background:var(--accent);color:#09090b;}
+.produto-btn svg{width:13px;height:13px;fill:currentColor;}
+
+/* ── ESTOQUE BADGE ── */
+.stock-ok   {font-size:10px;color:var(--green);font-weight:600;}
+.stock-low  {font-size:10px;color:var(--accent);font-weight:600;}
+.stock-out  {font-size:10px;color:var(--red);font-weight:600;}
+
+/* ── EMPTY ── */
+.empty {
+  grid-column:1/-1;
+  text-align:center;padding:60px 20px;
+  color:var(--text-muted);
+}
+.empty-icon{font-size:48px;opacity:0.3;margin-bottom:12px;}
+
+/* ── MODAL DETALHE ── */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(6px);
+  z-index:500;
+  display:none;align-items:center;justify-content:center;padding:24px;
+}
+.overlay.open{display:flex;}
+.modal{
+  background:var(--bg-card);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:16px;
+  width:100%;max-width:480px;
+  box-shadow:0 24px 80px rgba(0,0,0,0.6);
+  animation:modalIn 0.28s cubic-bezier(0.22,1,0.36,1) both;
+  overflow:hidden;
+  position:relative;
+}
+.modal::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--gradient-accent);
+}
+@keyframes modalIn{from{opacity:0;transform:scale(0.93)}to{opacity:1;transform:scale(1)}}
+.modal-img{width:100%;height:220px;object-fit:cover;background:var(--bg-surface);display:flex;align-items:center;justify-content:center;font-size:64px;}
+.modal-img img{width:100%;height:100%;object-fit:cover;}
+.modal-body{padding:20px 22px;}
+.modal-close{
+  position:absolute;top:14px;right:14px;
+  width:30px;height:30px;
+  background:rgba(0,0,0,0.5);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;font-size:16px;line-height:1;
+  z-index:10;transition:background 0.15s;
+}
+.modal-close:hover{background:var(--red);}
+
+/* ── WA BUTTON ── */
+.btn-wa {
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:12px;
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  color:#fff;border:none;border-radius:var(--radius-sm);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;
+  transition:all 0.2s;
+  box-shadow:0 4px 16px rgba(37,211,102,0.3);
+  margin-top:14px;
+}
+.btn-wa:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(37,211,102,0.45);}
+.btn-wa svg{width:18px;height:18px;fill:#fff;}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:20px;
+  font-size:11px;color:var(--text-muted);
+  border-top:1px solid var(--border);
+}
+
+/* ── LOADING ── */
+.loader{
+  display:flex;align-items:center;justify-content:center;
+  padding:80px 20px;
+  grid-column:1/-1;
+}
+.loader-ring{
+  width:32px;height:32px;
+  border:3px solid var(--border);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="brand" href="#">
+    <div class="brand-icon" id="brand-icon">
+      <img id="brand-logo" src="" alt="logo">
+      <svg id="brand-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+    </div>
+    <div>
+      <div class="brand-name" id="brand-nome">Catálogo</div>
+      <div class="brand-sub" id="brand-sub">Peças e Acessórios</div>
+    </div>
+  </a>
+  <div class="topbar-spacer"></div>
+  <div id="wa-topbar" style="display:none;">
+    <a id="wa-link" href="#" target="_blank" style="display:flex;align-items:center;gap:7px;padding:8px 16px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      WhatsApp
+    </a>
+  </div>
+  <button class="theme-btn" onclick="toggleTema()" id="theme-btn">🌙</button>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1 id="hero-titulo">Nosso Catálogo</h1>
+  <p id="hero-sub">Encontre as melhores peças e acessórios para a sua moto</p>
+</section>
+
+<!-- FILTROS -->
+<div class="filters">
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    <input type="text" id="busca" placeholder="Buscar produto..." oninput="filtrar()">
+  </div>
+</div>
+<div class="cats-scroll" id="cats-wrap">
+  <button class="chip active" onclick="filtrarCat('',this)">Todos</button>
+</div>
+
+<!-- GRID -->
+<div class="grid-wrap">
+  <div class="produtos-grid" id="grid">
+    <div class="loader"><div class="loader-ring"></div></div>
+  </div>
+</div>
+
+<!-- MODAL DETALHE -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)fecharModal()">
+  <div class="modal">
+    <div class="modal-close" onclick="fecharModal()">✕</div>
+    <div class="modal-img" id="modal-img"><span id="modal-emoji">🔧</span></div>
+    <div class="modal-body">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px;" id="modal-cat"></div>
+      <div style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:6px;" id="modal-nome"></div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;" id="modal-desc"></div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);" id="modal-preco"></span>
+        <span style="font-size:12px;color:var(--text-muted);text-decoration:line-through;" id="modal-preco-old"></span>
+      </div>
+      <div id="modal-estoque" style="font-size:12px;margin-bottom:4px;"></div>
+      <div style="font-size:12px;color:var(--text-muted);" id="modal-sku"></div>
+      <button class="btn-wa" id="modal-wa-btn" onclick="">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Consultar via WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer id="footer-txt">Catálogo público · Apenas para consulta de produtos</footer>
+
+<script>
+// ── CREDENCIAIS ── (mesmas do index.html)
+const SUPABASE_URL = 'https://lhrzwccbvdintqgebisq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxocnp3Y2NidmRpbnRxZ2ViaXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODY0NzEsImV4cCI6MjA4OTE2MjQ3MX0.gbljgt0rzOf9eBoTcXxxfl0e_0Y-6XYxve-HGY7meJo';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let todosOsProdutos = [];
+let catAtual = '';
+let waNumero = '';
+
+// ── INIT ──
+async function init() {
+  await carregarConfig();
+  await carregarProdutos();
+}
+
+async function carregarConfig() {
+  try {
+    const { data } = await sb.from('configuracoes').select('chave,valor');
+    const cfg = {};
+    (data || []).forEach(r => { cfg[r.chave] = r.valor; });
+
+    if (cfg.nome_loja) {
+      document.title = cfg.nome_loja + ' — Catálogo';
+      document.getElementById('brand-nome').textContent  = cfg.nome_loja;
+      document.getElementById('hero-titulo').textContent = cfg.nome_loja;
+      document.getElementById('footer-txt').textContent  = cfg.nome_loja + ' · Catálogo de Produtos';
+    }
+    if (cfg.slogan) {
+      document.getElementById('brand-sub').textContent  = cfg.slogan;
+      document.getElementById('hero-sub').textContent   = cfg.slogan;
+    }
+    if (cfg.logo_url) {
+      const img = document.getElementById('brand-logo');
+      const svg = document.getElementById('brand-svg');
+      if (img) { img.src = cfg.logo_url; img.style.display = 'block'; }
+      if (svg) svg.style.display = 'none';
+    }
+    if (cfg.telefone) {
+      waNumero = cfg.telefone.replace(/\D/g, '');
+      if (!waNumero.startsWith('55')) waNumero = '55' + waNumero;
+      const waBtn = document.getElementById('wa-topbar');
+      const waLink = document.getElementById('wa-link');
+      if (waBtn) waBtn.style.display = 'flex';
+      if (waLink) waLink.href = 'https://wa.me/' + waNumero;
+    }
+    if (cfg.tema) {
+      document.documentElement.setAttribute('data-theme', cfg.tema);
+      const btn = document.getElementById('theme-btn');
+      if (btn) btn.textContent = cfg.tema === 'dark' ? '☀️' : '🌙';
+    }
+  } catch(e) {}
+}
+
+async function carregarProdutos() {
+  try {
+    const { data } = await sb.from('produtos')
+      .select('id,nome,categoria,preco,custo,estoque,estoque_minimo,sku,imagem_url,cat_visivel,descricao,marca')
+      .eq('cat_visivel', true)
+      .order('nome');
+
+    todosOsProdutos = data || [];
+    popularCategorias(todosOsProdutos);
+    renderizar(todosOsProdutos);
+  } catch(e) {
+    document.getElementById('grid').innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><div>Erro ao carregar produtos.</div></div>';
+  }
+}
+
+function popularCategorias(lista) {
+  const cats = [...new Set(lista.map(p => p.categoria).filter(Boolean))].sort();
+  const wrap = document.getElementById('cats-wrap');
+  wrap.innerHTML = '<button class="chip active" onclick="filtrarCat(\'\',this)">Todos</button>';
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = c;
+    btn.onclick = function() { filtrarCat(c, this); };
+    wrap.appendChild(btn);
+  });
+}
+
+function renderizar(lista) {
+  const grid = document.getElementById('grid');
+  if (!lista.length) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div style="font-size:15px;font-weight:600;margin-bottom:6px;">Nenhum produto encontrado</div><div style="font-size:13px;">Tente outra busca ou categoria.</div></div>';
+    return;
+  }
+  grid.innerHTML = lista.map(p => {
+    const temImg = p.imagem_url;
+    const estoque = Number(p.estoque || 0);
+    const minimo  = Number(p.estoque_minimo || 3);
+    let stockBadge = '';
+    if (estoque <= 0)      stockBadge = '<span class="stock-out">● Sem estoque</span>';
+    else if (estoque <= minimo) stockBadge = '<span class="stock-low">● Estoque baixo</span>';
+    else                   stockBadge = '<span class="stock-ok">● Disponível</span>';
+
+    return '<div class="produto-card" onclick="abrirModal(\'' + p.id + '\')">' +
+      '<div class="produto-img">' +
+        (temImg ? '<img src="' + p.imagem_url + '" alt="' + p.nome + '" loading="lazy">' : '<span>🔧</span>') +
+      '</div>' +
+      '<div class="produto-body">' +
+        '<div class="produto-cat">' + (p.categoria || '') + '</div>' +
+        '<div class="produto-nome">' + p.nome + '</div>' +
+        '<div style="display:flex;align-items:baseline;gap:6px;">' +
+          '<span class="produto-preco">R$ ' + Number(p.preco || 0).toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</span>' +
+        '</div>' +
+        '<div style="margin-top:5px;">' + stockBadge + '</div>' +
+        '<button class="produto-btn" onclick="event.stopPropagation();consultarWA(\'' + encodeURIComponent(p.nome) + '\',' + Number(p.preco||0).toFixed(2) + ')">' +
+          '<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>' +
+          'Consultar' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ── FILTROS ──
+function filtrar() {
+  const q    = document.getElementById('busca').value.toLowerCase();
+  const base = catAtual ? todosOsProdutos.filter(p => p.categoria === catAtual) : todosOsProdutos;
+  renderizar(q ? base.filter(p => (p.nome + (p.sku||'')).toLowerCase().includes(q)) : base);
+}
+
+function filtrarCat(cat, btn) {
+  catAtual = cat;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('busca').value = '';
+  renderizar(cat ? todosOsProdutos.filter(p => p.categoria === cat) : todosOsProdutos);
+}
+
+// ── MODAL ──
+function abrirModal(id) {
+  const p = todosOsProdutos.find(x => x.id === id);
+  if (!p) return;
+  const estoque = Number(p.estoque || 0);
+  const minimo  = Number(p.estoque_minimo || 3);
+
+  const imgWrap = document.getElementById('modal-img');
+  imgWrap.innerHTML = p.imagem_url
+    ? '<img src="' + p.imagem_url + '" alt="' + p.nome + '" style="width:100%;height:220px;object-fit:cover;">'
+    : '<span style="font-size:64px;">🔧</span>';
+
+  document.getElementById('modal-cat').textContent   = p.categoria || '';
+  document.getElementById('modal-nome').textContent  = p.nome;
+  document.getElementById('modal-desc').textContent  = p.descricao || (p.marca ? 'Marca: ' + p.marca : '');
+  document.getElementById('modal-preco').textContent = 'R$ ' + Number(p.preco||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
+  document.getElementById('modal-preco-old').textContent = '';
+  document.getElementById('modal-sku').textContent   = p.sku ? 'Cód: ' + p.sku : '';
+
+  const stEl = document.getElementById('modal-estoque');
+  if (estoque <= 0)          { stEl.innerHTML = '<span class="stock-out">● Sem estoque no momento</span>'; }
+  else if (estoque <= minimo){ stEl.innerHTML = '<span class="stock-low">● Últimas unidades disponíveis</span>'; }
+  else                       { stEl.innerHTML = '<span class="stock-ok">● Disponível em estoque</span>'; }
+
+  const waBtn = document.getElementById('modal-wa-btn');
+  waBtn.onclick = function() { consultarWA(encodeURIComponent(p.nome), Number(p.preco||0).toFixed(2)); };
+
+  document.getElementById('overlay').classList.add('open');
+}
+
+function fecharModal() {
+  document.getElementById('overlay').classList.remove('open');
+}
+
+function consultarWA(nomeEnc, preco) {
+  if (!waNumero) { alert('WhatsApp não configurado.'); return; }
+  const nome = decodeURIComponent(nomeEnc);
+  const msg  = 'Olá! Vi o catálogo e tenho interesse no produto:\n\n*' + nome + '*\nValor: R$ ' + Number(preco).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '\n\nPoderia me dar mais informações?';
+  window.open('https://wa.me/' + waNumero + '?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ── TEMA ──
+function toggleTema() {
+  const atual = document.documentElement.getAttribute('data-theme');
+  const novo  = atual === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', novo);
+  document.getElementById('theme-btn').textContent = novo === 'dark' ? '☀️' : '🌙';
+}
+
+// ── START ──
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
