@@ -173,14 +173,16 @@ body {
 .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
 .sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
 
-
-  padding: 26px 22px 22px;
+.sidebar-brand {
+  padding: 14px 18px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  display: flex; align-items: center; gap: 13px;
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
 }
 
 .brand-icon {
   width: 32px; height: 32px;
+  min-width: 32px; min-height: 32px;
   background: var(--gradient-accent);
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
@@ -191,6 +193,7 @@ body {
 }
 
 .brand-icon svg { width: 18px; height: 18px; fill: #09090b; }
+.brand-icon img { width: 32px; height: 32px; object-fit: cover; border-radius: 8px; }
 
 .brand-text h1 {
   font-family: 'Syne', sans-serif;
