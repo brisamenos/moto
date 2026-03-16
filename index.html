@@ -5108,72 +5108,97 @@ function previewNomeLoja(val) {
   if (el && val.trim()) el.textContent = val.trim();
 }
 
+// Comprime imagem e retorna base64 (max 300x300, qualidade 0.8)
+function comprimirImagem(file) {
+  return new Promise(function(resolve) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const MAX = 300;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else       { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Preview local imediato + guarda base64 em variável temporária
+let _logoBase64Pendente = '';
+
 function previewLogo(input) {
   const file = input.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
+  comprimirImagem(file).then(function(b64) {
+    _logoBase64Pendente = b64;
+    // Preview no card
     const img = document.getElementById('cfg-logo-preview');
     const ph  = document.getElementById('cfg-logo-placeholder');
-    if (img) { img.src = e.target.result; img.style.display = 'block'; }
+    if (img) { img.src = b64; img.style.display = 'block'; }
     if (ph)  ph.style.display = 'none';
-    // Preview na sidebar também
-    const sImg = document.getElementById('sidebar-logo-img');
-    const sSvg = document.getElementById('sidebar-logo-svg');
-    if (sImg) { sImg.src = e.target.result; sImg.style.display = 'block'; }
-    if (sSvg) sSvg.style.display = 'none';
-  };
-  reader.readAsDataURL(file);
+    // Preview na sidebar
+    aplicarLogoNaSidebar(b64);
+  });
+}
+
+function aplicarLogoNaSidebar(src) {
+  const sImg = document.getElementById('sidebar-logo-img');
+  const sSvg = document.getElementById('sidebar-logo-svg');
+  if (!src) return;
+  if (sImg) { sImg.src = src; sImg.style.display = 'block'; }
+  if (sSvg) sSvg.style.display = 'none';
 }
 
 async function salvarPerfil() {
-  const nomeLoja = (document.getElementById('cfg-nome-loja')||{}).value || '';
-  const slogan   = (document.getElementById('cfg-slogan')||{}).value || '';
-  const cnpj     = (document.getElementById('cfg-cnpj')||{}).value || '';
-  const telefone = (document.getElementById('cfg-telefone')||{}).value || '';
-  const endereco = (document.getElementById('cfg-endereco')||{}).value || '';
-  const status   = document.getElementById('cfg-save-status');
+  const nomeLoja = (document.getElementById('cfg-nome-loja')||{}).value.trim() || '';
+  const slogan   = (document.getElementById('cfg-slogan')||{}).value.trim()   || '';
+  const cnpj     = (document.getElementById('cfg-cnpj')||{}).value.trim()     || '';
+  const telefone = (document.getElementById('cfg-telefone')||{}).value.trim() || '';
+  const endereco = (document.getElementById('cfg-endereco')||{}).value.trim() || '';
+  const statusEl = document.getElementById('cfg-save-status');
 
-  if (status) { status.textContent = 'Salvando...'; status.style.color = 'var(--accent)'; }
+  if (statusEl) { statusEl.textContent = 'Salvando...'; statusEl.style.color = 'var(--accent)'; }
 
   try {
-    // Upload logo se tiver arquivo novo
-    const logoInput = document.getElementById('cfg-logo-input');
-    let logoUrl = '';
-    if (logoInput && logoInput.files[0]) {
-      const file = logoInput.files[0];
-      const ext  = file.name.split('.').pop();
-      const path = 'logos/logo_loja.' + ext;
-      const { data: upData, error: upErr } = await sb.storage.from('arquivos').upload(path, file, { upsert: true });
-      if (!upErr) {
-        const { data: urlData } = sb.storage.from('arquivos').getPublicUrl(path);
-        logoUrl = urlData.publicUrl || '';
-      }
-    }
-
     const campos = [
       { chave: 'nome_loja',  valor: nomeLoja },
       { chave: 'slogan',     valor: slogan   },
       { chave: 'cnpj',       valor: cnpj     },
       { chave: 'telefone',   valor: telefone },
       { chave: 'endereco',   valor: endereco },
+      { chave: 'ultimo_acesso', valor: new Date().toISOString() },
     ];
-    if (logoUrl) campos.push({ chave: 'logo_url', valor: logoUrl });
 
-    for (const c of campos) {
-      await sb.from('configuracoes').upsert({ chave: c.chave, valor: c.valor }, { onConflict: 'chave' });
+    // Salva logo como base64 no Supabase se tiver novo upload
+    if (_logoBase64Pendente) {
+      campos.push({ chave: 'logo_base64', valor: _logoBase64Pendente });
     }
 
-    // Salva data/hora do último acesso
-    await sb.from('configuracoes').upsert({ chave: 'ultimo_acesso', valor: new Date().toISOString() }, { onConflict: 'chave' });
+    // Upsert em paralelo para todos os campos
+    await Promise.all(campos.map(function(c) {
+      return sb.from('configuracoes').upsert({ chave: c.chave, valor: c.valor }, { onConflict: 'chave' });
+    }));
 
-    aplicarPerfilNaSidebar({ nome_loja: nomeLoja, slogan, logo_url: logoUrl });
+    _logoBase64Pendente = ''; // limpa pendente
 
-    if (status) { status.textContent = '✓ Salvo com sucesso'; status.style.color = 'var(--green)'; }
-    setTimeout(function() { if (status) status.textContent = ''; }, 3000);
-    toast('Perfil salvo!');
+    // Aplica na sidebar
+    aplicarPerfilNaSidebar({ nome_loja: nomeLoja, slogan });
+
+    if (statusEl) { statusEl.textContent = '✓ Salvo com sucesso'; statusEl.style.color = 'var(--green)'; }
+    setTimeout(function() { if (statusEl) statusEl.textContent = ''; }, 3000);
+    toast('Perfil salvo! Aparece igual em qualquer navegador.');
   } catch(e) {
-    if (status) { status.textContent = '✗ Erro ao salvar'; status.style.color = 'var(--red)'; }
+    if (statusEl) { statusEl.textContent = '✗ Erro ao salvar'; statusEl.style.color = 'var(--red)'; }
     toast('Erro: ' + e.message, 'r');
   }
 }
@@ -5187,12 +5212,9 @@ function aplicarPerfilNaSidebar(cfg) {
     const el = document.getElementById('sidebar-slogan');
     if (el) el.textContent = cfg.slogan;
   }
-  if (cfg.logo_url) {
-    const sImg = document.getElementById('sidebar-logo-img');
-    const sSvg = document.getElementById('sidebar-logo-svg');
-    if (sImg) { sImg.src = cfg.logo_url; sImg.style.display = 'block'; }
-    if (sSvg) sSvg.style.display = 'none';
-  }
+  // Logo: prioriza base64 salvo no banco
+  const src = cfg.logo_base64 || cfg.logo_url || '';
+  if (src) aplicarLogoNaSidebar(src);
 }
 
 async function carregarDadosEmpresa() {
@@ -5201,36 +5223,35 @@ async function carregarDadosEmpresa() {
     const cfg = {};
     (data || []).forEach(function(r) { cfg[r.chave] = r.valor; });
 
-    // Preenche campos
-    const set = function(id, v) { const e = document.getElementById(id); if(e && v) e.value = v; };
-    set('cfg-nome-loja', cfg.nome_loja);
-    set('cfg-slogan',    cfg.slogan);
-    set('cfg-cnpj',      cfg.cnpj);
-    set('cfg-telefone',  cfg.telefone);
-    set('cfg-endereco',  cfg.endereco);
+    // Preenche campos do formulário
+    const setVal = function(id, v) { const e = document.getElementById(id); if (e && v) e.value = v; };
+    setVal('cfg-nome-loja', cfg.nome_loja);
+    setVal('cfg-slogan',    cfg.slogan);
+    setVal('cfg-cnpj',      cfg.cnpj);
+    setVal('cfg-telefone',  cfg.telefone);
+    setVal('cfg-endereco',  cfg.endereco);
 
-    // Preview logo
-    if (cfg.logo_url) {
+    // Preview logo no card de perfil
+    const logoSrc = cfg.logo_base64 || cfg.logo_url || '';
+    if (logoSrc) {
       const img = document.getElementById('cfg-logo-preview');
       const ph  = document.getElementById('cfg-logo-placeholder');
-      if (img) { img.src = cfg.logo_url; img.style.display = 'block'; }
+      if (img) { img.src = logoSrc; img.style.display = 'block'; }
       if (ph)  ph.style.display = 'none';
     }
 
-    // Aplica na sidebar
+    // Aplica nome + logo na sidebar
     aplicarPerfilNaSidebar(cfg);
 
     // Último acesso
     const ua = document.getElementById('cfg-ultimo-acesso');
-    if (ua && cfg.ultimo_acesso) {
-      ua.textContent = new Date(cfg.ultimo_acesso).toLocaleString('pt-BR');
-    }
+    if (ua && cfg.ultimo_acesso) ua.textContent = new Date(cfg.ultimo_acesso).toLocaleString('pt-BR');
 
-    // ID da loja (usa a URL do supabase como identificador)
+    // ID da loja
     const lojaId = document.getElementById('cfg-loja-id');
     if (lojaId) lojaId.textContent = SUPABASE_URL.split('//')[1].split('.')[0];
 
-    // Plano
+    // Status do plano
     carregarStatusPlano(cfg);
 
   } catch(e) { /* silencioso */ }
