@@ -6122,15 +6122,15 @@ function renderCalendario() {
     dayAgs.slice(0, maxShow).forEach(function(a) {
       const hora  = a.data_hora ? a.data_hora.substring(11,16) : '';
       const label = hora + ' ' + (a.cliente_nome || '?');
-      eventsHtml += '<div class="ag-cal-event ' + (a.status||'agendado') + '" onclick="agViewDetail('' + a.id + '');event.stopPropagation();" title="' + (a.servico||'') + '">' + label + '</div>';
+      eventsHtml += '<div class="ag-cal-event ' + (a.status||'agendado') + '" onclick="agViewDetail(' + a.id + ');event.stopPropagation();" title="' + (a.servico||'') + '">' + label + '</div>';
     });
     if (dayAgs.length > maxShow) {
       eventsHtml += '<div class="ag-more-badge">+' + (dayAgs.length - maxShow) + ' mais</div>';
     }
 
-    const addBtn = !isOther ? '<div onclick="agOpenNewForDate('' + dateStr + '')" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity 0.15s;font-size:16px;color:var(--accent);cursor:pointer;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--accent-soft);" class="ag-add-btn">+</div>' : '';
+    const addBtn = !isOther ? '<div onclick="agOpenNewForDate(' + dateStr + ')" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity 0.15s;font-size:16px;color:var(--accent);cursor:pointer;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--accent-soft);" class="ag-add-btn">+</div>' : '';
 
-    html += '<div class="ag-cal-cell' + (isOther ? ' other-month' : '') + (isToday ? ' today' : '') + '" onclick="agOpenNewForDate('' + dateStr + '')" style="position:relative;" onmouseover="var b=this.querySelector('.ag-add-btn');if(b)b.style.opacity='1';" onmouseout="var b=this.querySelector('.ag-add-btn');if(b)b.style.opacity='0';">' +
+    html += '<div class="ag-cal-cell' + (isOther ? ' other-month' : '') + (isToday ? ' today' : '') + '" onclick="agOpenNewForDate(' + dateStr + ')" style="position:relative;" onmouseover="var b=this.querySelector(\'.ag-add-btn\');if(b)b.style.opacity=\'1\';" onmouseout="var b=this.querySelector(\'.ag-add-btn\');if(b)b.style.opacity=\'0\';">' +
       dayNum + eventsHtml + addBtn +
     '</div>';
   }
@@ -6176,11 +6176,11 @@ function renderAgendaList() {
       '<td>' + (a.servico||'—') + '</td>' +
       '<td class="mono">' + valor + '</td>' +
       '<td><span class="status-badge ag-status-' + st + '">' + stLbl + '</span></td>' +
-      '<td><button onclick="agOpenMsg('' + a.id + '')" style="background:var(--green-soft);border:1px solid rgba(16,232,158,0.3);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;display:flex;align-items:center;gap:4px;">💬 WA</button></td>' +
+      '<td><button onclick="agOpenMsg(' + a.id + ')" style="background:var(--green-soft);border:1px solid rgba(16,232,158,0.3);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;display:flex;align-items:center;gap:4px;">💬 WA</button></td>' +
       '<td style="display:flex;gap:4px;">' +
-        '<button class="icon-btn" onclick="agViewDetail('' + a.id + '')" title="Ver"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>' +
-        '<button class="icon-btn" onclick="agOpenEdit('' + a.id + '')" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
-        '<button class="icon-btn del" onclick="agDelete('' + a.id + '')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+        '<button class="icon-btn" onclick="agViewDetail(' + a.id + ')" title="Ver"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>' +
+        '<button class="icon-btn" onclick="agOpenEdit(' + a.id + ')" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
+        '<button class="icon-btn del" onclick="agDelete(' + a.id + ')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
       '</td>' +
     '</tr>';
   });
@@ -6216,7 +6216,13 @@ function agSearchCliente(q) {
   }).slice(0, 6);
   if (!found.length) { res.style.display = 'none'; return; }
   res.innerHTML = found.map(function(c) {
-    return '<div style="padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.15s;" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''" onclick="agSelectCliente('' + c.id + '','' + (c.nome||'').replace(/'/g,'\'') + '','' + (c.telefone||'').replace(/'/g,'\'') + '')">' +
+    const id   = c.id;
+    const nome = (c.nome||'').replace(/'/g, '&#39;');
+    const tel  = (c.telefone||'').replace(/'/g, '&#39;');
+    return '<div style="padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.15s;" ' +
+      'onmouseover="this.style.background=\'var(--bg-card-hover)\'" ' +
+      'onmouseout="this.style.background=\'\'" ' +
+      'onclick="agSelectCliente(' + id + ',\'' + nome + '\',\'' + tel + '\')">' +
       '<strong>' + (c.nome||'') + '</strong>' + (c.telefone ? '<span style="color:var(--text-muted);font-size:11px;margin-left:8px;">' + c.telefone + '</span>' : '') +
     '</div>';
   }).join('');
@@ -6315,7 +6321,7 @@ function agViewDetail(id) {
         (a.cliente_tel ? '<div style="font-size:12px;color:var(--text-muted);">' + a.cliente_tel + '</div>' : '') + '</div>' +
       '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Serviço</div><div style="font-weight:600;color:var(--text-primary);">' + (a.servico||'—') + '</div></div>' +
       '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Data / Hora</div><div style="font-weight:600;color:var(--accent);">' + dtFmt + '</div></div>' +
-      '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Valor Est.</div><div style="font-weight:700;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);">' + (a.valor ? 'R$ ' + Number(a.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—') + '</div></div>' +
+      '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Valor Est.</div><div style="font-weight:700;font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--green);">' + (a.valor ? 'R$ ' + Number(a.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—') + '</div></div>' +
       '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Status</div><div style="font-weight:700;">' + (stMap[a.status]||a.status) + '</div></div>' +
       '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Duração</div><div>' + (a.duracao_min ? a.duracao_min + ' min' : '—') + '</div></div>' +
     '</div>' +
@@ -6371,55 +6377,26 @@ function agSetMsgTemplate(tipo, btn) {
   
   let msg = '';
   if (tipo === 'confirmacao') {
-    msg = 'Olá ' + nome + '! 👋
-
-Seu agendamento foi confirmado!
-
-' +
-      '📅 *' + dtFmt + '*
-' +
-      '🔧 Serviço: *' + serv + '*' + val + '
-
-' +
-      'Caso precise reagendar, é só nos avisar. Te esperamos! 🏍️
-
-' +
+    msg = 'Olá ' + nome + '! 👋\n\nSeu agendamento foi confirmado!\n\n' +
+      '📅 *' + dtFmt + '*\n' +
+      '🔧 Serviço: *' + serv + '*' + val + '\n\n' +
+      'Caso precise reagendar, é só nos avisar. Te esperamos! 🏍️\n\n' +
       '— MotoStock';
   } else if (tipo === 'lembrete') {
-    msg = 'Olá ' + nome + '! 👋
-
-' +
-      'Passando para lembrar do seu agendamento:
-
-' +
-      '📅 *' + dtFmt + '*
-' +
-      '🔧 Serviço: *' + serv + '*
-
-' +
-      'Qualquer dúvida, pode nos chamar!
-
-' +
+    msg = 'Olá ' + nome + '! 👋\n\n' +
+      'Passando para lembrar do seu agendamento:\n\n' +
+      '📅 *' + dtFmt + '*\n' +
+      '🔧 Serviço: *' + serv + '*\n\n' +
+      'Qualquer dúvida, pode nos chamar!\n\n' +
       '— MotoStock';
   } else if (tipo === 'cobranca') {
-    msg = 'Olá ' + nome + '! 👋
-
-' +
-      'Gostaríamos de lembrar sobre o valor em aberto referente ao serviço:
-
-' +
-      '🔧 *' + serv + '*' + val + '
-
-' +
-      'Pedimos que efetue o pagamento para mantermos o atendimento em dia. 🙏
-
-' +
-      'Formas de pagamento: *Dinheiro*, *PIX* ou *Cartão*.
-
-' +
+    msg = 'Olá ' + nome + '! 👋\n\n' +
+      'Gostaríamos de lembrar sobre o valor em aberto referente ao serviço:\n\n' +
+      '🔧 *' + serv + '*' + val + '\n\n' +
+      'Pedimos que efetue o pagamento para mantermos o atendimento em dia. 🙏\n\n' +
+      'Formas de pagamento: *Dinheiro*, *PIX* ou *Cartão*.\n\n' +
       '— MotoStock';
   }
-  const ta = document.getElementById('ag-msg-texto');
   if (ta) ta.value = msg;
 }
 
@@ -6427,8 +6404,7 @@ function agEnviarWhatsapp() {
   const tel = (document.getElementById('ag-msg-tel')||{}).value || '';
   const msg = (document.getElementById('ag-msg-texto')||{}).value || '';
   if (!msg.trim()) { toast('Escreva uma mensagem primeiro.', 'y'); return; }
-  if (!tel) { toast('Este cliente não possui telefone cadastrado.
-Edite o agendamento e adicione o número.', 'y'); return; }
+  if (!tel) { toast('Cliente sem telefone. Edite o agendamento e adicione o número.', 'y'); return; }
   // Limpa telefone: só dígitos, adiciona 55 (Brasil)
   const cleaned = tel.replace(/\D/g,'');
   const num = cleaned.startsWith('55') ? cleaned : '55' + cleaned;
