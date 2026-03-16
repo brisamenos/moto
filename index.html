@@ -329,6 +329,8 @@ body {
   min-height: 100vh;
   position: relative;
   z-index: 1;
+  overflow-x: hidden;
+  width: calc(100% - var(--sidebar-w));
 }
 
 /* ════════════════════════════════
@@ -503,6 +505,9 @@ body {
   flex-direction: column;
   gap: 24px;
   animation: pageIn 0.35s cubic-bezier(0.22,1,0.36,1) both;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .content.active { display: flex; }
@@ -642,6 +647,10 @@ body {
 .grid-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .grid-3   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
 .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+
+@media (max-width: 900px) {
+  .grid-2, .grid-3, .grid-2-1 { grid-template-columns: 1fr; }
+}
 .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 18px; }
 
 /* ════════════════════════════════
@@ -6853,7 +6862,7 @@ function agEnviarWhatsapp() {
       </div>
 
       <!-- Linha 2: Nome + Slogan -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px;">
         <div>
           <label class="form-label" style="display:block;margin-bottom:6px;">
             Nome da Loja *
@@ -6871,7 +6880,7 @@ function agEnviarWhatsapp() {
       </div>
 
       <!-- Linha 3: Dados empresa -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px;">
         <div>
           <label class="form-label" style="display:block;margin-bottom:6px;">CNPJ</label>
           <input class="input-field" id="cfg-cnpj" type="text" placeholder="00.000.000/0000-00" style="width:100%;">
@@ -6918,7 +6927,7 @@ function agEnviarWhatsapp() {
       <div class="card-subtitle">Informações sobre seu plano de acesso ao sistema</div>
     </div>
     <div class="card-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;" id="cfg-plano-grid">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;" id="cfg-plano-grid">
         <div style="padding:18px;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Plano Atual</div>
           <div id="cfg-plano-nome" style="font-size:20px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif;">—</div>
