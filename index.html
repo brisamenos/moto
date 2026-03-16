@@ -125,7 +125,7 @@ body {
 ════════════════════════════════ */
 .sidebar {
   width: var(--sidebar-w);
-  min-height: 100vh;
+  height: 100vh;
   background: var(--bg-sidebar);
   border-right: 1px solid rgba(255,255,255,0.06);
   display: flex;
@@ -133,8 +133,8 @@ body {
   position: fixed;
   left: 0; top: 0;
   z-index: 200;
-  padding-bottom: 20px;
   transition: transform 0.3s ease;
+  overflow: hidden;
 }
 
 /* Accent stripe at top */
@@ -161,7 +161,18 @@ body {
   --accent: #f0a500;
 }
 
-.sidebar-brand {
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 8px;
+}
+
+.sidebar-scroll::-webkit-scrollbar { width: 3px; }
+.sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+
+
   padding: 26px 22px 22px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
   display: flex; align-items: center; gap: 13px;
@@ -1802,6 +1813,7 @@ select { font-size: 13.5px; }
     </div>
   </div>
 
+  <div class="sidebar-scroll">
   <div class="sidebar-section">
     <div class="sidebar-section-label">Principal</div>
     <a class="nav-item active" onclick="showPage('dashboard')">
@@ -1857,22 +1869,25 @@ select { font-size: 13.5px; }
     </a>
   </div>
 
-  <div class="sidebar-divider"></div>
+  </div><!-- /sidebar-scroll -->
 
-  <div class="sidebar-section">
-    <a class="nav-item" onclick="showPage('configuracoes')">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></span>
-      Configuracoes
-    </a>
-  </div>
+  <div class="sidebar-divider" style="margin:0;"></div>
 
-  <div class="sidebar-user">
-    <div class="user-avatar">AD</div>
-    <div class="user-info">
-      <h4>Admin</h4>
-      <span>Gerente Geral</span>
+  <div class="sidebar-user" onclick="showPage('configuracoes')" style="cursor:pointer;" title="Perfil &amp; Configurações">
+    <div class="user-avatar" id="sidebar-avatar-wrap" style="position:relative;overflow:hidden;">
+      <img id="sidebar-logo-avatar" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:10px;position:absolute;inset:0;">
+      <span id="sidebar-avatar-txt">AD</span>
     </div>
-    <div style="margin-left:auto;cursor:pointer;opacity:0.5;transition:opacity 0.2s;font-size:14px" onclick="toggleTheme()" title="Alternar tema">💡</div>
+    <div class="user-info">
+      <h4 id="sidebar-nome-loja">MotoStock</h4>
+      <span id="sidebar-slogan">Gestao Completa</span>
+    </div>
+    <div style="display:flex;gap:4px;margin-left:auto;align-items:center;">
+      <div style="cursor:pointer;opacity:0.45;transition:opacity 0.2s;font-size:14px;padding:4px;" onclick="event.stopPropagation();toggleTheme()" title="Alternar tema">💡</div>
+      <div style="opacity:0.45;padding:4px;" title="Configurações">
+        <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#8d96b5"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      </div>
+    </div>
   </div>
 </aside>
 
@@ -5186,11 +5201,17 @@ function previewLogo(input) {
 }
 
 function aplicarLogoNaSidebar(src) {
+  if (!src) return;
+  // Logo no brand (topo)
   const sImg = document.getElementById('sidebar-logo-img');
   const sSvg = document.getElementById('sidebar-logo-svg');
-  if (!src) return;
   if (sImg) { sImg.src = src; sImg.style.display = 'block'; }
   if (sSvg) sSvg.style.display = 'none';
+  // Logo no avatar (rodapé)
+  const aImg = document.getElementById('sidebar-logo-avatar');
+  const aTxt = document.getElementById('sidebar-avatar-txt');
+  if (aImg) { aImg.src = src; aImg.style.display = 'block'; }
+  if (aTxt) aTxt.style.display = 'none';
 }
 
 async function salvarPerfil() {
