@@ -180,16 +180,17 @@ body {
 }
 
 .brand-icon {
-  width: 40px; height: 40px;
+  width: 32px; height: 32px;
   background: var(--gradient-accent);
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   position: relative;
-  box-shadow: 0 4px 16px rgba(240,165,0,0.4);
+  box-shadow: 0 2px 10px rgba(240,165,0,0.35);
+  overflow: hidden;
 }
 
-.brand-icon svg { width: 22px; height: 22px; fill: #09090b; }
+.brand-icon svg { width: 18px; height: 18px; fill: #09090b; }
 
 .brand-text h1 {
   font-family: 'Syne', sans-serif;
@@ -5143,7 +5144,8 @@ function previewSloganLoja(val) {
 }
 
 function removerLogo() {
-  _logoBase64Pendente = '__remover__';
+  _logoFilePendente = null;
+  _logoRemover = true;
   const img = document.getElementById('cfg-logo-preview');
   const ph  = document.getElementById('cfg-logo-placeholder');
   const rem = document.getElementById('cfg-logo-remove-btn');
@@ -5161,68 +5163,90 @@ function removerLogo() {
   if (pSvg) pSvg.style.display = 'block';
 }
 
-// Comprime imagem e retorna base64 (max 300x300, qualidade 0.8)
-function comprimirImagem(file) {
-  return new Promise(function(resolve) {
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LOGO — Supabase Storage (bucket: imagens)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let _logoFilePendente = null;
+let _logoRemover = false;
+
+function previewLogo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  _logoFilePendente = file;
+  _logoRemover = false;
+  // Preview local imediato (sem esperar upload)
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const src = e.target.result;
+    const img = document.getElementById('cfg-logo-preview');
+    const ph  = document.getElementById('cfg-logo-placeholder');
+    const rem = document.getElementById('cfg-logo-remove-btn');
+    if (img) { img.src = src; img.style.display = 'block'; }
+    if (ph)  ph.style.display = 'none';
+    if (rem) rem.style.display = 'flex';
+    // Preview mini sidebar no card
+    const pImg = document.getElementById('cfg-preview-sidebar-img');
+    const pSvg = document.getElementById('cfg-preview-sidebar-svg');
+    if (pImg) { pImg.src = src; pImg.style.display = 'block'; }
+    if (pSvg) pSvg.style.display = 'none';
+    // Sidebar real
+    aplicarLogoNaSidebar(src);
+  };
+  reader.readAsDataURL(file);
+}
+
+function aplicarLogoNaSidebar(src) {
+  if (!src) return;
+  const sImg = document.getElementById('sidebar-logo-img');
+  const sSvg = document.getElementById('sidebar-logo-svg');
+  if (sImg) { sImg.src = src; sImg.style.display = 'block'; }
+  if (sSvg) sSvg.style.display = 'none';
+  const aImg = document.getElementById('sidebar-logo-avatar');
+  const aTxt = document.getElementById('sidebar-avatar-txt');
+  if (aImg) { aImg.src = src; aImg.style.display = 'block'; }
+  if (aTxt) aTxt.style.display = 'none';
+}
+
+async function uploadLogoStorage(file) {
+  // Comprime para max 200x200 antes de fazer upload
+  const b64 = await new Promise(function(resolve) {
     const reader = new FileReader();
     reader.onload = function(e) {
       const img = new Image();
       img.onload = function() {
         const canvas = document.createElement('canvas');
-        const MAX = 300;
+        const MAX = 200;
         let w = img.width, h = img.height;
-        if (w > MAX || h > MAX) {
-          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-          else       { w = Math.round(w * MAX / h); h = MAX; }
-        }
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else       { w = Math.round(w * MAX / h); h = MAX; }
         canvas.width = w; canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', 0.82));
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
       };
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   });
-}
 
-// Preview local imediato + guarda base64 em variável temporária
-let _logoBase64Pendente = '';
+  // Converte base64 para Blob
+  const arr = b64.split(','), mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8 = new Uint8Array(n);
+  while (n--) u8[n] = bstr.charCodeAt(n);
+  const blob = new Blob([u8], { type: mime });
 
-function previewLogo(input) {
-  const file = input.files[0];
-  if (!file) return;
-  comprimirImagem(file).then(function(b64) {
-    _logoBase64Pendente = b64;
-    // Preview no card de perfil
-    const img = document.getElementById('cfg-logo-preview');
-    const ph  = document.getElementById('cfg-logo-placeholder');
-    const rem = document.getElementById('cfg-logo-remove-btn');
-    if (img) { img.src = b64; img.style.display = 'block'; }
-    if (ph)  ph.style.display = 'none';
-    if (rem) rem.style.display = 'flex';
-    // Preview mini sidebar dentro do card
-    const pImg = document.getElementById('cfg-preview-sidebar-img');
-    const pSvg = document.getElementById('cfg-preview-sidebar-svg');
-    if (pImg) { pImg.src = b64; pImg.style.display = 'block'; }
-    if (pSvg) pSvg.style.display = 'none';
-    // Sidebar real
-    aplicarLogoNaSidebar(b64);
+  // Upload para bucket "imagens/logo/"
+  const path = 'logo/logo_loja.jpg';
+  const { error } = await sb.storage.from('imagens').upload(path, blob, {
+    upsert: true,
+    contentType: 'image/jpeg'
   });
-}
+  if (error) throw error;
 
-function aplicarLogoNaSidebar(src) {
-  if (!src) return;
-  // Logo no brand (topo)
-  const sImg = document.getElementById('sidebar-logo-img');
-  const sSvg = document.getElementById('sidebar-logo-svg');
-  if (sImg) { sImg.src = src; sImg.style.display = 'block'; }
-  if (sSvg) sSvg.style.display = 'none';
-  // Logo no avatar (rodapé)
-  const aImg = document.getElementById('sidebar-logo-avatar');
-  const aTxt = document.getElementById('sidebar-avatar-txt');
-  if (aImg) { aImg.src = src; aImg.style.display = 'block'; }
-  if (aTxt) aTxt.style.display = 'none';
+  // Retorna URL pública com cache-busting
+  const { data } = sb.storage.from('imagens').getPublicUrl(path);
+  return data.publicUrl + '?t=' + Date.now();
 }
 
 async function salvarPerfil() {
@@ -5245,11 +5269,17 @@ async function salvarPerfil() {
       { chave: 'ultimo_acesso', valor: new Date().toISOString() },
     ];
 
-    // Salva logo como base64 no Supabase se tiver novo upload ou remoção
-    if (_logoBase64Pendente === '__remover__') {
-      campos.push({ chave: 'logo_base64', valor: '' });
-    } else if (_logoBase64Pendente) {
-      campos.push({ chave: 'logo_base64', valor: _logoBase64Pendente });
+    // Upload logo para Storage se tiver arquivo novo
+    if (_logoRemover) {
+      campos.push({ chave: 'logo_url', valor: '' });
+      await sb.storage.from('imagens').remove(['logo/logo_loja.jpg']);
+    } else if (_logoFilePendente) {
+      try {
+        const url = await uploadLogoStorage(_logoFilePendente);
+        campos.push({ chave: 'logo_url', valor: url });
+      } catch(upErr) {
+        toast('Aviso: erro no upload da logo (' + upErr.message + '). Restante salvo.', 'y');
+      }
     }
 
     // Upsert em paralelo para todos os campos
@@ -5257,7 +5287,8 @@ async function salvarPerfil() {
       return sb.from('configuracoes').upsert({ chave: c.chave, valor: c.valor }, { onConflict: 'chave' });
     }));
 
-    _logoBase64Pendente = ''; // limpa pendente
+    _logoFilePendente = null; // limpa pendente
+    _logoRemover = false;
 
     // Aplica na sidebar
     aplicarPerfilNaSidebar({ nome_loja: nomeLoja, slogan });
@@ -5284,8 +5315,8 @@ function aplicarPerfilNaSidebar(cfg) {
     const pr = document.getElementById('cfg-preview-slogan');
     if (pr) pr.textContent = cfg.slogan.toUpperCase();
   }
-  // Logo: prioriza base64 salvo no banco
-  const src = cfg.logo_base64 || cfg.logo_url || '';
+  // Logo: URL do Storage
+  const src = cfg.logo_url || '';
   if (src) {
     aplicarLogoNaSidebar(src);
     // Mini preview no card
@@ -5314,7 +5345,7 @@ async function carregarDadosEmpresa() {
     setVal('cfg-endereco',  cfg.endereco);
 
     // Preview logo no card de perfil
-    const logoSrc = cfg.logo_base64 || cfg.logo_url || '';
+    const logoSrc = cfg.logo_url || '';
     if (logoSrc) {
       const img = document.getElementById('cfg-logo-preview');
       const ph  = document.getElementById('cfg-logo-placeholder');
