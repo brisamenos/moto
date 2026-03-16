@@ -893,7 +893,8 @@ tbody td:first-child {
   display: grid;
   grid-template-columns: 1fr 370px;
   gap: 18px;
-  height: calc(100vh - 160px);
+  height: calc(100vh - var(--topbar-h) - 200px);
+  min-height: 480px;
 }
 
 .pdv-products {
@@ -1083,6 +1084,7 @@ select:focus { border-color: var(--border-accent); }
   padding: 14px;
   border-top: 1px solid var(--border);
   background: var(--bg-surface);
+  flex-shrink: 0;
 }
 
 .cart-totals { margin-bottom: 12px; }
@@ -3711,10 +3713,26 @@ async function pdvFinalize() {
   if (!pdvCart.length) { toast('Adicione produtos primeiro.', 'y'); return; }
   if (pdvMode === 'orcamento') { gerarOrcamentoPDF(); return; }
 
-  // Verificar caixa aberto
+  // Verificar caixa aberto — se fechado, abre automaticamente com R$0
   if (!caixaAberto) {
-    toast('Abra o caixa antes de registrar vendas!', 'y');
-    return;
+    caixaAberto = true;
+    caixaAberturaVal = 0;
+    try {
+      if (caixaSessaoId) {
+        await sb.from('caixa_sessoes').update({
+          status: 'aberto', valor_abertura: 0,
+          abertura_at: new Date().toISOString(), fechamento_at: null,
+          updated_at: new Date().toISOString()
+        }).eq('id', caixaSessaoId);
+      } else {
+        const r = await sb.from('caixa_sessoes').insert({
+          status: 'aberto', valor_abertura: 0, operador: 'Admin',
+          abertura_at: new Date().toISOString()
+        }).select().single();
+        if (r.data) caixaSessaoId = r.data.id;
+      }
+    } catch(e) { console.warn('Auto-abertura de caixa:', e); }
+    toast('Caixa aberto automaticamente.', 'y');
   }
 
   const cli      = ($('pdv-cliente')   ? $('pdv-cliente').value.trim()   : '') || 'Consumidor';
