@@ -5103,8 +5103,36 @@ function abrirJanelaImpressao(htmlContent, titulo, isTermica) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function previewNomeLoja(val) {
-  const el = document.getElementById('sidebar-nome-loja');
-  if (el && val.trim()) el.textContent = val.trim();
+  const sidebar = document.getElementById('sidebar-nome-loja');
+  const prev    = document.getElementById('cfg-preview-nome');
+  if (sidebar) sidebar.textContent = val.trim() || 'MotoStock';
+  if (prev)    prev.textContent    = val.trim() || 'MotoStock';
+}
+
+function previewSloganLoja(val) {
+  const sidebar = document.getElementById('sidebar-slogan');
+  const prev    = document.getElementById('cfg-preview-slogan');
+  if (sidebar) sidebar.textContent = val.trim() || 'Gestao Completa';
+  if (prev)    prev.textContent    = (val.trim() || 'GESTAO COMPLETA').toUpperCase();
+}
+
+function removerLogo() {
+  _logoBase64Pendente = '__remover__';
+  const img = document.getElementById('cfg-logo-preview');
+  const ph  = document.getElementById('cfg-logo-placeholder');
+  const rem = document.getElementById('cfg-logo-remove-btn');
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  if (ph)  ph.style.display = 'block';
+  if (rem) rem.style.display = 'none';
+  // Volta SVG padrão na sidebar e no preview
+  const sImg = document.getElementById('sidebar-logo-img');
+  const sSvg = document.getElementById('sidebar-logo-svg');
+  const pImg = document.getElementById('cfg-preview-sidebar-img');
+  const pSvg = document.getElementById('cfg-preview-sidebar-svg');
+  if (sImg) { sImg.style.display = 'none'; }
+  if (sSvg) sSvg.style.display = 'block';
+  if (pImg) { pImg.style.display = 'none'; }
+  if (pSvg) pSvg.style.display = 'block';
 }
 
 // Comprime imagem e retorna base64 (max 300x300, qualidade 0.8)
@@ -5140,12 +5168,19 @@ function previewLogo(input) {
   if (!file) return;
   comprimirImagem(file).then(function(b64) {
     _logoBase64Pendente = b64;
-    // Preview no card
+    // Preview no card de perfil
     const img = document.getElementById('cfg-logo-preview');
     const ph  = document.getElementById('cfg-logo-placeholder');
+    const rem = document.getElementById('cfg-logo-remove-btn');
     if (img) { img.src = b64; img.style.display = 'block'; }
     if (ph)  ph.style.display = 'none';
-    // Preview na sidebar
+    if (rem) rem.style.display = 'flex';
+    // Preview mini sidebar dentro do card
+    const pImg = document.getElementById('cfg-preview-sidebar-img');
+    const pSvg = document.getElementById('cfg-preview-sidebar-svg');
+    if (pImg) { pImg.src = b64; pImg.style.display = 'block'; }
+    if (pSvg) pSvg.style.display = 'none';
+    // Sidebar real
     aplicarLogoNaSidebar(b64);
   });
 }
@@ -5178,8 +5213,10 @@ async function salvarPerfil() {
       { chave: 'ultimo_acesso', valor: new Date().toISOString() },
     ];
 
-    // Salva logo como base64 no Supabase se tiver novo upload
-    if (_logoBase64Pendente) {
+    // Salva logo como base64 no Supabase se tiver novo upload ou remoção
+    if (_logoBase64Pendente === '__remover__') {
+      campos.push({ chave: 'logo_base64', valor: '' });
+    } else if (_logoBase64Pendente) {
       campos.push({ chave: 'logo_base64', valor: _logoBase64Pendente });
     }
 
@@ -5206,14 +5243,28 @@ function aplicarPerfilNaSidebar(cfg) {
   if (cfg.nome_loja) {
     const el = document.getElementById('sidebar-nome-loja');
     if (el) el.textContent = cfg.nome_loja;
+    const pr = document.getElementById('cfg-preview-nome');
+    if (pr) pr.textContent = cfg.nome_loja;
   }
   if (cfg.slogan) {
     const el = document.getElementById('sidebar-slogan');
     if (el) el.textContent = cfg.slogan;
+    const pr = document.getElementById('cfg-preview-slogan');
+    if (pr) pr.textContent = cfg.slogan.toUpperCase();
   }
   // Logo: prioriza base64 salvo no banco
   const src = cfg.logo_base64 || cfg.logo_url || '';
-  if (src) aplicarLogoNaSidebar(src);
+  if (src) {
+    aplicarLogoNaSidebar(src);
+    // Mini preview no card
+    const pImg = document.getElementById('cfg-preview-sidebar-img');
+    const pSvg = document.getElementById('cfg-preview-sidebar-svg');
+    if (pImg) { pImg.src = src; pImg.style.display = 'block'; }
+    if (pSvg) pSvg.style.display = 'none';
+    // Mostra botão remover
+    const rem = document.getElementById('cfg-logo-remove-btn');
+    if (rem) rem.style.display = 'flex';
+  }
 }
 
 async function carregarDadosEmpresa() {
@@ -6753,64 +6804,89 @@ function agEnviarWhatsapp() {
   <div class="card">
     <div class="card-header">
       <div class="card-title">🏪 Identidade Visual da Loja</div>
-      <div class="card-subtitle">Logo e nome que aparecem na sidebar e nos documentos gerados</div>
+      <div class="card-subtitle">Altere a logo e o nome — aparecem na sidebar e nos documentos</div>
     </div>
     <div class="card-body">
-      <div style="display:flex;align-items:flex-start;gap:28px;flex-wrap:wrap;">
 
-        <!-- Preview + upload logo -->
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
-          <div id="cfg-logo-wrap" style="width:96px;height:96px;border-radius:16px;border:2px dashed var(--border-accent);background:var(--bg-surface);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;transition:border-color 0.2s;position:relative;" onclick="document.getElementById('cfg-logo-input').click()" title="Clique para trocar a logo">
-            <img id="cfg-logo-preview" src="" alt="logo" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:14px;">
-            <div id="cfg-logo-placeholder" style="text-align:center;color:var(--text-muted);pointer-events:none;">
-              <div style="font-size:28px;">🏍️</div>
-              <div style="font-size:10px;margin-top:4px;font-weight:600;">Clique para<br>adicionar logo</div>
-            </div>
-            <div style="position:absolute;inset:0;background:rgba(240,165,0,0.12);opacity:0;transition:opacity 0.2s;border-radius:14px;" class="logo-hover-overlay"></div>
+      <!-- Linha 1: Logo -->
+      <div style="display:flex;align-items:center;gap:20px;padding:18px;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:16px;">
+        <!-- Preview logo -->
+        <div id="cfg-logo-wrap" style="width:80px;height:80px;border-radius:14px;background:var(--bg-card);border:2px solid var(--border-accent);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;">
+          <img id="cfg-logo-preview" src="" alt="logo" style="display:none;width:100%;height:100%;object-fit:cover;">
+          <div id="cfg-logo-placeholder" style="font-size:30px;opacity:0.4;">🏍️</div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Logo da Loja</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">PNG, JPG ou SVG. Máx 5MB. Será salvo no banco de dados.</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-accent" onclick="document.getElementById('cfg-logo-input').click()" style="font-size:12px;padding:7px 14px;">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              Escolher Imagem
+            </button>
+            <button class="btn-outline" onclick="removerLogo()" style="font-size:12px;padding:7px 14px;color:var(--red);border-color:var(--red);" id="cfg-logo-remove-btn" style="display:none;">
+              ✕ Remover
+            </button>
           </div>
           <input type="file" id="cfg-logo-input" accept="image/*" style="display:none;" onchange="previewLogo(this)">
-          <button class="btn-outline" style="font-size:11px;padding:5px 12px;" onclick="document.getElementById('cfg-logo-input').click()">
-            <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-            Trocar Logo
-          </button>
         </div>
-
-        <!-- Campos da loja -->
-        <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:12px;">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Nome da Loja *</label>
-              <input class="input-field" id="cfg-nome-loja" type="text" placeholder="Ex: MotoStock Peças" style="width:100%;" oninput="previewNomeLoja(this.value)">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Slogan / Subtítulo</label>
-              <input class="input-field" id="cfg-slogan" type="text" placeholder="Ex: Gestão Completa" style="width:100%;">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">CNPJ</label>
-              <input class="input-field" id="cfg-cnpj" type="text" placeholder="00.000.000/0000-00" style="width:100%;">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Telefone / WhatsApp</label>
-              <input class="input-field" id="cfg-telefone" type="text" placeholder="(00) 00000-0000" style="width:100%;">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Endereço</label>
-            <input class="input-field" id="cfg-endereco" type="text" placeholder="Rua, número, cidade, estado..." style="width:100%;">
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <button class="btn-accent" onclick="salvarPerfil()">
-              <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-              Salvar Perfil
-            </button>
-            <span id="cfg-save-status" style="font-size:11px;color:var(--text-muted);"></span>
-          </div>
-        </div>
-
       </div>
+
+      <!-- Linha 2: Nome + Slogan -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div>
+          <label class="form-label" style="display:block;margin-bottom:6px;">
+            Nome da Loja *
+            <span style="font-size:10px;color:var(--text-muted);font-weight:400;margin-left:4px;">(aparece na sidebar)</span>
+          </label>
+          <input class="input-field" id="cfg-nome-loja" type="text" placeholder="Ex: MotoStock Peças" style="width:100%;font-size:14px;font-weight:600;" oninput="previewNomeLoja(this.value)">
+        </div>
+        <div>
+          <label class="form-label" style="display:block;margin-bottom:6px;">
+            Subtítulo / Slogan
+            <span style="font-size:10px;color:var(--text-muted);font-weight:400;margin-left:4px;">(linha abaixo do nome)</span>
+          </label>
+          <input class="input-field" id="cfg-slogan" type="text" placeholder="Ex: Gestão Completa" style="width:100%;" oninput="previewSloganLoja(this.value)">
+        </div>
+      </div>
+
+      <!-- Linha 3: Dados empresa -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div>
+          <label class="form-label" style="display:block;margin-bottom:6px;">CNPJ</label>
+          <input class="input-field" id="cfg-cnpj" type="text" placeholder="00.000.000/0000-00" style="width:100%;">
+        </div>
+        <div>
+          <label class="form-label" style="display:block;margin-bottom:6px;">Telefone / WhatsApp</label>
+          <input class="input-field" id="cfg-telefone" type="text" placeholder="(00) 00000-0000" style="width:100%;">
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label class="form-label" style="display:block;margin-bottom:6px;">Endereço</label>
+        <input class="input-field" id="cfg-endereco" type="text" placeholder="Rua, número, cidade, estado..." style="width:100%;">
+      </div>
+
+      <!-- Preview sidebar em tempo real -->
+      <div style="padding:14px;background:var(--bg-sidebar);border-radius:var(--radius);border:1px solid rgba(255,255,255,0.06);margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#5d6888;flex-shrink:0;">Preview:</div>
+        <div style="width:36px;height:36px;background:var(--gradient-accent);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+          <img id="cfg-preview-sidebar-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
+          <svg id="cfg-preview-sidebar-svg" viewBox="0 0 24 24" style="width:18px;height:18px;fill:#09090b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        </div>
+        <div>
+          <div id="cfg-preview-nome" style="font-size:15px;font-weight:800;color:#eef2ff;font-family:'Syne',sans-serif;letter-spacing:0.5px;">MotoStock</div>
+          <div id="cfg-preview-slogan" style="font-size:10px;color:#5d6888;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">GESTAO COMPLETA</div>
+        </div>
+      </div>
+
+      <!-- Botão salvar -->
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn-accent" onclick="salvarPerfil()" style="font-size:14px;padding:10px 24px;">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Salvar Alterações
+        </button>
+        <span id="cfg-save-status" style="font-size:12px;color:var(--text-muted);"></span>
+      </div>
+
     </div>
   </div>
 
