@@ -1791,13 +1791,14 @@ select { font-size: 13.5px; }
 
 <!-- ══════════ SIDEBAR ══════════ -->
 <aside class="sidebar">
-  <div class="sidebar-brand">
-    <div class="brand-icon">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+  <div class="sidebar-brand" id="sidebar-brand">
+    <div class="brand-icon" id="sidebar-logo-wrap">
+      <img id="sidebar-logo-img" src="" alt="logo" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:10px;">
+      <svg id="sidebar-logo-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
     </div>
     <div class="brand-text">
-      <h1>MotoStock</h1>
-      <span>Gestao Completa</span>
+      <h1 id="sidebar-nome-loja">MotoStock</h1>
+      <span id="sidebar-slogan">Gestao Completa</span>
     </div>
   </div>
 
@@ -3583,6 +3584,8 @@ async function loadConfig() {
     document.documentElement.setAttribute('data-theme', tema);
     const btn = $('theme-btn');
     if (btn) btn.textContent = tema === 'dark' ? '☀️' : '🌙';
+    // Aplica perfil na sidebar já no carregamento inicial
+    aplicarPerfilNaSidebar(cfg);
   } catch (e) {
     const btn = $('theme-btn');
     if (btn) btn.textContent = '☀️';
@@ -5097,36 +5100,208 @@ function abrirJanelaImpressao(htmlContent, titulo, isTermica) {
 // INIT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// CONFIGURAÇÕES — Dados da empresa
+// PERFIL DA LOJA — logo, nome, plano
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-async function carregarDadosEmpresa() {
-  try {
-    const r = await sb.from('configuracoes').select('chave,valor').in('chave',['nome_empresa','cnpj','telefone','endereco']);
-    (r.data || []).forEach(function(row) {
-      const el = document.getElementById('cfg-' + row.chave.replace('_','-'));
-      if (el) el.value = row.valor || '';
-    });
-  } catch(e) {}
+
+function previewNomeLoja(val) {
+  const el = document.getElementById('sidebar-nome-loja');
+  if (el && val.trim()) el.textContent = val.trim();
 }
 
-async function salvarDadosEmpresa() {
-  const campos = [
-    { chave: 'nome_empresa', id: 'cfg-nome-empresa' },
-    { chave: 'cnpj',         id: 'cfg-cnpj' },
-    { chave: 'telefone',     id: 'cfg-telefone' },
-    { chave: 'endereco',     id: 'cfg-endereco' },
-  ];
+function previewLogo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.getElementById('cfg-logo-preview');
+    const ph  = document.getElementById('cfg-logo-placeholder');
+    if (img) { img.src = e.target.result; img.style.display = 'block'; }
+    if (ph)  ph.style.display = 'none';
+    // Preview na sidebar também
+    const sImg = document.getElementById('sidebar-logo-img');
+    const sSvg = document.getElementById('sidebar-logo-svg');
+    if (sImg) { sImg.src = e.target.result; sImg.style.display = 'block'; }
+    if (sSvg) sSvg.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function salvarPerfil() {
+  const nomeLoja = (document.getElementById('cfg-nome-loja')||{}).value || '';
+  const slogan   = (document.getElementById('cfg-slogan')||{}).value || '';
+  const cnpj     = (document.getElementById('cfg-cnpj')||{}).value || '';
+  const telefone = (document.getElementById('cfg-telefone')||{}).value || '';
+  const endereco = (document.getElementById('cfg-endereco')||{}).value || '';
+  const status   = document.getElementById('cfg-save-status');
+
+  if (status) { status.textContent = 'Salvando...'; status.style.color = 'var(--accent)'; }
+
   try {
-    for (const c of campos) {
-      const el = document.getElementById(c.id);
-      if (!el) continue;
-      await sb.from('configuracoes').upsert({ chave: c.chave, valor: el.value }, { onConflict: 'chave' });
+    // Upload logo se tiver arquivo novo
+    const logoInput = document.getElementById('cfg-logo-input');
+    let logoUrl = '';
+    if (logoInput && logoInput.files[0]) {
+      const file = logoInput.files[0];
+      const ext  = file.name.split('.').pop();
+      const path = 'logos/logo_loja.' + ext;
+      const { data: upData, error: upErr } = await sb.storage.from('arquivos').upload(path, file, { upsert: true });
+      if (!upErr) {
+        const { data: urlData } = sb.storage.from('arquivos').getPublicUrl(path);
+        logoUrl = urlData.publicUrl || '';
+      }
     }
-    toast('Dados da empresa salvos!');
+
+    const campos = [
+      { chave: 'nome_loja',  valor: nomeLoja },
+      { chave: 'slogan',     valor: slogan   },
+      { chave: 'cnpj',       valor: cnpj     },
+      { chave: 'telefone',   valor: telefone },
+      { chave: 'endereco',   valor: endereco },
+    ];
+    if (logoUrl) campos.push({ chave: 'logo_url', valor: logoUrl });
+
+    for (const c of campos) {
+      await sb.from('configuracoes').upsert({ chave: c.chave, valor: c.valor }, { onConflict: 'chave' });
+    }
+
+    // Salva data/hora do último acesso
+    await sb.from('configuracoes').upsert({ chave: 'ultimo_acesso', valor: new Date().toISOString() }, { onConflict: 'chave' });
+
+    aplicarPerfilNaSidebar({ nome_loja: nomeLoja, slogan, logo_url: logoUrl });
+
+    if (status) { status.textContent = '✓ Salvo com sucesso'; status.style.color = 'var(--green)'; }
+    setTimeout(function() { if (status) status.textContent = ''; }, 3000);
+    toast('Perfil salvo!');
   } catch(e) {
-    toast('Erro ao salvar: ' + e.message, 'r');
+    if (status) { status.textContent = '✗ Erro ao salvar'; status.style.color = 'var(--red)'; }
+    toast('Erro: ' + e.message, 'r');
   }
 }
+
+function aplicarPerfilNaSidebar(cfg) {
+  if (cfg.nome_loja) {
+    const el = document.getElementById('sidebar-nome-loja');
+    if (el) el.textContent = cfg.nome_loja;
+  }
+  if (cfg.slogan) {
+    const el = document.getElementById('sidebar-slogan');
+    if (el) el.textContent = cfg.slogan;
+  }
+  if (cfg.logo_url) {
+    const sImg = document.getElementById('sidebar-logo-img');
+    const sSvg = document.getElementById('sidebar-logo-svg');
+    if (sImg) { sImg.src = cfg.logo_url; sImg.style.display = 'block'; }
+    if (sSvg) sSvg.style.display = 'none';
+  }
+}
+
+async function carregarDadosEmpresa() {
+  try {
+    const { data } = await sb.from('configuracoes').select('chave,valor');
+    const cfg = {};
+    (data || []).forEach(function(r) { cfg[r.chave] = r.valor; });
+
+    // Preenche campos
+    const set = function(id, v) { const e = document.getElementById(id); if(e && v) e.value = v; };
+    set('cfg-nome-loja', cfg.nome_loja);
+    set('cfg-slogan',    cfg.slogan);
+    set('cfg-cnpj',      cfg.cnpj);
+    set('cfg-telefone',  cfg.telefone);
+    set('cfg-endereco',  cfg.endereco);
+
+    // Preview logo
+    if (cfg.logo_url) {
+      const img = document.getElementById('cfg-logo-preview');
+      const ph  = document.getElementById('cfg-logo-placeholder');
+      if (img) { img.src = cfg.logo_url; img.style.display = 'block'; }
+      if (ph)  ph.style.display = 'none';
+    }
+
+    // Aplica na sidebar
+    aplicarPerfilNaSidebar(cfg);
+
+    // Último acesso
+    const ua = document.getElementById('cfg-ultimo-acesso');
+    if (ua && cfg.ultimo_acesso) {
+      ua.textContent = new Date(cfg.ultimo_acesso).toLocaleString('pt-BR');
+    }
+
+    // ID da loja (usa a URL do supabase como identificador)
+    const lojaId = document.getElementById('cfg-loja-id');
+    if (lojaId) lojaId.textContent = SUPABASE_URL.split('//')[1].split('.')[0];
+
+    // Plano
+    carregarStatusPlano(cfg);
+
+  } catch(e) { /* silencioso */ }
+}
+
+function carregarStatusPlano(cfg) {
+  const planoNome   = document.getElementById('cfg-plano-nome');
+  const planoExpira = document.getElementById('cfg-plano-expira');
+  const planoStatus = document.getElementById('cfg-plano-status');
+  const planoBarra  = document.getElementById('cfg-plano-barra');
+  const planoAviso  = document.getElementById('cfg-plano-aviso');
+  const planoAvisoTxt = document.getElementById('cfg-plano-aviso-txt');
+  const planoInicioTxt = document.getElementById('cfg-plano-inicio-txt');
+  const planoDiasTxt   = document.getElementById('cfg-plano-dias-txt');
+  const planoFimTxt    = document.getElementById('cfg-plano-fim-txt');
+
+  const nome      = cfg.plano_nome      || 'Mensal';
+  const expiraStr = cfg.plano_expiracao || '';
+  const inicioStr = cfg.plano_inicio    || '';
+
+  if (planoNome) planoNome.textContent = nome;
+
+  if (!expiraStr) {
+    if (planoExpira) planoExpira.textContent = 'Não definido';
+    if (planoStatus) { planoStatus.textContent = '⚠️ Sem data'; planoStatus.style.color = 'var(--accent)'; }
+    return;
+  }
+
+  const hoje   = new Date();
+  const expira = new Date(expiraStr);
+  const inicio = inicioStr ? new Date(inicioStr) : null;
+  const diffMs = expira - hoje;
+  const dias   = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  if (planoExpira) planoExpira.textContent = expira.toLocaleDateString('pt-BR');
+  if (planoFimTxt) planoFimTxt.textContent = expira.toLocaleDateString('pt-BR');
+
+  // Status + cor
+  if (dias < 0) {
+    if (planoStatus) { planoStatus.textContent = '❌ Expirado'; planoStatus.style.color = 'var(--red)'; }
+    if (planoBarra)  { planoBarra.style.width = '100%'; planoBarra.style.background = 'var(--red)'; }
+    if (planoAviso)  { planoAviso.style.display = 'block'; planoAviso.style.borderLeftColor = 'var(--red)'; planoAviso.style.background = 'var(--red-soft)'; }
+    if (planoAvisoTxt) planoAvisoTxt.textContent = '⚠️ Plano expirado! Entre em contato com o suporte para renovar o acesso.';
+    if (planoDiasTxt) planoDiasTxt.textContent = 'Expirado há ' + Math.abs(dias) + ' dia(s)';
+  } else if (dias <= 7) {
+    if (planoStatus) { planoStatus.textContent = '⚠️ ' + dias + ' dias restantes'; planoStatus.style.color = 'var(--accent)'; }
+    if (planoBarra)  { planoBarra.style.background = '#f0a500'; }
+    if (planoAviso)  { planoAviso.style.display = 'block'; planoAviso.style.borderLeftColor = 'var(--accent)'; planoAviso.style.background = 'var(--accent-soft)'; }
+    if (planoAvisoTxt) { planoAvisoTxt.style.color = 'var(--accent)'; planoAvisoTxt.textContent = '⏰ Seu plano expira em ' + dias + ' dia(s). Renove para não perder o acesso.'; }
+    if (planoDiasTxt) planoDiasTxt.textContent = dias + ' dias restantes';
+  } else {
+    if (planoStatus) { planoStatus.textContent = '✅ Ativo'; planoStatus.style.color = 'var(--green)'; }
+    if (planoDiasTxt) planoDiasTxt.textContent = dias + ' dias restantes';
+  }
+
+  // Barra de progresso
+  if (planoBarra && inicio) {
+    const totalDias = (expira - inicio) / (1000 * 60 * 60 * 24);
+    const usados    = (hoje - inicio)   / (1000 * 60 * 60 * 24);
+    const pct       = Math.min(100, Math.max(0, (usados / totalDias) * 100));
+    planoBarra.style.width = pct.toFixed(1) + '%';
+    if (planoInicioTxt) planoInicioTxt.textContent = inicio.toLocaleDateString('pt-BR');
+  } else if (planoBarra) {
+    planoBarra.style.width = dias > 0 ? '60%' : '100%';
+  }
+}
+
+// Compatibilidade com função antiga
+function salvarDadosEmpresa() { salvarPerfil(); }
+
+
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // EXPORTAR — Dashboard / Estoque / Financeiro
@@ -6545,51 +6720,130 @@ function agEnviarWhatsapp() {
 </div>
 
 
-<!-- ══════════ CONFIGURACOES ══════════ -->
+<!-- ══════════ PERFIL / CONFIGURACOES ══════════ -->
 <div class="content" id="page-configuracoes">
   <div class="page-header">
     <div>
-      <h2>Configurações</h2>
-      <p>Personalize o sistema, gerencie dados da empresa, banco de dados e preferências gerais.</p>
+      <h2>Perfil da Loja</h2>
+      <p>Gerencie a identidade visual, dados da empresa, plano e preferências do sistema.</p>
     </div>
   </div>
 
-  <div class="grid-2">
-    <!-- Dados da Empresa -->
-    <div class="card">
-      <div class="card-header"><div class="card-title">🏪 Dados da Empresa</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
-        <div class="form-group">
-          <label class="form-label">Nome da Empresa</label>
-          <input class="input-field" id="cfg-nome-empresa" type="text" placeholder="Ex: MotoStock Peças" style="width:100%;">
+  <!-- ── LOGO + NOME DA LOJA ── -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🏪 Identidade Visual da Loja</div>
+      <div class="card-subtitle">Logo e nome que aparecem na sidebar e nos documentos gerados</div>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;align-items:flex-start;gap:28px;flex-wrap:wrap;">
+
+        <!-- Preview + upload logo -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div id="cfg-logo-wrap" style="width:96px;height:96px;border-radius:16px;border:2px dashed var(--border-accent);background:var(--bg-surface);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;transition:border-color 0.2s;position:relative;" onclick="document.getElementById('cfg-logo-input').click()" title="Clique para trocar a logo">
+            <img id="cfg-logo-preview" src="" alt="logo" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:14px;">
+            <div id="cfg-logo-placeholder" style="text-align:center;color:var(--text-muted);pointer-events:none;">
+              <div style="font-size:28px;">🏍️</div>
+              <div style="font-size:10px;margin-top:4px;font-weight:600;">Clique para<br>adicionar logo</div>
+            </div>
+            <div style="position:absolute;inset:0;background:rgba(240,165,0,0.12);opacity:0;transition:opacity 0.2s;border-radius:14px;" class="logo-hover-overlay"></div>
+          </div>
+          <input type="file" id="cfg-logo-input" accept="image/*" style="display:none;" onchange="previewLogo(this)">
+          <button class="btn-outline" style="font-size:11px;padding:5px 12px;" onclick="document.getElementById('cfg-logo-input').click()">
+            <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            Trocar Logo
+          </button>
         </div>
-        <div class="form-group">
-          <label class="form-label">CNPJ</label>
-          <input class="input-field" id="cfg-cnpj" type="text" placeholder="00.000.000/0000-00" style="width:100%;">
+
+        <!-- Campos da loja -->
+        <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:12px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nome da Loja *</label>
+              <input class="input-field" id="cfg-nome-loja" type="text" placeholder="Ex: MotoStock Peças" style="width:100%;" oninput="previewNomeLoja(this.value)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Slogan / Subtítulo</label>
+              <input class="input-field" id="cfg-slogan" type="text" placeholder="Ex: Gestão Completa" style="width:100%;">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">CNPJ</label>
+              <input class="input-field" id="cfg-cnpj" type="text" placeholder="00.000.000/0000-00" style="width:100%;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Telefone / WhatsApp</label>
+              <input class="input-field" id="cfg-telefone" type="text" placeholder="(00) 00000-0000" style="width:100%;">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Endereço</label>
+            <input class="input-field" id="cfg-endereco" type="text" placeholder="Rua, número, cidade, estado..." style="width:100%;">
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn-accent" onclick="salvarPerfil()">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              Salvar Perfil
+            </button>
+            <span id="cfg-save-status" style="font-size:11px;color:var(--text-muted);"></span>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Telefone</label>
-          <input class="input-field" id="cfg-telefone" type="text" placeholder="(00) 00000-0000" style="width:100%;">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Endereço</label>
-          <input class="input-field" id="cfg-endereco" type="text" placeholder="Rua, número, cidade..." style="width:100%;">
-        </div>
-        <button class="btn-accent" onclick="salvarDadosEmpresa()" style="align-self:flex-start;">
-          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-          Salvar Dados
-        </button>
+
       </div>
     </div>
+  </div>
 
-    <!-- Configurações do Sistema -->
+  <!-- ── STATUS DO PLANO ── -->
+  <div class="card" id="cfg-plano-card">
+    <div class="card-header">
+      <div class="card-title">🎫 Status do Plano</div>
+      <div class="card-subtitle">Informações sobre seu plano de acesso ao sistema</div>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;" id="cfg-plano-grid">
+        <div style="padding:18px;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Plano Atual</div>
+          <div id="cfg-plano-nome" style="font-size:20px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif;">—</div>
+        </div>
+        <div style="padding:18px;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Expira em</div>
+          <div id="cfg-plano-expira" style="font-size:18px;font-weight:700;color:var(--text-primary);">—</div>
+        </div>
+        <div style="padding:18px;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Status</div>
+          <div id="cfg-plano-status" style="font-size:15px;font-weight:700;">—</div>
+        </div>
+      </div>
+
+      <!-- Barra de progresso do plano -->
+      <div style="margin-top:16px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:6px;">
+          <span id="cfg-plano-inicio-txt">Início</span>
+          <span id="cfg-plano-dias-txt">—</span>
+          <span id="cfg-plano-fim-txt">Expiração</span>
+        </div>
+        <div style="height:8px;background:var(--bg-surface);border-radius:99px;overflow:hidden;border:1px solid var(--border);">
+          <div id="cfg-plano-barra" style="height:100%;border-radius:99px;background:var(--gradient-accent);width:0%;transition:width 0.8s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Aviso de expiração -->
+      <div id="cfg-plano-aviso" style="display:none;margin-top:14px;padding:12px 16px;border-radius:var(--radius-sm);border-left:3px solid var(--red);background:var(--red-soft);">
+        <div style="font-size:13px;font-weight:700;color:var(--red);" id="cfg-plano-aviso-txt"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SISTEMA ── -->
+  <div class="grid-2">
     <div class="card">
       <div class="card-header"><div class="card-title">⚙️ Sistema</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
           <div>
             <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Tema Escuro / Claro</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Alterna entre tema escuro e claro</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Alterna entre os temas visuais</div>
           </div>
           <button class="btn-outline" onclick="toggleTheme()" style="min-width:90px;">🌗 Alternar</button>
         </div>
@@ -6602,41 +6856,44 @@ function agEnviarWhatsapp() {
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
           <div>
-            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Categorias de Produtos</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Adicionar, editar ou remover categorias</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Categorias</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Gerenciar categorias de produtos</div>
           </div>
           <button class="btn-outline" onclick="abrirGerenciarCategorias()" style="min-width:90px;">🏷️ Gerenciar</button>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
           <div>
-            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Exportar Dados Gerais</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Exportar Dados</div>
             <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Gera relatório completo em PDF</div>
           </div>
           <button class="btn-outline" onclick="exportarDashboard()" style="min-width:90px;">📥 Exportar</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Sobre o Sistema -->
-  <div class="card">
-    <div class="card-header"><div class="card-title">ℹ️ Sobre o MotoStock</div></div>
-    <div class="card-body">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
-        <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center;">
-          <div style="font-size:24px;margin-bottom:6px;">🏍️</div>
-          <div style="font-size:12px;font-weight:700;color:var(--accent);">MotoStock v2.0</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Gestão Completa de Peças</div>
+    <!-- Info do sistema -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">ℹ️ Informações do Sistema</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+          <span style="color:var(--text-muted);">Versão</span>
+          <span style="font-weight:700;color:var(--accent);">MotoStock v2.1</span>
         </div>
-        <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center;">
-          <div style="font-size:24px;margin-bottom:6px;">🔒</div>
-          <div style="font-size:12px;font-weight:700;color:var(--green);">Dados Seguros</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Armazenamento via Supabase</div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+          <span style="color:var(--text-muted);">Banco de dados</span>
+          <span style="font-weight:600;color:var(--green);">Supabase ✓</span>
         </div>
-        <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center;">
-          <div style="font-size:24px;margin-bottom:6px;">📱</div>
-          <div style="font-size:12px;font-weight:700;color:var(--blue);">Responsivo</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Funciona em desktop e mobile</div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+          <span style="color:var(--text-muted);">Armazenamento</span>
+          <span style="font-weight:600;color:var(--green);">Supabase Storage ✓</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+          <span style="color:var(--text-muted);">Último acesso</span>
+          <span id="cfg-ultimo-acesso" style="font-weight:600;color:var(--text-primary);">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;">
+          <span style="color:var(--text-muted);">ID da loja</span>
+          <span id="cfg-loja-id" style="font-weight:600;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:11px;">—</span>
         </div>
       </div>
     </div>
