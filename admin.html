@@ -154,8 +154,8 @@ select.input-field{cursor:pointer}
     </div>
     <div style="display:flex;flex-direction:column;gap:12px">
       <div class="form-group">
-        <label class="form-label">E-mail</label>
-        <input class="input-field" id="adm-email" type="email" placeholder="admin@motostock.com" onkeydown="if(event.key==='Enter')document.getElementById('adm-senha').focus()">
+        <label class="form-label">Usuário</label>
+        <input class="input-field" id="adm-email" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')document.getElementById('adm-senha').focus()">
       </div>
       <div class="form-group">
         <label class="form-label">Senha</label>
@@ -467,26 +467,27 @@ async function sha256(str) {
 }
 
 // ── LOGIN ──
+const ADM_USER = 'admin';
+const ADM_PASS = '123456';
+
 async function admLogin() {
-  const email = document.getElementById('adm-email').value.trim().toLowerCase();
+  const email = document.getElementById('adm-email').value.trim();
   const senha = document.getElementById('adm-senha').value;
-  const btn   = document.getElementById('adm-login-btn');
   const erro  = document.getElementById('adm-login-erro');
+  const btn   = document.getElementById('adm-login-btn');
   erro.style.display = 'none';
-  if (!email || !senha) { erro.textContent = 'Preencha os campos.'; erro.style.display = 'block'; return; }
-  btn.textContent = 'Verificando...'; btn.disabled = true;
-  try {
-    const hash = await sha256(senha);
-    const { data, error } = await sb.from('usuarios').select('*').eq('email', email).eq('senha_hash', hash).eq('perfil', 'superadmin').eq('ativo', true).single();
-    if (error || !data) { erro.textContent = 'Acesso negado. Apenas super admins.'; erro.style.display = 'block'; btn.textContent = 'Entrar como Admin'; btn.disabled = false; return; }
-    _admUser = data;
-    localStorage.setItem('ms_adm', JSON.stringify({id: data.id, nome: data.nome}));
-    document.getElementById('admin-login').style.display = 'none';
-    document.getElementById('admin-app').style.display = 'block';
-    document.getElementById('adm-user-nome').textContent = data.nome;
-    sb.from('usuarios').update({ultimo_acesso: new Date().toISOString()}).eq('id', data.id);
-    admCarregarTudo();
-  } catch(e) { erro.textContent = 'Erro: ' + e.message; erro.style.display = 'block'; btn.textContent = 'Entrar como Admin'; btn.disabled = false; }
+
+  if (email !== ADM_USER || senha !== ADM_PASS) {
+    erro.textContent = 'Usuário ou senha incorretos.';
+    erro.style.display = 'block';
+    return;
+  }
+
+  localStorage.setItem('ms_adm', '1');
+  document.getElementById('admin-login').style.display = 'none';
+  document.getElementById('admin-app').style.display = 'block';
+  document.getElementById('adm-user-nome').textContent = 'Super Admin';
+  admCarregarTudo();
 }
 
 function admLogout() { localStorage.removeItem('ms_adm'); location.reload(); }
@@ -777,23 +778,13 @@ function admCarregarTudo() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Verifica sessão salva
-  const salva = localStorage.getItem('ms_adm');
-  if (salva) {
-    try {
-      const s = JSON.parse(salva);
-      sb.from('usuarios').select('*').eq('id', s.id).eq('perfil', 'superadmin').eq('ativo', true).single().then(({data}) => {
-        if (!data) return;
-        _admUser = data;
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-app').style.display = 'block';
-        document.getElementById('adm-user-nome').textContent = data.nome;
-        admCarregarTudo();
-      });
-    } catch(e) {}
+  if (localStorage.getItem('ms_adm') === '1') {
+    document.getElementById('admin-login').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    document.getElementById('adm-user-nome').textContent = 'Super Admin';
+    admCarregarTudo();
   }
 
-  // Fechar modal clicando fora
   document.getElementById('modal-usuario').addEventListener('click', function(e) {
     if (e.target === this) admCloseModal();
   });
