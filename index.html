@@ -3191,7 +3191,7 @@ select { font-size: 13.5px; }
       <button class="btn-outline" onclick="closeModal('orcamento-print')">Fechar</button>
       <button class="btn-accent" onclick="printModal()">
         <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
-        Imprimir / PDF
+        🖨️ Imprimir
       </button>
     </div>
   </div>
@@ -4138,87 +4138,70 @@ function pdvMostrarSucesso(venda, itens, cli, formaPag, total, recebido, troco) 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function gerarReciboPDF(venda, itens, cliente, formaPag, total, recebido, troco) {
-  try {
-    const { jsPDF } = window.jspdf;
-    // Calcula altura dinamicamente
-    const baseH = 120 + (itens.length * 12) + ((formaPag === 'dinheiro' && recebido > 0) ? 14 : 0);
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [80, Math.max(160, baseH)] });
-    const L = 5, W = 70;
-    let y = 8;
-    const linha = () => { doc.setDrawColor(180); doc.line(L, y, L+W, y); y += 4; };
+  const num   = String(venda.numero).padStart(4,'0');
+  const data  = new Date().toLocaleDateString('pt-BR');
+  const hora  = timeNow();
+  const fmtR  = function(v){ return 'R$&nbsp;' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2}); };
 
-    // Cabeçalho
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(15);
-    doc.text('MotoStock', 40, y, { align: 'center' }); y += 6;
-    doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Peças e Acessórios para Motos', 40, y, { align: 'center' }); y += 6;
-    linha();
+  const linhaHr = '<hr style="border:none;border-top:1px dashed #999;margin:8px 0;">';
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.text('RECIBO DE VENDA', 40, y, { align: 'center' }); y += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.text('Nº ' + String(venda.numero).padStart(4,'0'), 40, y, { align: 'center' }); y += 4;
-    doc.text('Data: ' + new Date().toLocaleDateString('pt-BR') + ' ' + timeNow(), 40, y, { align: 'center' }); y += 5;
-    linha();
+  let itensHtml = '';
+  itens.forEach(function(it) {
+    const nome = it.nome_produto || it.nome || '—';
+    const qty  = it.quantidade || it.qty || 1;
+    const tot  = Number(it.total || ((it.preco||0) * qty));
+    itensHtml += '<tr>' +
+      '<td style="padding:4px 2px;font-size:11px;">' + nome + '</td>' +
+      '<td style="padding:4px 2px;text-align:center;font-size:11px;">' + qty + '</td>' +
+      '<td style="padding:4px 2px;text-align:right;font-size:11px;font-weight:700;">' + fmtR(tot) + '</td>' +
+    '</tr>';
+  });
 
-    doc.setFontSize(8);
-    doc.text('Cliente: ' + (cliente || 'Consumidor'), L, y); y += 4.5;
-    doc.text('Pagamento: ' + (formaPag || 'dinheiro').toUpperCase(), L, y); y += 5;
-    linha();
+  const trocoHtml = (formaPag === 'dinheiro' && recebido > 0) ?
+    '<tr><td colspan="2" style="padding:3px 2px;font-size:11px;">Recebido</td><td style="padding:3px 2px;text-align:right;font-size:11px;">' + fmtR(recebido) + '</td></tr>' +
+    '<tr><td colspan="2" style="padding:3px 2px;font-size:12px;font-weight:700;">Troco</td><td style="padding:3px 2px;text-align:right;font-size:13px;font-weight:700;color:#1a7a4a;">' + fmtR(troco||0) + '</td></tr>'
+    : '';
 
-    // Itens
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.text('PRODUTO', L, y); doc.text('QTD', 45, y); doc.text('TOTAL', 60, y);
-    y += 4;
-    doc.setFont('helvetica', 'normal');
-    linha();
+  const html = `
+    <div style="max-width:300px;margin:0 auto;font-family:Arial,sans-serif;">
+      <div style="text-align:center;margin-bottom:10px;">
+        <div style="font-size:20px;font-weight:900;letter-spacing:2px;">MOTOSTOCK</div>
+        <div style="font-size:10px;color:#666;">Peças e Acessórios para Motos</div>
+      </div>
+      ${linhaHr}
+      <div style="text-align:center;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:700;">RECIBO DE VENDA</div>
+        <div style="font-size:11px;color:#555;">Nº ${num} — ${data} ${hora}</div>
+      </div>
+      ${linhaHr}
+      <div style="font-size:11px;margin-bottom:6px;">
+        <div><strong>Cliente:</strong> ${cliente || 'Consumidor'}</div>
+        <div><strong>Pagamento:</strong> ${(formaPag||'dinheiro').toUpperCase()}</div>
+      </div>
+      ${linhaHr}
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:1px solid #ccc;">
+            <th style="text-align:left;font-size:10px;padding:3px 2px;text-transform:uppercase;">Produto</th>
+            <th style="text-align:center;font-size:10px;padding:3px 2px;text-transform:uppercase;">Qtd</th>
+            <th style="text-align:right;font-size:10px;padding:3px 2px;text-transform:uppercase;">Total</th>
+          </tr>
+        </thead>
+        <tbody>${itensHtml}</tbody>
+        <tfoot>
+          ${linhaHr.replace('<hr','<tr><td colspan="3"><hr').replace('/>','/>') /* inline hr workaround */}
+          <tr style="border-top:2px solid #000;">
+            <td colspan="2" style="padding:5px 2px;font-size:14px;font-weight:900;">TOTAL</td>
+            <td style="padding:5px 2px;text-align:right;font-size:16px;font-weight:900;">${fmtR(total)}</td>
+          </tr>
+          ${trocoHtml}
+        </tfoot>
+      </table>
+      ${linhaHr}
+      <div style="text-align:center;font-size:11px;color:#666;margin-top:8px;">Obrigado pela preferência! 🏍️</div>
+    </div>`;
 
-    itens.forEach(function(it) {
-      var nome = it.nome_produto || it.nome || '-';
-      var nomeLines = doc.splitTextToSize(nome, 36);
-      doc.setFontSize(8);
-      doc.text(nomeLines, L, y);
-      doc.text(String(it.quantidade || it.qty || 1), 45, y);
-      doc.text('R$' + (Number(it.total || (it.preco*(it.qty||it.quantidade))) || 0).toFixed(2).replace('.', ','), 60, y);
-      y += (nomeLines.length * 4.5) + 1;
-    });
-    linha();
-
-    // Totais
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.text('TOTAL:', L, y);
-    doc.text('R$' + Number(total).toFixed(2).replace('.', ','), 75, y, { align: 'right' });
-    y += 6;
-
-    // Troco (só dinheiro)
-    if (formaPag === 'dinheiro' && recebido > 0) {
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.text('Recebido: R$' + Number(recebido).toFixed(2).replace('.', ','), L, y); y += 5;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
-      doc.text('TROCO: R$' + Number(troco||0).toFixed(2).replace('.', ','), L, y); y += 7;
-    } else {
-      y += 4;
-    }
-
-    linha();
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
-    doc.text('Obrigado pela preferência!', 40, y, { align: 'center' });
-
-    doc.save('recibo_' + String(venda.numero).padStart(4,'0') + '.pdf');
-    toast('✅ Recibo PDF salvo!');
-  } catch(e) {
-    console.error('Erro PDF:', e);
-    toast('Erro ao gerar PDF: ' + e.message, 'r');
-  }
+  abrirJanelaImpressao(html, 'Recibo Nº ' + num, true);
 }
 
 function mostrarModalRecibo(venda, itens, cliente, formaPag, total) {
@@ -4364,8 +4347,13 @@ function gerarOrcamentoPDF() {
     doc.setFontSize(8);
     doc.text('Obrigado pela preferência!  |  MotoStock — Gestão de Peças', 105, y, { align: 'center' });
 
-    doc.save(num + '_orcamento.pdf');
-    toast('Orçamento PDF gerado!');
+    // Converter jsPDF para blob URL e imprimir
+    const pdfBlob = doc.output('blob');
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    const w = window.open(blobUrl, '_blank');
+    if (!w) { doc.save(num + '_orcamento.pdf'); toast('Salvo (pop-ups bloqueados).', 'y'); return; }
+    setTimeout(function(){ w.focus(); w.print(); }, 800);
+    toast('Orçamento aberto para impressão!');
   } catch(e) {
     console.error('Erro PDF:', e);
     // Fallback modal
@@ -5055,16 +5043,52 @@ function pdvFilterCat(btn, cat) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // IMPRESSÃO / PRINT PDF via modal
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── Abre janela de impressão com o HTML do conteúdo ──
 function printModal() {
   const content = $('orc-print-content');
   if (!content) { window.print(); return; }
-  const w = window.open('', '_blank', 'width=600,height=700');
-  w.document.write('<!DOCTYPE html><html><head><title>MotoStock — Documento</title><style>body{font-family:Arial,sans-serif;padding:20px;background:#fff;color:#000}@media print{button{display:none}}</style></head><body>');
-  w.document.write(content.innerHTML);
-  w.document.write('<br><button onclick="window.print()" style="padding:10px 20px;background:#f0a500;border:none;border-radius:4px;cursor:pointer;font-weight:bold">Imprimir</button>');
-  w.document.write('</body></html>');
+  abrirJanelaImpressao(content.innerHTML, 'MotoStock — Documento', false);
+}
+
+// ── Janela de impressão universal ──
+// isTermica: true → largura 80mm (bobina térmica)
+function abrirJanelaImpressao(htmlContent, titulo, isTermica) {
+  const w = window.open('', '_blank', 'width=720,height=800');
+  if (!w) { toast('Permita pop-ups para imprimir.', 'y'); return; }
+  const pageWidth = isTermica ? '80mm' : '210mm';
+  const pageMargin = isTermica ? '3mm' : '15mm';
+  w.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${titulo}</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: Arial, sans-serif; background: #fff; color: #000; padding: 14px; }
+    @page { size: ${pageWidth} auto; margin: ${pageMargin}; }
+    @media print { .no-print { display:none !important; } body { padding:0; } }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:5px 6px; font-size:12px; }
+    .print-btn {
+      display:block; margin:18px auto 0; padding:12px 32px;
+      background:#f0a500; border:none; border-radius:6px;
+      font-size:14px; font-weight:700; cursor:pointer;
+      font-family:Arial,sans-serif;
+    }
+    .print-btn:hover { background:#e09600; }
+  </style>
+</head>
+<body>
+  ${htmlContent}
+  <button class="no-print print-btn" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+</body>
+</html>`);
   w.document.close();
-  setTimeout(() => w.print(), 500);
+  // Aguarda recursos carregarem e abre o diálogo de impressão automaticamente
+  w.onload = function() { setTimeout(function(){ w.focus(); w.print(); }, 400); };
+  if (w.document.readyState === 'complete') {
+    setTimeout(function(){ w.focus(); w.print(); }, 600);
+  }
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -5580,7 +5604,12 @@ function pdvImprimirTermica() {
     doc.setFont('helvetica','bold'); doc.setFontSize(10);
     doc.text('TOTAL:',L,y); doc.text('R$'+total.toFixed(2).replace('.',','),76,y,{align:'right'}); y+=7;
     doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text('Obrigado pela preferência!',40,y,{align:'center'});
-    doc.save(num+'_termica.pdf'); toast('Orçamento térmico gerado!');
+    const pdfBlobT = doc.output('blob');
+    const blobUrlT = URL.createObjectURL(pdfBlobT);
+    const wt = window.open(blobUrlT, '_blank');
+    if (!wt) { doc.save(num+'_termica.pdf'); toast('Salvo (pop-ups bloqueados).', 'y'); return; }
+    setTimeout(function(){ wt.focus(); wt.print(); }, 800);
+    toast('Orçamento aberto para impressão!');
   } catch(e){ toast('Erro PDF: '+e.message,'r'); }
 }
 
