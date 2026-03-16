@@ -1733,6 +1733,53 @@ select { font-size: 13.5px; }
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+
+/* ════════════════════════════════
+   AGENDA / CALENDÁRIO
+════════════════════════════════ */
+.ag-cal-cell {
+  min-height: 90px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+}
+.ag-cal-cell:hover { background: var(--bg-card-hover); }
+.ag-cal-cell.today { background: var(--accent-soft); }
+.ag-cal-cell.today .ag-cal-day { color: var(--accent); font-weight: 800; background: var(--accent); color: #09090b; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.ag-cal-cell.other-month { opacity: 0.35; }
+.ag-cal-cell:nth-child(7n) { border-right: none; }
+.ag-cal-day { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+.ag-cal-event {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.ag-cal-event:hover { filter: brightness(1.15); }
+.ag-cal-event.agendado   { background: rgba(77,159,255,0.18); color: var(--blue); border-left: 2px solid var(--blue); }
+.ag-cal-event.confirmado { background: rgba(16,232,158,0.18); color: var(--green); border-left: 2px solid var(--green); }
+.ag-cal-event.concluido  { background: rgba(240,165,0,0.15); color: var(--accent); border-left: 2px solid var(--accent); }
+.ag-cal-event.cancelado  { background: rgba(255,92,122,0.15); color: var(--red); border-left: 2px solid var(--red); text-decoration: line-through; }
+.ag-more-badge { font-size: 10px; color: var(--text-muted); font-weight: 600; cursor: pointer; padding: 1px 4px; }
+
+/* Status badges in table */
+.ag-status-agendado   { background: rgba(77,159,255,0.15);  color: var(--blue);  }
+.ag-status-confirmado { background: rgba(16,232,158,0.15);  color: var(--green); }
+.ag-status-concluido  { background: rgba(240,165,0,0.15);   color: var(--accent);}
+.ag-status-cancelado  { background: rgba(255,92,122,0.15);  color: var(--red);   }
+
+.ag-msg-type { transition: all 0.15s; }
+.ag-msg-type:hover { border-color: var(--border-accent) !important; color: var(--accent) !important; background: var(--accent-soft) !important; }
+
 @media print {
   .sidebar, .topbar, .page-actions, .modal-overlay { display: none !important; }
   .main { margin-left: 0 !important; }
@@ -1768,6 +1815,11 @@ select { font-size: 13.5px; }
     <a class="nav-item" onclick="showPage('clientes')">
       <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span>
       Clientes
+    </a>
+    <a class="nav-item" onclick="showPage('agenda')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></span>
+      Agenda
+      <span class="nav-badge accent" id="badge-agenda" style="display:none">0</span>
     </a>
   </div>
 
@@ -2224,6 +2276,122 @@ select { font-size: 13.5px; }
         </div>
 
       </div><!-- /pdv-cart -->    </div>
+  </div>
+
+
+  <!-- ══════════ AGENDA ══════════ -->
+  <div class="content" id="page-agenda">
+    <div class="page-header">
+      <div>
+        <h2>Agenda & Serviços</h2>
+        <p>Gerencie agendamentos, serviços e envie mensagens de cobrança ou confirmação via WhatsApp.</p>
+      </div>
+      <div class="page-actions">
+        <div style="display:flex;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
+          <button id="agenda-tab-cal" onclick="agendaSwitchView('calendario')" style="padding:8px 18px;background:var(--gradient-accent);color:#09090b;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;">📅 Calendário</button>
+          <button id="agenda-tab-list" onclick="agendaSwitchView('lista')" style="padding:8px 18px;background:none;color:var(--text-secondary);border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;">📋 Lista</button>
+        </div>
+        <button class="btn-accent" onclick="openModal('add-agendamento')">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Novo Agendamento
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="kpi-card" style="--kpi-color:var(--accent)">
+        <div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div><span class="kpi-trend up" id="ag-kpi-hoje-lbl">Hoje</span></div>
+        <div class="kpi-value" id="ag-kpi-hoje">0</div><div class="kpi-label">Agendamentos Hoje</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color:var(--blue)">
+        <div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><span class="kpi-trend up">Semana</span></div>
+        <div class="kpi-value" id="ag-kpi-semana">0</div><div class="kpi-label">Esta Semana</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color:var(--green)">
+        <div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><span class="kpi-trend up">R$</span></div>
+        <div class="kpi-value" id="ag-kpi-receita" style="font-size:22px;">R$0</div><div class="kpi-label">Receita Agendada</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color:var(--red)">
+        <div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><span class="kpi-trend down">!</span></div>
+        <div class="kpi-value" id="ag-kpi-pendente">0</div><div class="kpi-label">Sem Confirmação</div>
+      </div>
+    </div>
+
+    <!-- CALENDÁRIO VIEW -->
+    <div id="agenda-view-calendario">
+      <div class="card">
+        <div class="card-header">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button onclick="agendaMoveMonth(-1)" style="background:var(--bg-surface);border:1px solid var(--border);border-radius:7px;width:32px;height:32px;cursor:pointer;color:var(--text-secondary);font-size:16px;display:flex;align-items:center;justify-content:center;">‹</button>
+            <div id="agenda-mes-titulo" class="card-title" style="min-width:180px;text-align:center;"></div>
+            <button onclick="agendaMoveMonth(1)" style="background:var(--bg-surface);border:1px solid var(--border);border-radius:7px;width:32px;height:32px;cursor:pointer;color:var(--text-secondary);font-size:16px;display:flex;align-items:center;justify-content:center;">›</button>
+            <button onclick="agendaGoToday()" class="chip" style="margin-left:6px;">Hoje</button>
+          </div>
+          <div class="card-actions">
+            <select id="agenda-filter-status" onchange="loadAgenda()" style="font-size:12px;padding:6px 10px;">
+              <option value="">Todos os status</option>
+              <option value="agendado">Agendado</option>
+              <option value="confirmado">Confirmado</option>
+              <option value="concluido">Concluído</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <!-- Day headers -->
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border);">
+            <div style="padding:8px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Dom</div>
+            <div style="padding:8px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Seg</div>
+            <div style="padding:8px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Ter</div>
+            <div style="padding:8px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Qua</div>
+            <div style="padding:8px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Qui</div>
+            <div style="padding:8px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Sex</div>
+            <div style="padding:8px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);">Sáb</div>
+          </div>
+          <div id="agenda-calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTA VIEW -->
+    <div id="agenda-view-lista" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Todos os Agendamentos</div>
+            <div class="card-subtitle" id="agenda-list-sub">Carregando...</div>
+          </div>
+          <div class="card-actions">
+            <input class="input-field" id="agenda-search" type="text" placeholder="Buscar cliente ou serviço..." style="width:220px;padding:7px 12px;font-size:12px;" oninput="agendaFilterList()">
+            <select id="agenda-filter-status2" onchange="agendaFilterList()" style="font-size:12px;padding:7px 10px;">
+              <option value="">Todos</option>
+              <option value="agendado">Agendado</option>
+              <option value="confirmado">Confirmado</option>
+              <option value="concluido">Concluído</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data / Hora</th>
+                <th>Cliente</th>
+                <th>Serviço</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Mensagem</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="agenda-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ══════════ ESTOQUE ══════════ -->
@@ -3250,7 +3418,22 @@ CREATE TABLE notas_fiscais (
 );
 
 ALTER TABLE clientes DISABLE ROW LEVEL SECURITY;
-ALTER TABLE notas_fiscais DISABLE ROW LEVEL SECURITY;</textarea>
+ALTER TABLE notas_fiscais DISABLE ROW LEVEL SECURITY;
+
+-- TABELA: AGENDAMENTOS
+CREATE TABLE IF NOT EXISTS agendamentos (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  cliente_nome text NOT NULL,
+  cliente_tel text DEFAULT '',
+  servico text NOT NULL,
+  data_hora timestamptz NOT NULL,
+  duracao_min integer DEFAULT 60,
+  valor numeric(10,2) DEFAULT 0,
+  status text DEFAULT 'agendado',
+  obs text DEFAULT '',
+  created_at timestamptz DEFAULT now()
+);
+ALTER TABLE agendamentos DISABLE ROW LEVEL SECURITY;</textarea>
     </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('setup-db')">Fechar</button>
@@ -3326,7 +3509,7 @@ function toast(msg, col) {
 }
 
 // ━━━━ NAVEGAÇÃO
-const PAGES = ['dashboard','pdv','clientes','estoque','caixa','financeiro','nf','relatorios','catalogo'];
+const PAGES = ['dashboard','pdv','agenda','clientes','estoque','caixa','financeiro','nf','relatorios','catalogo'];
 const TITLES = {
   dashboard:  ['Painel Geral',           'Visão geral do negócio em tempo real'],
   pdv:        ['PDV — Vendas',            'Ponto de Venda'],
@@ -3336,6 +3519,7 @@ const TITLES = {
   nf:         ['Notas Fiscais',           'Emissão e gestão de NF-e e NFC-e'],
   clientes:   ['Clientes',               'Cadastro e histórico de clientes'],
   relatorios: ['Relatórios Gerenciais',   'Dashboards e análise de dados'],
+  agenda:     ['Agenda & Serviços',        'Agendamentos, serviços e mensagens'],
   catalogo:   ['Catálogo & Canais',       'Marketplaces e vendas online'],
 };
 
@@ -3359,6 +3543,7 @@ function showPage(id) {
   if (id === 'relatorios') loadRelatorios();
   if (id === 'nf')         loadNF();
   if (id === 'catalogo')   loadCatalogo();
+  if (id === 'agenda')     { if (!window.allClientes || !window.allClientes.length) loadClientes(); loadAgenda(); }
 }
 
 // ━━━━ MODAIS
@@ -5060,6 +5245,9 @@ function editarCategoria(idx) {
 let allClientes = [];
 let pdvClientesCache = [];
 
+// Clientes global para uso na agenda
+window.allClientes = window.allClientes || [];
+
 async function loadClientes() {
   const tb = document.getElementById('clientes-tbody');
   if (tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)"><span class="loader-ring"></span></td></tr>';
@@ -5464,6 +5652,470 @@ function pdvUpdateQuickVals() {
   }).join('');
 }
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AGENDA — Sistema Completo (UTC-3 Brasil)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// Horário Brasil UTC-3
+function nowBR() {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+}
+function todayBR() {
+  const d = nowBR();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+let agendaView      = 'calendario';
+let agendaCurrentMonth = new Date(nowBR().getFullYear(), nowBR().getMonth(), 1);
+let allAgendamentos = [];
+
+// ── Switch View ──
+function agendaSwitchView(v) {
+  agendaView = v;
+  document.getElementById('agenda-view-calendario').style.display = v === 'calendario' ? '' : 'none';
+  document.getElementById('agenda-view-lista').style.display      = v === 'lista'       ? '' : 'none';
+  const tc = document.getElementById('agenda-tab-cal');
+  const tl = document.getElementById('agenda-tab-list');
+  if (tc) { tc.style.background = v === 'calendario' ? 'var(--gradient-accent)' : 'none'; tc.style.color = v === 'calendario' ? '#09090b' : 'var(--text-secondary)'; }
+  if (tl) { tl.style.background = v === 'lista'       ? 'var(--gradient-accent)' : 'none'; tl.style.color = v === 'lista'       ? '#09090b' : 'var(--text-secondary)'; }
+  if (v === 'lista') renderAgendaList();
+  if (v === 'calendario') renderCalendario();
+}
+
+function agendaMoveMonth(delta) {
+  agendaCurrentMonth = new Date(agendaCurrentMonth.getFullYear(), agendaCurrentMonth.getMonth() + delta, 1);
+  renderCalendario();
+}
+
+function agendaGoToday() {
+  const d = nowBR();
+  agendaCurrentMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+  renderCalendario();
+}
+
+// ── Load from Supabase ──
+async function loadAgenda() {
+  try {
+    const r = await sb.from('agendamentos').select('*').order('data_hora', { ascending: true });
+    if (r.error) throw r.error;
+    allAgendamentos = r.data || [];
+    updateAgendaKPIs();
+    if (agendaView === 'calendario') renderCalendario();
+    else renderAgendaList();
+    // Badge sidebar
+    const hoje = todayBR();
+    const badge = document.getElementById('badge-agenda');
+    const hojeCount = allAgendamentos.filter(a => a.data_hora && a.data_hora.startsWith(hoje) && a.status !== 'cancelado').length;
+    if (badge) { badge.style.display = hojeCount > 0 ? '' : 'none'; badge.textContent = hojeCount; }
+  } catch(e) {
+    console.error('loadAgenda:', e);
+    // Tabela pode não existir ainda
+    allAgendamentos = [];
+    updateAgendaKPIs();
+    renderCalendario();
+  }
+}
+
+// ── KPIs ──
+function updateAgendaKPIs() {
+  const hoje = todayBR();
+  const d = nowBR();
+  // Início semana (domingo)
+  const dow = d.getDay();
+  const semIni = new Date(d.getFullYear(), d.getMonth(), d.getDate() - dow);
+  const semFim = new Date(semIni.getFullYear(), semIni.getMonth(), semIni.getDate() + 6);
+
+  let kHoje = 0, kSemana = 0, kReceita = 0, kPendente = 0;
+  allAgendamentos.forEach(function(a) {
+    if (!a.data_hora) return;
+    const dt = a.data_hora.split('T')[0];
+    if (dt === hoje && a.status !== 'cancelado') kHoje++;
+    const ds = new Date(dt + 'T00:00:00');
+    if (ds >= semIni && ds <= semFim && a.status !== 'cancelado') kSemana++;
+    if (a.status === 'confirmado' || a.status === 'agendado') kReceita += Number(a.valor || 0);
+    if (a.status === 'agendado') kPendente++;
+  });
+  const set2 = function(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; };
+  set2('ag-kpi-hoje', kHoje);
+  set2('ag-kpi-semana', kSemana);
+  set2('ag-kpi-receita', 'R$ ' + kReceita.toLocaleString('pt-BR', {minimumFractionDigits:2}));
+  set2('ag-kpi-pendente', kPendente);
+}
+
+// ── Render Calendário ──
+function renderCalendario() {
+  const mes  = agendaCurrentMonth.getMonth();
+  const ano  = agendaCurrentMonth.getFullYear();
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const titulo = document.getElementById('agenda-mes-titulo');
+  if (titulo) titulo.textContent = meses[mes] + ' ' + ano;
+
+  const grid = document.getElementById('agenda-calendar-grid');
+  if (!grid) return;
+
+  const hoje = todayBR();
+  const filter = (document.getElementById('agenda-filter-status') || {}).value || '';
+
+  // First day of month (0=Sun)
+  const firstDay = new Date(ano, mes, 1).getDay();
+  // Days in month
+  const daysInMonth = new Date(ano, mes + 1, 0).getDate();
+  // Days in prev month
+  const prevDays = new Date(ano, mes, 0).getDate();
+
+  let html = '';
+  const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+
+  for (let i = 0; i < totalCells; i++) {
+    let day, dateStr, isOther = false;
+    if (i < firstDay) {
+      day = prevDays - firstDay + i + 1;
+      const pm = mes === 0 ? 11 : mes - 1;
+      const py = mes === 0 ? ano - 1 : ano;
+      dateStr = py + '-' + String(pm+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+      isOther = true;
+    } else if (i >= firstDay + daysInMonth) {
+      day = i - firstDay - daysInMonth + 1;
+      const nm = mes === 11 ? 0 : mes + 1;
+      const ny = mes === 11 ? ano + 1 : ano;
+      dateStr = ny + '-' + String(nm+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+      isOther = true;
+    } else {
+      day = i - firstDay + 1;
+      dateStr = ano + '-' + String(mes+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    }
+
+    const isToday = dateStr === hoje;
+    const dayAgs  = allAgendamentos.filter(function(a) {
+      if (!a.data_hora) return false;
+      if (filter && a.status !== filter) return false;
+      return a.data_hora.startsWith(dateStr);
+    }).sort(function(a,b){ return a.data_hora > b.data_hora ? 1 : -1; });
+
+    const dayNum = isToday
+      ? '<div class="ag-cal-day"><span style="background:var(--accent);color:#09090b;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;">' + day + '</span></div>'
+      : '<div class="ag-cal-day" style="color:var(--text-muted);">' + day + '</div>';
+
+    let eventsHtml = '';
+    const maxShow = 3;
+    dayAgs.slice(0, maxShow).forEach(function(a) {
+      const hora  = a.data_hora ? a.data_hora.substring(11,16) : '';
+      const label = hora + ' ' + (a.cliente_nome || '?');
+      eventsHtml += '<div class="ag-cal-event ' + (a.status||'agendado') + '" onclick="agViewDetail('' + a.id + '');event.stopPropagation();" title="' + (a.servico||'') + '">' + label + '</div>';
+    });
+    if (dayAgs.length > maxShow) {
+      eventsHtml += '<div class="ag-more-badge">+' + (dayAgs.length - maxShow) + ' mais</div>';
+    }
+
+    const addBtn = !isOther ? '<div onclick="agOpenNewForDate('' + dateStr + '')" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity 0.15s;font-size:16px;color:var(--accent);cursor:pointer;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--accent-soft);" class="ag-add-btn">+</div>' : '';
+
+    html += '<div class="ag-cal-cell' + (isOther ? ' other-month' : '') + (isToday ? ' today' : '') + '" onclick="agOpenNewForDate('' + dateStr + '')" style="position:relative;" onmouseover="var b=this.querySelector('.ag-add-btn');if(b)b.style.opacity='1';" onmouseout="var b=this.querySelector('.ag-add-btn');if(b)b.style.opacity='0';">' +
+      dayNum + eventsHtml + addBtn +
+    '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+// ── Render List ──
+function renderAgendaList() {
+  const tbody = document.getElementById('agenda-tbody');
+  const sub   = document.getElementById('agenda-list-sub');
+  if (!tbody) return;
+
+  const filter  = (document.getElementById('agenda-filter-status2') || {}).value || '';
+  const search  = ((document.getElementById('agenda-search') || {}).value || '').toLowerCase();
+
+  const list = allAgendamentos.filter(function(a) {
+    if (filter && a.status !== filter) return false;
+    if (search) {
+      const hay = ((a.cliente_nome||'') + (a.servico||'') + (a.obs||'')).toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  if (sub) sub.textContent = list.length + ' agendamento(s)';
+
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">Nenhum agendamento encontrado.</td></tr>';
+    return;
+  }
+
+  const statusLabel = { agendado:'Agendado', confirmado:'Confirmado', concluido:'Concluído', cancelado:'Cancelado' };
+  let html = '';
+  list.forEach(function(a) {
+    const dt     = a.data_hora ? new Date(a.data_hora.replace(' ','T')) : null;
+    const dtFmt  = dt ? dt.toLocaleDateString('pt-BR') + ' ' + dt.toTimeString().substr(0,5) : '—';
+    const valor  = a.valor ? 'R$ ' + Number(a.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—';
+    const st     = a.status || 'agendado';
+    const stLbl  = statusLabel[st] || st;
+    html += '<tr>' +
+      '<td class="mono" style="white-space:nowrap;">' + dtFmt + '</td>' +
+      '<td><strong style="color:var(--text-primary)">' + (a.cliente_nome||'—') + '</strong>' + (a.cliente_tel ? '<br><span style="font-size:11px;color:var(--text-muted);">' + a.cliente_tel + '</span>' : '') + '</td>' +
+      '<td>' + (a.servico||'—') + '</td>' +
+      '<td class="mono">' + valor + '</td>' +
+      '<td><span class="status-badge ag-status-' + st + '">' + stLbl + '</span></td>' +
+      '<td><button onclick="agOpenMsg('' + a.id + '')" style="background:var(--green-soft);border:1px solid rgba(16,232,158,0.3);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;display:flex;align-items:center;gap:4px;">💬 WA</button></td>' +
+      '<td style="display:flex;gap:4px;">' +
+        '<button class="icon-btn" onclick="agViewDetail('' + a.id + '')" title="Ver"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>' +
+        '<button class="icon-btn" onclick="agOpenEdit('' + a.id + '')" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
+        '<button class="icon-btn del" onclick="agDelete('' + a.id + '')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+      '</td>' +
+    '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+function agendaFilterList() { renderAgendaList(); }
+
+// ── Open new modal for specific date ──
+function agOpenNewForDate(dateStr) {
+  document.getElementById('ag-edit-id').value = '';
+  document.getElementById('ag-modal-title').textContent = 'Novo Agendamento';
+  document.getElementById('ag-cliente').value = '';
+  document.getElementById('ag-tel').value = '';
+  document.getElementById('ag-servico').value = '';
+  document.getElementById('ag-servico-custom').value = '';
+  document.getElementById('ag-data').value = dateStr;
+  document.getElementById('ag-hora').value = '08:00';
+  document.getElementById('ag-valor').value = '';
+  document.getElementById('ag-status').value = 'agendado';
+  document.getElementById('ag-obs').value = '';
+  document.getElementById('ag-duracao').value = '60';
+  openModal('add-agendamento');
+}
+
+// ── Search cliente in modal ──
+function agSearchCliente(q) {
+  const res = document.getElementById('ag-cliente-results');
+  if (!res) return;
+  if (!q || q.length < 2) { res.style.display = 'none'; return; }
+  const found = (window.allClientes || []).filter(function(c) {
+    return (c.nome||'').toLowerCase().includes(q.toLowerCase());
+  }).slice(0, 6);
+  if (!found.length) { res.style.display = 'none'; return; }
+  res.innerHTML = found.map(function(c) {
+    return '<div style="padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.15s;" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''" onclick="agSelectCliente('' + c.id + '','' + (c.nome||'').replace(/'/g,'\'') + '','' + (c.telefone||'').replace(/'/g,'\'') + '')">' +
+      '<strong>' + (c.nome||'') + '</strong>' + (c.telefone ? '<span style="color:var(--text-muted);font-size:11px;margin-left:8px;">' + c.telefone + '</span>' : '') +
+    '</div>';
+  }).join('');
+  res.style.display = 'block';
+}
+
+function agSelectCliente(id, nome, tel) {
+  document.getElementById('ag-cliente').value = nome;
+  document.getElementById('ag-tel').value = tel || '';
+  const res = document.getElementById('ag-cliente-results');
+  if (res) res.style.display = 'none';
+}
+
+// ── Save Agendamento ──
+async function saveAgendamento() {
+  const cliente = (document.getElementById('ag-cliente')||{}).value || '';
+  const servico = (document.getElementById('ag-servico-custom')||{}).value.trim() ||
+                  (document.getElementById('ag-servico')||{}).value || '';
+  const data    = (document.getElementById('ag-data')||{}).value;
+  const hora    = (document.getElementById('ag-hora')||{}).value || '00:00';
+  if (!cliente) { toast('Informe o cliente.', 'y'); return; }
+  if (!servico) { toast('Informe o tipo de serviço.', 'y'); return; }
+  if (!data)    { toast('Informe a data.', 'y'); return; }
+
+  const id      = (document.getElementById('ag-edit-id')||{}).value || '';
+  const tel     = (document.getElementById('ag-tel')||{}).value || '';
+  const valor   = parseFloat((document.getElementById('ag-valor')||{}).value || 0) || 0;
+  const status  = (document.getElementById('ag-status')||{}).value || 'agendado';
+  const obs     = (document.getElementById('ag-obs')||{}).value || '';
+  const dur     = parseInt((document.getElementById('ag-duracao')||{}).value) || 60;
+  const dataHora = data + 'T' + hora + ':00';
+
+  const payload = {
+    cliente_nome: cliente,
+    cliente_tel: tel,
+    servico: servico,
+    data_hora: dataHora,
+    duracao_min: dur,
+    valor: valor,
+    status: status,
+    obs: obs
+  };
+
+  try {
+    let r;
+    if (id) {
+      r = await sb.from('agendamentos').update(payload).eq('id', id);
+      if (r.error) throw r.error;
+      toast('Agendamento atualizado!');
+    } else {
+      r = await sb.from('agendamentos').insert(payload);
+      if (r.error) throw r.error;
+      toast('Agendamento criado!');
+    }
+    closeModal('add-agendamento');
+    loadAgenda();
+  } catch(e) {
+    toast('Erro: ' + e.message, 'r');
+  }
+}
+
+// ── Edit ──
+function agOpenEdit(id) {
+  const a = allAgendamentos.find(function(x){ return x.id === id; });
+  if (!a) return;
+  const f = function(eid, v) { const e = document.getElementById(eid); if(e) e.value = v||''; };
+  f('ag-edit-id', a.id);
+  document.getElementById('ag-modal-title').textContent = 'Editar Agendamento';
+  f('ag-cliente', a.cliente_nome);
+  f('ag-tel', a.cliente_tel);
+  f('ag-servico', a.servico);
+  f('ag-servico-custom', '');
+  if (a.data_hora) {
+    f('ag-data', a.data_hora.split('T')[0]);
+    f('ag-hora', a.data_hora.substring(11,16));
+  }
+  f('ag-valor', a.valor || '');
+  f('ag-status', a.status || 'agendado');
+  f('ag-obs', a.obs || '');
+  f('ag-duracao', a.duracao_min || 60);
+  openModal('add-agendamento');
+}
+
+// ── View Detail ──
+function agViewDetail(id) {
+  const a = allAgendamentos.find(function(x){ return x.id === id; });
+  if (!a) return;
+  const dt    = a.data_hora ? new Date(a.data_hora.replace(' ','T')) : null;
+  const dtFmt = dt ? dt.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}) + ' às ' + dt.toTimeString().substr(0,5) : '—';
+  const stMap = { agendado:'🕐 Agendado', confirmado:'✅ Confirmado', concluido:'✔️ Concluído', cancelado:'❌ Cancelado' };
+  const c = document.getElementById('ag-view-content');
+  if (!c) return;
+  c.innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+      '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Cliente</div><div style="font-weight:700;color:var(--text-primary);font-size:15px;">' + (a.cliente_nome||'—') + '</div>' +
+        (a.cliente_tel ? '<div style="font-size:12px;color:var(--text-muted);">' + a.cliente_tel + '</div>' : '') + '</div>' +
+      '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Serviço</div><div style="font-weight:600;color:var(--text-primary);">' + (a.servico||'—') + '</div></div>' +
+      '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Data / Hora</div><div style="font-weight:600;color:var(--accent);">' + dtFmt + '</div></div>' +
+      '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Valor Est.</div><div style="font-weight:700;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);">' + (a.valor ? 'R$ ' + Number(a.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—') + '</div></div>' +
+      '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Status</div><div style="font-weight:700;">' + (stMap[a.status]||a.status) + '</div></div>' +
+      '<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;">Duração</div><div>' + (a.duracao_min ? a.duracao_min + ' min' : '—') + '</div></div>' +
+    '</div>' +
+    (a.obs ? '<div style="margin-top:12px;padding:10px;background:var(--bg-surface);border-radius:8px;border:1px solid var(--border);font-size:13px;color:var(--text-secondary);">📝 ' + a.obs + '</div>' : '');
+  
+  const editBtn = document.getElementById('ag-view-edit-btn');
+  const msgBtn  = document.getElementById('ag-view-msg-btn');
+  if (editBtn) editBtn.onclick = function() { closeModal('view-agendamento'); agOpenEdit(id); };
+  if (msgBtn)  msgBtn.onclick  = function() { closeModal('view-agendamento'); agOpenMsg(id); };
+  openModal('view-agendamento');
+}
+
+// ── Delete ──
+async function agDelete(id) {
+  if (!confirm('Excluir este agendamento?')) return;
+  const r = await sb.from('agendamentos').delete().eq('id', id);
+  if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
+  toast('Agendamento excluído.');
+  loadAgenda();
+}
+
+// ── Mensagens WhatsApp ──
+let agMsgCurrent = null;
+
+function agOpenMsg(id) {
+  agMsgCurrent = allAgendamentos.find(function(x){ return x.id === id; });
+  if (!agMsgCurrent) return;
+  const dest = document.getElementById('ag-msg-destino');
+  if (dest) dest.innerHTML = '<strong>' + (agMsgCurrent.cliente_nome||'Cliente') + '</strong>' +
+    (agMsgCurrent.cliente_tel ? ' — ' + agMsgCurrent.cliente_tel : ' <span style="color:var(--red);font-size:11px;">(sem telefone)</span>');
+  const telEl = document.getElementById('ag-msg-tel');
+  if (telEl) telEl.value = agMsgCurrent.cliente_tel || '';
+  const idEl = document.getElementById('ag-msg-ag-id');
+  if (idEl) idEl.value = id;
+  // Ativa template confirmação por padrão
+  agSetMsgTemplate('confirmacao', document.querySelector('.ag-msg-type'));
+  openModal('msg-agendamento');
+}
+
+function agSetMsgTemplate(tipo, btn) {
+  document.querySelectorAll('.ag-msg-type').forEach(function(b) {
+    b.style.background = 'none'; b.style.color = 'var(--text-secondary)'; b.style.borderColor = 'var(--border)';
+  });
+  if (btn) { btn.style.background = 'var(--accent-soft)'; btn.style.color = 'var(--accent)'; btn.style.borderColor = 'var(--border-accent)'; }
+  
+  if (!agMsgCurrent) return;
+  const a    = agMsgCurrent;
+  const nome = a.cliente_nome || 'Cliente';
+  const dt   = a.data_hora ? new Date(a.data_hora.replace(' ','T')) : null;
+  const dtFmt = dt ? dt.toLocaleDateString('pt-BR', {weekday:'long', day:'2-digit', month:'long'}) + ' às ' + dt.toTimeString().substr(0,5) : 'data a confirmar';
+  const serv = a.servico || 'serviço';
+  const val  = a.valor ? ' (R$ ' + Number(a.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}) + ')' : '';
+  
+  let msg = '';
+  if (tipo === 'confirmacao') {
+    msg = 'Olá ' + nome + '! 👋
+
+Seu agendamento foi confirmado!
+
+' +
+      '📅 *' + dtFmt + '*
+' +
+      '🔧 Serviço: *' + serv + '*' + val + '
+
+' +
+      'Caso precise reagendar, é só nos avisar. Te esperamos! 🏍️
+
+' +
+      '— MotoStock';
+  } else if (tipo === 'lembrete') {
+    msg = 'Olá ' + nome + '! 👋
+
+' +
+      'Passando para lembrar do seu agendamento:
+
+' +
+      '📅 *' + dtFmt + '*
+' +
+      '🔧 Serviço: *' + serv + '*
+
+' +
+      'Qualquer dúvida, pode nos chamar!
+
+' +
+      '— MotoStock';
+  } else if (tipo === 'cobranca') {
+    msg = 'Olá ' + nome + '! 👋
+
+' +
+      'Gostaríamos de lembrar sobre o valor em aberto referente ao serviço:
+
+' +
+      '🔧 *' + serv + '*' + val + '
+
+' +
+      'Pedimos que efetue o pagamento para mantermos o atendimento em dia. 🙏
+
+' +
+      'Formas de pagamento: *Dinheiro*, *PIX* ou *Cartão*.
+
+' +
+      '— MotoStock';
+  }
+  const ta = document.getElementById('ag-msg-texto');
+  if (ta) ta.value = msg;
+}
+
+function agEnviarWhatsapp() {
+  const tel = (document.getElementById('ag-msg-tel')||{}).value || '';
+  const msg = (document.getElementById('ag-msg-texto')||{}).value || '';
+  if (!msg.trim()) { toast('Escreva uma mensagem primeiro.', 'y'); return; }
+  if (!tel) { toast('Este cliente não possui telefone cadastrado.
+Edite o agendamento e adicione o número.', 'y'); return; }
+  // Limpa telefone: só dígitos, adiciona 55 (Brasil)
+  const cleaned = tel.replace(/\D/g,'');
+  const num = cleaned.startsWith('55') ? cleaned : '55' + cleaned;
+  const url = 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+  toast('WhatsApp aberto!');
+}
+
 </script>
 <div class="modal-overlay" id="modal-add-cliente">
   <div class="modal" style="max-width:520px">
@@ -5591,6 +6243,157 @@ function pdvUpdateQuickVals() {
     </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('gerenciar-categorias')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ MODAL: NOVO/EDITAR AGENDAMENTO ══════ -->
+<div class="modal-overlay" id="modal-add-agendamento">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header">
+      <div class="modal-title" id="ag-modal-title">Novo Agendamento</div>
+      <div class="modal-close" onclick="closeModal('add-agendamento')">✕</div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="ag-edit-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cliente *</label>
+          <div style="position:relative;">
+            <input class="input-field" id="ag-cliente" type="text" placeholder="Nome do cliente..." style="width:100%;" oninput="agSearchCliente(this.value)" autocomplete="off">
+            <div id="ag-cliente-results" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--bg-card);border:1px solid var(--border-accent);border-radius:8px;max-height:130px;overflow-y:auto;z-index:700;box-shadow:var(--shadow-hover);margin-top:2px;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone / WhatsApp</label>
+          <input class="input-field" id="ag-tel" type="text" placeholder="(00) 00000-0000" style="width:100%;">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Tipo de Serviço *</label>
+          <select id="ag-servico" style="width:100%;">
+            <option value="">Selecione o serviço...</option>
+            <option>Troca de Óleo</option>
+            <option>Revisão Geral</option>
+            <option>Troca de Pneu</option>
+            <option>Troca de Freio</option>
+            <option>Troca de Correia</option>
+            <option>Regulagem de Motor</option>
+            <option>Elétrica / Diagnóstico</option>
+            <option>Suspensão / Amortecedor</option>
+            <option>Funilaria / Pintura</option>
+            <option>Limpeza / Lavagem</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Serviço personalizado</label>
+          <input class="input-field" id="ag-servico-custom" type="text" placeholder="Descreva o serviço..." style="width:100%;">
+        </div>
+      </div>
+      <div class="form-row three">
+        <div class="form-group">
+          <label class="form-label">Data *</label>
+          <input class="input-field" id="ag-data" type="date" style="width:100%;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Horário *</label>
+          <input class="input-field" id="ag-hora" type="time" style="width:100%;" value="08:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duração (min)</label>
+          <select id="ag-duracao" style="width:100%;">
+            <option value="30">30 min</option>
+            <option value="60" selected>1 hora</option>
+            <option value="90">1h 30min</option>
+            <option value="120">2 horas</option>
+            <option value="180">3 horas</option>
+            <option value="240">4 horas</option>
+            <option value="480">Dia inteiro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Valor Estimado (R$)</label>
+          <input class="input-field" id="ag-valor" type="number" min="0" step="0.01" placeholder="0,00" style="width:100%;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select id="ag-status" style="width:100%;">
+            <option value="agendado">Agendado</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="concluido">Concluído</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Observações</label>
+          <input class="input-field" id="ag-obs" type="text" placeholder="Detalhes, modelo da moto, cor, etc..." style="width:100%;">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('add-agendamento')">Cancelar</button>
+      <button class="btn-accent" onclick="saveAgendamento()">
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        Salvar Agendamento
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: ENVIAR MENSAGEM ══════ -->
+<div class="modal-overlay" id="modal-msg-agendamento">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">💬 Enviar Mensagem</div>
+      <div class="modal-close" onclick="closeModal('msg-agendamento')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:12px;">
+        <label class="form-label" style="display:block;margin-bottom:6px;">Tipo de Mensagem</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+          <button onclick="agSetMsgTemplate('confirmacao',this)" class="ag-msg-type active" style="padding:8px;border:1px solid var(--border-accent);border-radius:8px;background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">✅ Confirmação</button>
+          <button onclick="agSetMsgTemplate('lembrete',this)" class="ag-msg-type" style="padding:8px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">⏰ Lembrete</button>
+          <button onclick="agSetMsgTemplate('cobranca',this)" class="ag-msg-type" style="padding:8px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💰 Cobrança</button>
+        </div>
+        <label class="form-label" style="display:block;margin-bottom:6px;">Mensagem</label>
+        <textarea id="ag-msg-texto" rows="7" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text-primary);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;line-height:1.6;resize:vertical;outline:none;"></textarea>
+        <div style="margin-top:10px;padding:10px;background:var(--bg-surface);border-radius:8px;border:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">Destinatário</div>
+          <div id="ag-msg-destino" style="font-size:13px;color:var(--text-primary);font-weight:600;"></div>
+          <input type="hidden" id="ag-msg-tel">
+          <input type="hidden" id="ag-msg-ag-id">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('msg-agendamento')">Cancelar</button>
+      <button class="btn-accent" onclick="agEnviarWhatsapp()" style="background:linear-gradient(135deg,#25d366,#128c7e);box-shadow:0 4px 14px rgba(37,211,102,0.35);">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Abrir WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: VER AGENDAMENTO ══════ -->
+<div class="modal-overlay" id="modal-view-agendamento">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <div class="modal-title">📋 Detalhes do Agendamento</div>
+      <div class="modal-close" onclick="closeModal('view-agendamento')">✕</div>
+    </div>
+    <div class="modal-body" id="ag-view-content" style="font-size:13.5px;color:var(--text-secondary);line-height:1.7;"></div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('view-agendamento')">Fechar</button>
+      <button class="btn-outline" id="ag-view-msg-btn" onclick="" style="color:var(--green);border-color:var(--green);">💬 Mensagem</button>
+      <button class="btn-accent" id="ag-view-edit-btn" onclick="">✏️ Editar</button>
     </div>
   </div>
 </div>
