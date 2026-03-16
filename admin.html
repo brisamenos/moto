@@ -225,6 +225,7 @@ select.input-field{cursor:pointer}
           <tr>
             <th>Nome</th>
             <th>E-mail</th>
+            <th>Token / Catálogo</th>
             <th>Perfil</th>
             <th>Plano</th>
             <th>Expira em</th>
@@ -445,6 +446,15 @@ select.input-field{cursor:pointer}
           <input class="input-field" id="usr-senha" type="password" placeholder="Mínimo 6 caracteres">
         </div>
         <div class="form-group">
+          <label class="form-label">Token da Loja *
+            <span style="font-size:10px;font-weight:400;color:var(--text-muted);margin-left:4px;">usado no link do catálogo</span>
+          </label>
+          <input class="input-field" id="usr-loja-token" type="text" placeholder="ex: manoel, carlos, sportbike" style="font-family:'JetBrains Mono',monospace;">
+          <span style="font-size:10px;color:var(--text-muted);margin-top:3px;">Link: /catalogo.html?loja=<strong id="usr-token-preview" style="color:var(--accent)">token</strong></span>
+        </div>
+      </div>
+      <div class="form-grid three">
+        <div class="form-group">
           <label class="form-label">Perfil</label>
           <select class="input-field" id="usr-perfil">
             <option value="cliente">Cliente (Operador)</option>
@@ -452,8 +462,6 @@ select.input-field{cursor:pointer}
             <option value="superadmin">Super Admin</option>
           </select>
         </div>
-      </div>
-      <div class="form-grid three">
         <div class="form-group">
           <label class="form-label">Plano</label>
           <select class="input-field" id="usr-plano">
@@ -468,6 +476,8 @@ select.input-field{cursor:pointer}
           <label class="form-label">Início do plano</label>
           <input class="input-field" id="usr-plano-inicio" type="date">
         </div>
+      </div>
+      <div class="form-grid">
         <div class="form-group">
           <label class="form-label">Expira em</label>
           <input class="input-field" id="usr-plano-expira" type="date">
@@ -615,6 +625,10 @@ function admRenderUsuarios(list) {
     return '<tr>' +
       '<td style="font-weight:600;color:var(--text-primary)">' + u.nome + '</td>' +
       '<td class="mono" style="font-size:12px">' + u.email + '</td>' +
+      '<td>' +
+        '<div class="mono" style="font-size:12px;color:var(--accent);font-weight:700">' + (u.loja_token || '—') + '</div>' +
+        (u.loja_token ? '<div style="font-size:10px;color:var(--text-muted);margin-top:2px;cursor:pointer;" onclick="navigator.clipboard&&navigator.clipboard.writeText(window.location.origin+\'/catalogo.html?loja=' + u.loja_token + '\').then(()=>toast(\'Link copiado!\'))" title="Clique para copiar o link">📋 /catalogo.html?loja=' + u.loja_token + '</div>' : '') +
+      '</td>' +
       '<td>' + perfilBadge + '</td>' +
       '<td style="color:var(--accent);font-weight:600">' + (u.plano_nome || '—') + '</td>' +
       '<td>' + planoBadge + '<span style="font-size:11px;color:var(--text-muted);margin-left:6px">' + fmtDate(u.plano_expiracao) + '</span></td>' +
@@ -645,6 +659,8 @@ function admOpenNovoUsuario() {
   document.getElementById('usr-email').value = '';
   document.getElementById('usr-senha').value = '';
   document.getElementById('usr-senha-label').textContent = 'Senha *';
+  document.getElementById('usr-loja-token').value = '';
+  document.getElementById('usr-token-preview').textContent = 'token';
   document.getElementById('usr-perfil').value = 'cliente';
   document.getElementById('usr-plano').value = 'Mensal';
   document.getElementById('usr-plano-inicio').value = new Date().toISOString().split('T')[0];
@@ -666,6 +682,8 @@ function admEditarUsuario(id) {
   document.getElementById('usr-email').value = u.email || '';
   document.getElementById('usr-senha').value = '';
   document.getElementById('usr-senha-label').textContent = 'Nova Senha (deixe em branco para manter)';
+  document.getElementById('usr-loja-token').value = u.loja_token || '';
+  document.getElementById('usr-token-preview').textContent = u.loja_token || 'token';
   document.getElementById('usr-perfil').value = u.perfil || 'cliente';
   document.getElementById('usr-plano').value = u.plano_nome || 'Mensal';
   document.getElementById('usr-plano-inicio').value = u.plano_inicio || '';
@@ -710,28 +728,30 @@ async function admDeletarUsuario(id) {
 function admCloseModal() { document.getElementById('modal-usuario').classList.remove('open'); }
 
 async function admSalvarUsuario() {
-  const id      = document.getElementById('usr-edit-id').value;
-  const nome    = document.getElementById('usr-nome').value.trim();
-  const email   = document.getElementById('usr-email').value.trim().toLowerCase();
-  const senha   = document.getElementById('usr-senha').value;
-  const perfil  = document.getElementById('usr-perfil').value;
-  const plano   = document.getElementById('usr-plano').value;
-  const inicio  = document.getElementById('usr-plano-inicio').value;
-  const expira  = document.getElementById('usr-plano-expira').value;
-  const obs     = document.getElementById('usr-obs').value;
-  const ativo   = document.getElementById('usr-ativo').value === 'true';
-  const erroEl  = document.getElementById('usr-modal-erro');
-  const btn     = document.getElementById('usr-save-btn');
+  const id         = document.getElementById('usr-edit-id').value;
+  const nome       = document.getElementById('usr-nome').value.trim();
+  const email      = document.getElementById('usr-email').value.trim().toLowerCase();
+  const senha      = document.getElementById('usr-senha').value;
+  const lojaToken  = document.getElementById('usr-loja-token').value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,'');
+  const perfil     = document.getElementById('usr-perfil').value;
+  const plano      = document.getElementById('usr-plano').value;
+  const inicio     = document.getElementById('usr-plano-inicio').value;
+  const expira     = document.getElementById('usr-plano-expira').value;
+  const obs        = document.getElementById('usr-obs').value;
+  const ativo      = document.getElementById('usr-ativo').value === 'true';
+  const erroEl     = document.getElementById('usr-modal-erro');
+  const btn        = document.getElementById('usr-save-btn');
 
-  if (!nome || !email) { erroEl.textContent = 'Nome e e-mail são obrigatórios.'; erroEl.style.display = 'block'; return; }
-  if (!id && !senha)   { erroEl.textContent = 'Senha obrigatória para novo usuário.'; erroEl.style.display = 'block'; return; }
+  if (!nome || !email)    { erroEl.textContent = 'Nome e e-mail são obrigatórios.'; erroEl.style.display = 'block'; return; }
+  if (!lojaToken)         { erroEl.textContent = 'Token da loja é obrigatório.'; erroEl.style.display = 'block'; return; }
+  if (!id && !senha)      { erroEl.textContent = 'Senha obrigatória para novo usuário.'; erroEl.style.display = 'block'; return; }
   if (senha && senha.length < 6) { erroEl.textContent = 'Senha deve ter mínimo 6 caracteres.'; erroEl.style.display = 'block'; return; }
 
   erroEl.style.display = 'none';
   btn.textContent = 'Salvando...'; btn.disabled = true;
 
   try {
-    const payload = { nome, email, perfil, plano_nome: plano, plano_inicio: inicio || null, plano_expiracao: expira || null, obs, ativo };
+    const payload = { nome, email, perfil, loja_token: lojaToken, plano_nome: plano, plano_inicio: inicio || null, plano_expiracao: expira || null, obs, ativo };
     if (senha) payload.senha_hash = await sha256(senha);
 
     let error;
@@ -1013,6 +1033,16 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('modal-usuario').addEventListener('click', function(e) {
     if (e.target === this) admCloseModal();
   });
+
+  // Preview do token em tempo real
+  const tokenInput = document.getElementById('usr-loja-token');
+  if (tokenInput) {
+    tokenInput.addEventListener('input', function() {
+      const clean = this.value.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      const prev = document.getElementById('usr-token-preview');
+      if (prev) prev.textContent = clean || 'token';
+    });
+  }
 });
 </script>
 </body>

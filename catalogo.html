@@ -402,6 +402,9 @@ const SUPABASE_URL = 'https://lhrzwccbvdintqgebisq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxocnp3Y2NidmRpbnRxZ2ViaXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODY0NzEsImV4cCI6MjA4OTE2MjQ3MX0.gbljgt0rzOf9eBoTcXxxfl0e_0Y-6XYxve-HGY7meJo';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Lê o token da loja da URL: /catalogo.html?loja=manoel
+const _lojaToken = new URLSearchParams(window.location.search).get('loja') || 'padrao';
+
 let todosOsProdutos = [];
 let catAtual = '';
 let waNumero = '';
@@ -414,7 +417,7 @@ async function init() {
 
 async function carregarConfig() {
   try {
-    const { data } = await sb.from('configuracoes').select('chave,valor');
+    const { data } = await sb.from('configuracoes').select('chave,valor').eq('loja_token', _lojaToken);
     const cfg = {};
     (data || []).forEach(r => { cfg[r.chave] = r.valor; });
 
@@ -454,6 +457,7 @@ async function carregarProdutos() {
   try {
     const { data } = await sb.from('produtos')
       .select('id,nome,categoria,preco,custo,estoque,estoque_minimo,sku,imagem_url,cat_visivel,descricao,marca')
+      .eq('loja_token', _lojaToken)
       .eq('cat_visivel', true)
       .order('nome');
 

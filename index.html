@@ -3680,13 +3680,13 @@ function toggleTheme() {
 }
 
 async function saveConfig(chave, valor) {
-  try { await sb.from('configuracoes').upsert({ chave, valor }, { onConflict: 'chave' }); }
+  try { await sb.from('configuracoes').upsert({ chave, valor, loja_token: _lojaToken }, { onConflict: 'chave' }); }
   catch (e) { /* silencioso */ }
 }
 
 async function loadConfig() {
   try {
-    const { data } = await sb.from('configuracoes').select('chave, valor');
+    const { data } = await sb.from('configuracoes').select('chave, valor').eq('loja_token', _lojaToken);
     const cfg = {};
     (data || []).forEach(r => { cfg[r.chave] = r.valor; });
     const tema = cfg['tema'] || 'dark';
@@ -3709,10 +3709,10 @@ async function loadDashboard() {
     const td = today();
     const mesIni = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
     const [r1, r2, r3, r4] = await Promise.all([
-      sb.from('vendas').select('total,numero,cliente,forma_pagamento,status,created_at').gte('created_at', td + 'T00:00:00'),
-      sb.from('produtos').select('estoque,preco_venda,nome,estoque_minimo'),
-      sb.from('vendas').select('total').gte('created_at', mesIni),
-      sb.from('caixa_sessoes').select('*').order('updated_at', { ascending: false }).limit(1),
+      sb.from('vendas').select('total,numero,cliente,forma_pagamento,status,created_at').eq('loja_token', _lojaToken).gte('created_at', td + 'T00:00:00'),
+      sb.from('produtos').select('estoque,preco_venda,nome,estoque_minimo').eq('loja_token', _lojaToken),
+      sb.from('vendas').select('total').eq('loja_token', _lojaToken).gte('created_at', mesIni),
+      sb.from('caixa_sessoes').select('*').eq('loja_token', _lojaToken).order('updated_at', { ascending: false }).limit(1),
     ]);
     const vHoje  = r1.data || [];
     const prods  = r2.data || [];
@@ -3786,7 +3786,7 @@ async function loadProdutos() {
   if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)"><span class="loader-ring"></span> Carregando...</div>';
   if (tbl)  tbl.innerHTML  = spin(9);
   try {
-    const { data, error } = await sb.from('produtos').select('*').order('nome');
+    const { data, error } = await sb.from('produtos').select('*').eq('loja_token', _lojaToken).order('nome');
     if (error) throw error;
     allProdutos = data || [];
     renderPDV(allProdutos);
@@ -3938,7 +3938,7 @@ async function saveProduto() {
   const min   = parseInt($('prod-estoque-min') ? $('prod-estoque-min').value : '5') || 5;
   const marca = $('prod-marca') ? $('prod-marca').value.trim() : '';
 
-  const r = await sb.from('produtos').insert({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca });
+  const r = await sb.from('produtos').insert({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca, loja_token: _lojaToken });
   if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
   ['prod-nome','prod-sku','prod-custo','prod-preco','prod-marca'].forEach(id => { const e=$(id); if(e) e.value=''; });
   if ($('prod-estoque')) $('prod-estoque').value = '0';
@@ -4596,16 +4596,16 @@ async function saveNovaVenda() {
   const forma = $('nv-forma')   ? $('nv-forma').value : 'dinheiro';
   const total = nvCart.reduce((s, i) => s + i.preco * i.qty, 0);
   try {
-    const rv = await sb.from('vendas').insert({ cliente: cli, total, forma_pagamento: forma, status: 'pago' }).select().single();
+    const rv = await sb.from('vendas').insert({ cliente: cli, total, forma_pagamento: forma, status: 'pago', loja_token: _lojaToken }).select().single();
     if (rv.error) throw rv.error;
     const venda = rv.data;
-    const itens = nvCart.map(i => ({ venda_id: venda.id, produto_id: i.id, nome_produto: i.nome, preco: i.preco, quantidade: i.qty, total: i.preco * i.qty }));
+    const itens = nvCart.map(i => ({ venda_id: venda.id, produto_id: i.id, nome_produto: i.nome, preco: i.preco, quantidade: i.qty, total: i.preco * i.qty, loja_token: _lojaToken }));
     await sb.from('venda_itens').insert(itens);
     for (const c of nvCart) {
       const p = allProdutos.find(x => x.id === c.id);
       if (p) await sb.from('produtos').update({ estoque: Math.max(0, Number(p.estoque) - c.qty) }).eq('id', c.id);
     }
-    await sb.from('caixa_lancamentos').insert({ tipo: 'entrada', descricao: 'Venda #' + venda.numero + ' — ' + cli, forma_pagamento: forma, valor: total, data: today(), hora: timeNow() });
+    await sb.from('caixa_lancamentos').insert({ tipo: 'entrada', descricao: 'Venda #' + venda.numero + ' — ' + cli, forma_pagamento: forma, valor: total, data: today(), hora: timeNow(), loja_token: _lojaToken });
     resetNvCart();
     closeModal('nova-venda');
     toast('Venda #' + String(venda.numero).padStart(4,'0') + ' registrada!');
@@ -4627,7 +4627,7 @@ let caixaSessaoId    = null;
 async function loadCaixa() {
   // 1. Carregar estado da sessão
   try {
-    const rs = await sb.from('caixa_sessoes').select('*').order('updated_at', { ascending: false }).limit(1);
+    const rs = await sb.from('caixa_sessoes').select('*').eq('loja_token', _lojaToken).order('updated_at', { ascending: false }).limit(1);
     if (rs.data && rs.data.length > 0) {
       const s = rs.data[0];
       caixaSessaoId    = s.id;
@@ -4871,8 +4871,8 @@ async function loadRelatorios() {
   if (!el) return;
   try {
     const [r1, r2] = await Promise.all([
-      sb.from('venda_itens').select('nome_produto,quantidade,total'),
-      sb.from('vendas').select('total,created_at,forma_pagamento').order('created_at', { ascending: false }).limit(30)
+      sb.from('venda_itens').select('nome_produto,quantidade,total').eq('loja_token', _lojaToken),
+      sb.from('vendas').select('total,created_at,forma_pagamento').eq('loja_token', _lojaToken).order('created_at', { ascending: false }).limit(30)
     ]);
     const itens = r1.data || [];
     if (!itens.length) {
@@ -5137,7 +5137,8 @@ function catSwitchTab(tab) {
 }
 
 function copiarLinkCatalogo() {
-  const link = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '') + '/catalogo.html';
+  const token = _lojaToken && _lojaToken !== 'padrao' ? _lojaToken : '';
+  const link = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '') + '/catalogo.html' + (token ? '?loja=' + token : '');
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(link).then(() => toast('Link copiado! Envie para o cliente.')).catch(() => toast('Link: ' + link, 'y'));
   } else {
@@ -5415,7 +5416,7 @@ function aplicarPerfilNaSidebar(cfg) {
 
 async function carregarDadosEmpresa() {
   try {
-    const { data } = await sb.from('configuracoes').select('chave,valor');
+    const { data } = await sb.from('configuracoes').select('chave,valor').eq('loja_token', _lojaToken);
     const cfg = {};
     (data || []).forEach(function(r) { cfg[r.chave] = r.valor; });
 
@@ -5657,7 +5658,7 @@ async function exportarFinanceiro() {
   toast('Gerando relatório financeiro...', 'y');
   try {
     const [rv, rl] = await Promise.all([
-      sb.from('vendas').select('total,created_at,forma_pagamento').order('created_at', { ascending: false }).limit(100),
+      sb.from('vendas').select('total,created_at,forma_pagamento').eq('loja_token', _lojaToken).order('created_at', { ascending: false }).limit(100),
       sb.from('caixa_movimentos').select('tipo,valor,descricao,created_at').order('created_at', { ascending: false }).limit(50)
     ]);
     const vendas = rv.data || [];
@@ -5789,6 +5790,7 @@ async function relatorioModuloExcel(tipo) {
 // SISTEMA DE LOGIN
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let _sessaoUsuario = null;
+let _lojaToken     = 'padrao'; // token da loja do usuário logado
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -5861,7 +5863,10 @@ function entrarNoSistema(usuario) {
   const ls = document.getElementById('login-screen');
   if (ls) ls.style.display = 'none';
 
-  // Atualiza nome do usuário na sidebar
+  // Define token da loja
+  _lojaToken = usuario.loja_token || 'padrao';
+
+  // Atualiza sidebar
   const avatarTxt = document.getElementById('sidebar-avatar-txt');
   const h4        = document.querySelector('.sidebar-user .user-info h4');
   const span      = document.querySelector('.sidebar-user .user-info span');
@@ -5869,7 +5874,6 @@ function entrarNoSistema(usuario) {
   if (span)      span.textContent = usuario.perfil === 'superadmin' ? 'Super Admin' : (usuario.perfil === 'admin' ? 'Administrador' : 'Operador');
   if (avatarTxt) avatarTxt.textContent = usuario.nome.substring(0, 2).toUpperCase();
 
-  // Carrega sistema
   loadConfig();
   loadCategorias();
   loadClientesParaPDV();
@@ -6105,7 +6109,7 @@ async function loadClientes() {
   const tb = document.getElementById('clientes-tbody');
   if (tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)"><span class="loader-ring"></span></td></tr>';
   try {
-    const { data, error } = await sb.from('clientes').select('*').order('nome');
+    const { data, error } = await sb.from('clientes').select('*').eq('loja_token', _lojaToken).order('nome');
     if (error) throw error;
     allClientes = data || [];
     renderClientes(allClientes);
@@ -6164,7 +6168,8 @@ async function saveCliente() {
     endereco:  document.getElementById('cli-endereco') ? document.getElementById('cli-endereco').value.trim() : '',
     cidade:    document.getElementById('cli-cidade')   ? document.getElementById('cli-cidade').value.trim()   : '',
     obs:       document.getElementById('cli-obs')      ? document.getElementById('cli-obs').value.trim()      : '',
-    total_compras: 0, total_gasto: 0
+    total_compras: 0, total_gasto: 0,
+    loja_token: _lojaToken
   };
   const r = await sb.from('clientes').insert(obj);
   if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
@@ -6219,7 +6224,7 @@ async function deletarCliente(id, nome) {
 
 async function loadClientesParaPDV() {
   try {
-    const { data } = await sb.from('clientes').select('id,nome,telefone,cpf_cnpj').order('nome');
+    const { data } = await sb.from('clientes').select('id,nome,telefone,cpf_cnpj').eq('loja_token', _lojaToken).order('nome');
     pdvClientesCache = data || [];
     allClientes = pdvClientesCache;
   } catch(e) { pdvClientesCache = []; }
@@ -6810,7 +6815,7 @@ async function saveAgendamento() {
       if (r.error) throw r.error;
       toast('Agendamento atualizado!');
     } else {
-      r = await sb.from('agendamentos').insert(payload);
+      payload.loja_token = _lojaToken; r = await sb.from('agendamentos').insert(payload);
       if (r.error) throw r.error;
       toast('Agendamento criado!');
     }
