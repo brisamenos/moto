@@ -1859,8 +1859,8 @@ select { font-size: 13.5px; }
   <div class="sidebar-divider"></div>
 
   <div class="sidebar-section">
-    <a class="nav-item" onclick="">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></span>
+    <a class="nav-item" onclick="showPage('configuracoes')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></span>
       Configuracoes
     </a>
   </div>
@@ -1916,7 +1916,7 @@ select { font-size: 13.5px; }
         <p>Visao consolidada do estoque, vendas e caixa. Acompanhe os principais indicadores em tempo real e tome decisoes estrategicas com base em dados precisos.</p>
       </div>
       <div class="page-actions">
-        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar</button>
+        <button class="btn-outline" onclick="exportarDashboard()"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar</button>
         <button class="btn-accent" onclick="loadDashboard();toast('Dashboard atualizado!')"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Atualizar</button>
       </div>
     </div>
@@ -2402,7 +2402,7 @@ select { font-size: 13.5px; }
         <p>Gerencie com eficiencia a disponibilidade de produtos, evitando rupturas. Acompanhe movimentacoes de entrada e saida, realize inventarios e gere relatorios estrategicos.</p>
       </div>
       <div class="page-actions">
-        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar</button>
+        <button class="btn-outline" onclick="exportarEstoque()"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar</button>
         <button class="btn-outline" onclick="abrirGerenciarCategorias()">
           <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5S15.01 22 17.5 22s4.5-2.01 4.5-4.5S19.99 13 17.5 13zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"/></svg>
           Categorias
@@ -2629,7 +2629,7 @@ select { font-size: 13.5px; }
         <p>Visao completa do fluxo de caixa, lucros, despesas e investimentos. Relatorios avancados com analises de rentabilidade por produto, cliente e periodo.</p>
       </div>
       <div class="page-actions">
-        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar PDF</button>
+        <button class="btn-outline" onclick="exportarFinanceiro()"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar PDF</button>
       </div>
     </div>
 
@@ -2783,37 +2783,37 @@ select { font-size: 13.5px; }
         <div class="report-module-icon" style="background: rgba(232,160,32,0.12); color: var(--accent)"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg></div>
         <h4>Relatorio de Vendas</h4>
         <p>Analise completa de vendas por periodo, produto, cliente e canal. Identifique tendencias e oportunidades de crescimento.</p>
-        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip" onclick="relatorioModuloPDF('vendas')">PDF</button><button class="chip" onclick="relatorioModuloExcel('vendas')">Excel</button></div>
       </div>
       <div class="report-module">
         <div class="report-module-icon" style="background: rgba(74,140,255,0.12); color: var(--blue)"><svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg></div>
         <h4>Curva ABC de Estoque</h4>
         <p>Classificacao de produtos por valor de venda, giro e margem. Otimize compras com base na curva ABC.</p>
-        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip" onclick="relatorioModuloPDF('abc')">PDF</button><button class="chip" onclick="relatorioModuloExcel('abc')">Excel</button></div>
       </div>
       <div class="report-module">
         <div class="report-module-icon" style="background: rgba(56,200,122,0.12); color: var(--green)"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
         <h4>DRE Gerencial</h4>
         <p>Demonstrativo de Resultado do Exercicio completo com receitas, custos, despesas e lucro operacional.</p>
-        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip" onclick="relatorioModuloPDF('dre')">PDF</button><button class="chip" onclick="relatorioModuloExcel('dre')">Excel</button></div>
       </div>
       <div class="report-module">
         <div class="report-module-icon" style="background: rgba(168,85,247,0.12); color: var(--purple)"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"/></svg></div>
         <h4>Inadimplencia</h4>
         <p>Controle de clientes em atraso, historico de pagamentos e gestao da carteira de recebíveis.</p>
-        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip" onclick="relatorioModuloPDF('inadimplencia')">PDF</button><button class="chip" onclick="relatorioModuloExcel('inadimplencia')">Excel</button></div>
       </div>
       <div class="report-module">
         <div class="report-module-icon" style="background: rgba(232,80,64,0.12); color: var(--red)"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
         <h4>Fechamento de Caixa</h4>
         <p>Relatorios de fechamento diario, mensal e anual com conciliacao bancaria e controle fiscal.</p>
-        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip" onclick="relatorioModuloPDF('caixa')">PDF</button><button class="chip" onclick="relatorioModuloExcel('caixa')">Excel</button></div>
       </div>
       <div class="report-module">
         <div class="report-module-icon" style="background: rgba(232,160,32,0.12); color: var(--accent)"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
         <h4>Margem por Produto</h4>
         <p>Analise de rentabilidade detalhada por produto, fornecedor e categoria com margem bruta e liquida.</p>
-        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip">PDF</button><button class="chip">Excel</button></div>
+        <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip" onclick="relatorioModuloPDF('margem')">PDF</button><button class="chip" onclick="relatorioModuloExcel('margem')">Excel</button></div>
       </div>
     </div>
   </div>
@@ -3509,18 +3509,19 @@ function toast(msg, col) {
 }
 
 // ━━━━ NAVEGAÇÃO
-const PAGES = ['dashboard','pdv','agenda','clientes','estoque','caixa','financeiro','nf','relatorios','catalogo'];
+const PAGES = ['dashboard','pdv','agenda','clientes','estoque','caixa','financeiro','nf','relatorios','catalogo','configuracoes'];
 const TITLES = {
-  dashboard:  ['Painel Geral',           'Visão geral do negócio em tempo real'],
-  pdv:        ['PDV — Vendas',            'Ponto de Venda'],
-  estoque:    ['Controle de Estoque',     'Gestão de produtos e inventário'],
-  caixa:      ['Controle de Caixa',       'Fluxo de entradas e saídas'],
-  financeiro: ['Controle Financeiro',     'DRE, lucros e análise financeira'],
-  nf:         ['Notas Fiscais',           'Emissão e gestão de NF-e e NFC-e'],
-  clientes:   ['Clientes',               'Cadastro e histórico de clientes'],
-  relatorios: ['Relatórios Gerenciais',   'Dashboards e análise de dados'],
-  agenda:     ['Agenda & Serviços',        'Agendamentos, serviços e mensagens'],
-  catalogo:   ['Catálogo & Canais',       'Marketplaces e vendas online'],
+  dashboard:      ['Painel Geral',           'Visão geral do negócio em tempo real'],
+  pdv:            ['PDV — Vendas',            'Ponto de Venda'],
+  estoque:        ['Controle de Estoque',     'Gestão de produtos e inventário'],
+  caixa:          ['Controle de Caixa',       'Fluxo de entradas e saídas'],
+  financeiro:     ['Controle Financeiro',     'DRE, lucros e análise financeira'],
+  nf:             ['Notas Fiscais',           'Emissão e gestão de NF-e e NFC-e'],
+  clientes:       ['Clientes',               'Cadastro e histórico de clientes'],
+  relatorios:     ['Relatórios Gerenciais',   'Dashboards e análise de dados'],
+  agenda:         ['Agenda & Serviços',        'Agendamentos, serviços e mensagens'],
+  catalogo:       ['Catálogo & Canais',       'Marketplaces e vendas online'],
+  configuracoes:  ['Configurações',           'Dados da empresa e preferências do sistema'],
 };
 
 function showPage(id) {
@@ -3543,7 +3544,8 @@ function showPage(id) {
   if (id === 'relatorios') loadRelatorios();
   if (id === 'nf')         loadNF();
   if (id === 'catalogo')   loadCatalogo();
-  if (id === 'agenda')     { if (!window.allClientes || !window.allClientes.length) loadClientes(); loadAgenda(); }
+  if (id === 'agenda')         { if (!window.allClientes || !window.allClientes.length) loadClientes(); loadAgenda(); }
+  if (id === 'configuracoes')  carregarDadosEmpresa();
 }
 
 // ━━━━ MODAIS
@@ -5094,6 +5096,296 @@ function abrirJanelaImpressao(htmlContent, titulo, isTermica) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // INIT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CONFIGURAÇÕES — Dados da empresa
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function carregarDadosEmpresa() {
+  try {
+    const r = await sb.from('configuracoes').select('chave,valor').in('chave',['nome_empresa','cnpj','telefone','endereco']);
+    (r.data || []).forEach(function(row) {
+      const el = document.getElementById('cfg-' + row.chave.replace('_','-'));
+      if (el) el.value = row.valor || '';
+    });
+  } catch(e) {}
+}
+
+async function salvarDadosEmpresa() {
+  const campos = [
+    { chave: 'nome_empresa', id: 'cfg-nome-empresa' },
+    { chave: 'cnpj',         id: 'cfg-cnpj' },
+    { chave: 'telefone',     id: 'cfg-telefone' },
+    { chave: 'endereco',     id: 'cfg-endereco' },
+  ];
+  try {
+    for (const c of campos) {
+      const el = document.getElementById(c.id);
+      if (!el) continue;
+      await sb.from('configuracoes').upsert({ chave: c.chave, valor: el.value }, { onConflict: 'chave' });
+    }
+    toast('Dados da empresa salvos!');
+  } catch(e) {
+    toast('Erro ao salvar: ' + e.message, 'r');
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// EXPORTAR — Dashboard / Estoque / Financeiro
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function exportarPDFGenerico(titulo, linhas) {
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const L = 15, RW = 180;
+    doc.setFillColor(240, 165, 0);
+    doc.rect(0, 0, 210, 22, 'F');
+    doc.setTextColor(15, 15, 20);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('MotoStock', L, 14);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Peças e Acessórios para Motos', 210 - L, 14, { align: 'right' });
+    let y = 34;
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text(titulo, L, y);
+    y += 6;
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120, 120, 120);
+    doc.text('Gerado em: ' + new Date().toLocaleString('pt-BR'), L, y);
+    y += 8;
+    doc.setDrawColor(200);
+    doc.line(L, y, L + RW, y);
+    y += 8;
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    linhas.forEach(function(linha) {
+      if (y > 270) { doc.addPage(); y = 20; }
+      if (linha.tipo === 'titulo') {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(200, 130, 0);
+        doc.text(linha.texto, L, y);
+        y += 7;
+        doc.setTextColor(0, 0, 0);
+      } else if (linha.tipo === 'linha') {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.text(linha.esq, L, y);
+        if (linha.dir) doc.text(linha.dir, L + RW, y, { align: 'right' });
+        y += 6;
+      } else if (linha.tipo === 'divisor') {
+        doc.setDrawColor(220);
+        doc.line(L, y, L + RW, y);
+        y += 5;
+      }
+    });
+    doc.setTextColor(150, 150, 150);
+    doc.setFontSize(8);
+    doc.text('MotoStock — Documento gerado automaticamente', 105, 290, { align: 'center' });
+    doc.save(titulo.replace(/\s+/g, '_').toLowerCase() + '.pdf');
+    toast(titulo + ' exportado!');
+  } catch (e) {
+    toast('Erro ao gerar PDF: ' + e.message, 'r');
+  }
+}
+
+async function exportarDashboard() {
+  toast('Gerando relatório...', 'y');
+  try {
+    const [rv, rp, rc] = await Promise.all([
+      sb.from('vendas').select('total,created_at,forma_pagamento').order('created_at', { ascending: false }).limit(50),
+      sb.from('produtos').select('nome,estoque,preco,custo'),
+      sb.from('caixa_movimentos').select('tipo,valor,descricao,created_at').order('created_at', { ascending: false }).limit(20)
+    ]);
+    const vendas = rv.data || [];
+    const produtos = rp.data || [];
+    const movimentos = rc.data || [];
+    const totalVendas = vendas.reduce(function(s, v) { return s + Number(v.total); }, 0);
+    const totalEstoque = produtos.reduce(function(s, p) { return s + (Number(p.estoque) * Number(p.preco)); }, 0);
+    const prodAbaixo = produtos.filter(function(p) { return Number(p.estoque) <= 3; }).length;
+    const linhas = [
+      { tipo: 'titulo', texto: '📊 RESUMO GERAL' },
+      { tipo: 'linha', esq: 'Total em Vendas (últimas 50):', dir: fmt(totalVendas) },
+      { tipo: 'linha', esq: 'Valor do Estoque:', dir: fmt(totalEstoque) },
+      { tipo: 'linha', esq: 'Produtos com estoque crítico:', dir: prodAbaixo + ' produto(s)' },
+      { tipo: 'linha', esq: 'Total de Produtos:', dir: produtos.length + ' itens' },
+      { tipo: 'divisor' },
+      { tipo: 'titulo', texto: '💰 ÚLTIMAS VENDAS' },
+    ];
+    vendas.slice(0, 10).forEach(function(v) {
+      const dt = v.created_at ? new Date(v.created_at).toLocaleDateString('pt-BR') : '—';
+      linhas.push({ tipo: 'linha', esq: dt + ' — ' + (v.forma_pagamento || 'dinheiro').toUpperCase(), dir: fmt(v.total) });
+    });
+    linhas.push({ tipo: 'divisor' });
+    linhas.push({ tipo: 'titulo', texto: '📦 PRODUTOS COM ESTOQUE BAIXO' });
+    const criticos = produtos.filter(function(p) { return Number(p.estoque) <= 3; }).slice(0, 10);
+    if (!criticos.length) {
+      linhas.push({ tipo: 'linha', esq: 'Nenhum produto crítico.' });
+    } else {
+      criticos.forEach(function(p) {
+        linhas.push({ tipo: 'linha', esq: p.nome, dir: 'Estoque: ' + p.estoque });
+      });
+    }
+    exportarPDFGenerico('Relatorio de Dashboard', linhas);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'r');
+  }
+}
+
+async function exportarEstoque() {
+  toast('Gerando relatório de estoque...', 'y');
+  try {
+    const r = await sb.from('produtos').select('*').order('nome');
+    const produtos = r.data || [];
+    const linhas = [
+      { tipo: 'titulo', texto: '📦 INVENTÁRIO COMPLETO DE ESTOQUE' },
+      { tipo: 'linha', esq: 'Total de produtos cadastrados:', dir: produtos.length + '' },
+      { tipo: 'divisor' },
+    ];
+    produtos.forEach(function(p) {
+      linhas.push({ tipo: 'linha', esq: '[' + (p.codigo || '—') + '] ' + p.nome + ' (' + (p.categoria || 'Sem cat.') + ')', dir: 'Qtd: ' + (p.estoque || 0) + ' | ' + fmt(p.preco) });
+    });
+    exportarPDFGenerico('Relatorio de Estoque', linhas);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'r');
+  }
+}
+
+async function exportarFinanceiro() {
+  toast('Gerando relatório financeiro...', 'y');
+  try {
+    const [rv, rl] = await Promise.all([
+      sb.from('vendas').select('total,created_at,forma_pagamento').order('created_at', { ascending: false }).limit(100),
+      sb.from('caixa_movimentos').select('tipo,valor,descricao,created_at').order('created_at', { ascending: false }).limit(50)
+    ]);
+    const vendas = rv.data || [];
+    const movimentos = rl.data || [];
+    const faturamento = vendas.reduce(function(s, v) { return s + Number(v.total); }, 0);
+    const entradas = movimentos.filter(function(m) { return m.tipo === 'entrada'; }).reduce(function(s, m) { return s + Number(m.valor); }, 0);
+    const saidas = movimentos.filter(function(m) { return m.tipo === 'saida'; }).reduce(function(s, m) { return s + Number(m.valor); }, 0);
+    const linhas = [
+      { tipo: 'titulo', texto: '💵 RESUMO FINANCEIRO' },
+      { tipo: 'linha', esq: 'Faturamento Total (vendas):', dir: fmt(faturamento) },
+      { tipo: 'linha', esq: 'Entradas no Caixa:', dir: fmt(entradas) },
+      { tipo: 'linha', esq: 'Saídas do Caixa:', dir: fmt(saidas) },
+      { tipo: 'linha', esq: 'Saldo de Caixa:', dir: fmt(entradas - saidas) },
+      { tipo: 'divisor' },
+      { tipo: 'titulo', texto: '📋 MOVIMENTAÇÕES RECENTES' },
+    ];
+    movimentos.slice(0, 20).forEach(function(m) {
+      const dt = m.created_at ? new Date(m.created_at).toLocaleDateString('pt-BR') : '—';
+      const sinal = m.tipo === 'entrada' ? '+' : '-';
+      linhas.push({ tipo: 'linha', esq: dt + ' — ' + (m.descricao || m.tipo), dir: sinal + ' ' + fmt(m.valor) });
+    });
+    exportarPDFGenerico('Relatorio Financeiro', linhas);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'r');
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RELATÓRIOS — Módulos PDF / Excel
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function relatorioModuloPDF(tipo) {
+  const nomes = { vendas: 'Relatorio de Vendas', abc: 'Curva ABC de Estoque', dre: 'DRE Gerencial', inadimplencia: 'Inadimplencia', caixa: 'Fechamento de Caixa', margem: 'Margem por Produto' };
+  toast('Gerando ' + (nomes[tipo] || tipo) + '...', 'y');
+  try {
+    if (tipo === 'vendas') {
+      const r = await sb.from('vendas').select('*').order('created_at', { ascending: false }).limit(100);
+      const vendas = r.data || [];
+      const linhas = [{ tipo: 'titulo', texto: '🛒 RELATÓRIO DE VENDAS' }];
+      vendas.forEach(function(v) {
+        const dt = v.created_at ? new Date(v.created_at).toLocaleDateString('pt-BR') : '—';
+        linhas.push({ tipo: 'linha', esq: dt + ' — ' + (v.cliente_nome || 'Consumidor') + ' — ' + (v.forma_pagamento || 'dinheiro').toUpperCase(), dir: fmt(v.total) });
+      });
+      const total = vendas.reduce(function(s, v) { return s + Number(v.total); }, 0);
+      linhas.push({ tipo: 'divisor' });
+      linhas.push({ tipo: 'linha', esq: 'TOTAL GERAL', dir: fmt(total) });
+      exportarPDFGenerico(nomes[tipo], linhas);
+    } else if (tipo === 'abc' || tipo === 'margem') {
+      const r = await sb.from('produtos').select('*').order('nome');
+      const prods = r.data || [];
+      const linhas = [{ tipo: 'titulo', texto: tipo === 'abc' ? '📦 CURVA ABC DE ESTOQUE' : '📈 MARGEM POR PRODUTO' }];
+      prods.forEach(function(p) {
+        const margem = p.preco && p.custo ? (((Number(p.preco) - Number(p.custo)) / Number(p.preco)) * 100).toFixed(1) + '%' : '—';
+        const val = tipo === 'abc' ? 'Estoque: ' + (p.estoque || 0) : 'Margem: ' + margem;
+        linhas.push({ tipo: 'linha', esq: p.nome + ' (' + (p.categoria || '—') + ')', dir: val });
+      });
+      exportarPDFGenerico(nomes[tipo], linhas);
+    } else if (tipo === 'dre' || tipo === 'caixa') {
+      const r = await sb.from('caixa_movimentos').select('*').order('created_at', { ascending: false }).limit(100);
+      const movs = r.data || [];
+      const entradas = movs.filter(function(m) { return m.tipo === 'entrada'; }).reduce(function(s, m) { return s + Number(m.valor); }, 0);
+      const saidas = movs.filter(function(m) { return m.tipo === 'saida'; }).reduce(function(s, m) { return s + Number(m.valor); }, 0);
+      const linhas = [
+        { tipo: 'titulo', texto: tipo === 'dre' ? '📊 DRE GERENCIAL' : '💼 FECHAMENTO DE CAIXA' },
+        { tipo: 'linha', esq: 'Total de Entradas:', dir: fmt(entradas) },
+        { tipo: 'linha', esq: 'Total de Saídas:', dir: fmt(saidas) },
+        { tipo: 'linha', esq: 'Resultado Líquido:', dir: fmt(entradas - saidas) },
+        { tipo: 'divisor' },
+        { tipo: 'titulo', texto: 'MOVIMENTAÇÕES' },
+      ];
+      movs.forEach(function(m) {
+        const dt = m.created_at ? new Date(m.created_at).toLocaleDateString('pt-BR') : '—';
+        linhas.push({ tipo: 'linha', esq: dt + ' — ' + (m.descricao || m.tipo), dir: (m.tipo === 'entrada' ? '+' : '-') + ' ' + fmt(m.valor) });
+      });
+      exportarPDFGenerico(nomes[tipo], linhas);
+    } else if (tipo === 'inadimplencia') {
+      const r = await sb.from('caixa_movimentos').select('*').eq('tipo','saida').order('created_at', { ascending: false }).limit(50);
+      const movs = r.data || [];
+      const linhas = [{ tipo: 'titulo', texto: '⚠️ RELATÓRIO DE INADIMPLÊNCIA' }];
+      if (!movs.length) { linhas.push({ tipo: 'linha', esq: 'Sem registros de contas a receber.' }); }
+      else { movs.forEach(function(m) { const dt = m.created_at ? new Date(m.created_at).toLocaleDateString('pt-BR') : '—'; linhas.push({ tipo: 'linha', esq: dt + ' — ' + (m.descricao || '—'), dir: fmt(m.valor) }); }); }
+      exportarPDFGenerico(nomes[tipo], linhas);
+    }
+  } catch(e) { toast('Erro: ' + e.message, 'r'); }
+}
+
+async function relatorioModuloExcel(tipo) {
+  const nomes = { vendas: 'Vendas', abc: 'Curva_ABC', dre: 'DRE', inadimplencia: 'Inadimplencia', caixa: 'Caixa', margem: 'Margem' };
+  toast('Gerando Excel de ' + (nomes[tipo] || tipo) + '...', 'y');
+  try {
+    let rows = [];
+    let headers = [];
+    if (tipo === 'vendas') {
+      const r = await sb.from('vendas').select('*').order('created_at', { ascending: false }).limit(200);
+      headers = ['Data', 'Cliente', 'Forma Pagamento', 'Total'];
+      rows = (r.data || []).map(function(v) {
+        return [v.created_at ? new Date(v.created_at).toLocaleDateString('pt-BR') : '—', v.cliente_nome || 'Consumidor', v.forma_pagamento || 'dinheiro', 'R$ ' + Number(v.total).toFixed(2).replace('.',',')];
+      });
+    } else if (tipo === 'abc' || tipo === 'margem') {
+      const r = await sb.from('produtos').select('*').order('nome');
+      headers = ['Código', 'Produto', 'Categoria', 'Custo', 'Preço', 'Estoque', 'Margem%'];
+      rows = (r.data || []).map(function(p) {
+        const margem = p.preco && p.custo ? (((Number(p.preco) - Number(p.custo)) / Number(p.preco)) * 100).toFixed(1) : '0';
+        return [p.codigo || '—', p.nome, p.categoria || '—', 'R$ ' + Number(p.custo || 0).toFixed(2).replace('.',','), 'R$ ' + Number(p.preco || 0).toFixed(2).replace('.',','), p.estoque || 0, margem + '%'];
+      });
+    } else {
+      const r = await sb.from('caixa_movimentos').select('*').order('created_at', { ascending: false }).limit(200);
+      headers = ['Data', 'Tipo', 'Descrição', 'Valor'];
+      rows = (r.data || []).map(function(m) {
+        return [m.created_at ? new Date(m.created_at).toLocaleDateString('pt-BR') : '—', m.tipo || '—', m.descricao || '—', 'R$ ' + Number(m.valor || 0).toFixed(2).replace('.',',')];
+      });
+    }
+    // Gera CSV com BOM para Excel reconhecer UTF-8
+    const BOM = '\uFEFF';
+    const sep = ';';
+    let csv = BOM + headers.join(sep) + '\n';
+    rows.forEach(function(r) { csv += r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(sep) + '\n'; });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'MotoStock_' + (nomes[tipo] || tipo) + '.csv';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('Excel (CSV) baixado!');
+  } catch(e) { toast('Erro: ' + e.message, 'r'); }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   loadConfig();
 
@@ -6276,6 +6568,104 @@ Edite o agendamento e adicione o número.', 'y'); return; }
   </div>
 </div>
 
+
+<!-- ══════════ CONFIGURACOES ══════════ -->
+<div class="content" id="page-configuracoes">
+  <div class="page-header">
+    <div>
+      <h2>Configurações</h2>
+      <p>Personalize o sistema, gerencie dados da empresa, banco de dados e preferências gerais.</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Dados da Empresa -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">🏪 Dados da Empresa</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Nome da Empresa</label>
+          <input class="input-field" id="cfg-nome-empresa" type="text" placeholder="Ex: MotoStock Peças" style="width:100%;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">CNPJ</label>
+          <input class="input-field" id="cfg-cnpj" type="text" placeholder="00.000.000/0000-00" style="width:100%;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone</label>
+          <input class="input-field" id="cfg-telefone" type="text" placeholder="(00) 00000-0000" style="width:100%;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Endereço</label>
+          <input class="input-field" id="cfg-endereco" type="text" placeholder="Rua, número, cidade..." style="width:100%;">
+        </div>
+        <button class="btn-accent" onclick="salvarDadosEmpresa()" style="align-self:flex-start;">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Salvar Dados
+        </button>
+      </div>
+    </div>
+
+    <!-- Configurações do Sistema -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">⚙️ Sistema</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Tema Escuro / Claro</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Alterna entre tema escuro e claro</div>
+          </div>
+          <button class="btn-outline" onclick="toggleTheme()" style="min-width:90px;">🌗 Alternar</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Banco de Dados</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Ver instruções de configuração SQL</div>
+          </div>
+          <button class="btn-outline" onclick="openModal('setup-db')" style="min-width:90px;">🗄️ Ver SQL</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Categorias de Produtos</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Adicionar, editar ou remover categorias</div>
+          </div>
+          <button class="btn-outline" onclick="abrirGerenciarCategorias()" style="min-width:90px;">🏷️ Gerenciar</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Exportar Dados Gerais</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Gera relatório completo em PDF</div>
+          </div>
+          <button class="btn-outline" onclick="exportarDashboard()" style="min-width:90px;">📥 Exportar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sobre o Sistema -->
+  <div class="card">
+    <div class="card-header"><div class="card-title">ℹ️ Sobre o MotoStock</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+        <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center;">
+          <div style="font-size:24px;margin-bottom:6px;">🏍️</div>
+          <div style="font-size:12px;font-weight:700;color:var(--accent);">MotoStock v2.0</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Gestão Completa de Peças</div>
+        </div>
+        <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center;">
+          <div style="font-size:24px;margin-bottom:6px;">🔒</div>
+          <div style="font-size:12px;font-weight:700;color:var(--green);">Dados Seguros</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Armazenamento via Supabase</div>
+        </div>
+        <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center;">
+          <div style="font-size:24px;margin-bottom:6px;">📱</div>
+          <div style="font-size:12px;font-weight:700;color:var(--blue);">Responsivo</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Funciona em desktop e mobile</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ══════ MODAL: NOVO/EDITAR AGENDAMENTO ══════ -->
 <div class="modal-overlay" id="modal-add-agendamento">
