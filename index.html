@@ -5137,7 +5137,7 @@ function catSwitchTab(tab) {
 }
 
 function copiarLinkCatalogo() {
-  const link = window.location.origin + window.location.pathname + '?catalogo=publico';
+  const link = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '') + '/catalogo.html';
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(link).then(() => toast('Link copiado! Envie para o cliente.')).catch(() => toast('Link: ' + link, 'y'));
   } else {
