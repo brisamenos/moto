@@ -115,6 +115,7 @@ body {
   min-height: 100vh;
   display: flex;
   overflow-x: hidden;
+  width: 100%;
   transition: background 0.4s ease, color 0.4s ease;
 }
 
@@ -329,8 +330,9 @@ body {
   min-height: 100vh;
   position: relative;
   z-index: 1;
+  min-width: 0;
+  max-width: calc(100vw - var(--sidebar-w));
   overflow-x: hidden;
-  width: calc(100% - var(--sidebar-w));
 }
 
 /* ════════════════════════════════
