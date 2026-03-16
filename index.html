@@ -1724,7 +1724,11 @@ select { font-size: 13.5px; }
     <a class="nav-item" onclick="showPage('pdv')">
       <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></span>
       PDV — Vendas
-      <span class="nav-badge accent">3</span>
+      <span class="nav-badge accent" id="badge-pdv">0</span>
+    </a>
+    <a class="nav-item" onclick="showPage('clientes')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span>
+      Clientes
     </a>
   </div>
 
@@ -1733,7 +1737,7 @@ select { font-size: 13.5px; }
     <a class="nav-item" onclick="showPage('estoque')">
       <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg></span>
       Estoque
-      <span class="nav-badge">7</span>
+      <span class="nav-badge" id="badge-rupturas" style="display:none">0</span>
     </a>
     <a class="nav-item" onclick="showPage('caixa')">
       <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></span>
@@ -1805,10 +1809,7 @@ select { font-size: 13.5px; }
         <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
       </div>
       <button class="theme-toggle" onclick="toggleTheme()" title="Alternar Tema" id="theme-btn">🌙</button>
-      <button class="btn-outline" onclick="openModal('setup-db')" style="padding: 8px 14px; font-size: 11.5px; letter-spacing: 0.5px;">
-        <svg viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
-        Setup BD
-      </button>
+
       <button class="btn-accent" onclick="openModal('nova-venda')">
         <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         Nova Venda
@@ -1860,7 +1861,7 @@ select { font-size: 13.5px; }
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"/></svg></div>
           <span class="kpi-trend down">+2</span>
         </div>
-        <div class="kpi-value" id="kpi-rupturas">0</div>
+        <div class="kpi-value" id="kpi-rupt">0</div>
         <div class="kpi-label">Produtos em ruptura</div>
       </div>
     </div>
@@ -2077,9 +2078,13 @@ select { font-size: 13.5px; }
       <div class="pdv-cart">
         <div class="cart-header">
           <h3 id="pdv-cart-title">Carrinho de Venda</h3>
-          <div class="cart-client">
-            <input class="input-field" id="pdv-cliente" type="text" placeholder="Nome do cliente (opcional)..." style="flex:1; font-size:13px; padding: 8px 12px;">
+          <div class="cart-client" style="gap:6px">
+            <input class="input-field" id="pdv-cliente" type="text" placeholder="Cliente (opcional) — digitável ou selecione..." style="flex:1; font-size:12.5px; padding: 8px 12px;" oninput="pdvSearchCliente(this.value)" autocomplete="off">
+            <button class="btn-outline" onclick="openModal('add-cliente')" style="padding:8px 10px;flex-shrink:0;font-size:11px;" title="Novo Cliente">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </button>
           </div>
+          <div id="pdv-cliente-results" style="display:none;background:var(--bg-card);border:1px solid var(--border-accent);border-radius:8px;max-height:160px;overflow-y:auto;z-index:500;margin-top:2px;box-shadow:var(--shadow-hover);"></div>
           <!-- Extra field for quote: validity -->
           <div id="pdv-orc-extra" style="display:none; margin-top:8px;">
             <input class="input-field" id="pdv-orc-validade" type="text" placeholder="Validade do orcamento (ex: 3 dias)..." style="width:100%; font-size:13px; padding:8px 12px;">
@@ -2117,9 +2122,12 @@ select { font-size: 13.5px; }
             </div>
           </div>
 
-          <div style="display:flex; gap:8px; margin-top:4px;">
-            <button class="btn-outline" onclick="pdvClearCart()" style="flex:0 0 auto; padding:10px 14px;">
+          <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
+            <button class="btn-outline" onclick="pdvClearCart()" style="flex:0 0 auto; padding:10px 14px;" title="Limpar carrinho">
               <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <button class="btn-outline" id="pdv-termica-btn" onclick="pdvImprimirTermica()" style="flex:0 0 auto; padding:10px 13px; display:none;" title="Imprimir em térmica">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
             </button>
             <button class="btn-finish" id="pdv-action-btn" onclick="pdvFinalize()" style="flex:1;">Finalizar Venda</button>
           </div>
@@ -2137,6 +2145,10 @@ select { font-size: 13.5px; }
       </div>
       <div class="page-actions">
         <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar</button>
+        <button class="btn-outline" onclick="abrirGerenciarCategorias()">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5S15.01 22 17.5 22s4.5-2.01 4.5-4.5S19.99 13 17.5 13zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"/></svg>
+          Categorias
+        </button>
         <button class="btn-accent" onclick="openModal('add-produto')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Novo Produto</button>
       </div>
     </div>
@@ -2184,12 +2196,7 @@ select { font-size: 13.5px; }
         </div>
         <div class="card-actions">
           <input class="input-field" id="est-search" type="text" placeholder="Filtrar produto..." style="width:200px; padding: 7px 12px; font-size:12px;" oninput="filterEstoque()">
-          <select id="est-cat-filter" style="font-size: 12px; padding: 7px 12px;" onchange="filterEstoque()">
-            <option value="">Todas as categorias</option>
-            <option>Filtros</option><option>Freios</option><option>Motor</option>
-            <option>Suspensao</option><option>Transmissao</option><option>Cabos</option>
-            <option>Rolamentos</option><option>Suspensao</option><option>Eletrica</option><option>Acessorios</option>
-          </select>
+          <select id="est-cat-filter" style="font-size: 12px; padding: 7px 12px;" onchange="filterEstoque()"><option value="">Todas as categorias</option></select>
         </div>
       </div>
       <div class="table-wrap">
@@ -2414,41 +2421,74 @@ select { font-size: 13.5px; }
     <div class="page-header">
       <div>
         <h2>Notas Fiscais</h2>
-        <p>Emita NF-e e NFC-e com total conformidade fiscal. Conexao automatica com a Receita Federal, templates personalizados, controle de series e numeracoes.</p>
+        <p>Gere notas fiscais para impressão manual. Selecione o tipo, informe os dados e imprima ou salve em PDF.</p>
       </div>
       <div class="page-actions">
-        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Exportar XML</button>
-        <button class="btn-accent" onclick="openModal('emitir-nf')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Emitir Nota</button>
+        <button class="btn-accent" onclick="openModal('emitir-nf')">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Gerar Nota Fiscal
+        </button>
       </div>
-    </div>
-
-    <div class="nf-header">
-      <div style="width:44px;height:44px;background:rgba(74,140,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:22px;height:22px;fill:var(--blue)" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
-      <div class="nf-stat"><div class="value">2.847</div><div class="label">NF-e Emitidas</div></div>
-      <div class="nf-stat"><div class="value">312</div><div class="label">NFC-e Emitidas</div></div>
-      <div class="nf-stat"><div class="value" style="color:var(--green)">3.159</div><div class="label">Total Autorizadas</div></div>
-      <div class="nf-stat"><div class="value" style="color:var(--red)">4</div><div class="label">Com Erro</div></div>
-      <div class="nf-stat"><div class="value" style="color:var(--accent)">R$ 892k</div><div class="label">Valor Total Emitido</div></div>
     </div>
 
     <div class="card">
       <div class="card-header">
-        <div><div class="card-title">Ultimas Notas Emitidas</div></div>
+        <div>
+          <div class="card-title">Notas Geradas</div>
+          <div class="card-subtitle" id="nf-subtitle">Nenhuma nota gerada ainda</div>
+        </div>
         <div class="card-actions">
-          <button class="chip active">NF-e</button>
-          <button class="chip">NFC-e</button>
-          <button class="chip">Todas</button>
+          <button class="chip active" onclick="filtrarNF(this,'todas')">Todas</button>
+          <button class="chip" onclick="filtrarNF(this,'nfe')">NF-e</button>
+          <button class="chip" onclick="filtrarNF(this,'nfce')">NFC-e</button>
         </div>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Numero</th><th>Serie</th><th>Tipo</th><th>Destinatario</th><th>Emissao</th><th>Valor</th><th>Situacao</th><th>Acoes</th></tr></thead>
-          <tbody>
-            <tr><td>002847</td><td>001</td><td>NF-e</td><td>Marcos Alves</td><td>14/03 15:18</td><td>R$ 127,50</td><td><span class="status-badge green">Autorizada</span></td><td><button class="chip">XML</button></td></tr>
-            <tr><td>002846</td><td>001</td><td>NFC-e</td><td>Consumidor</td><td>14/03 14:55</td><td>R$ 589,00</td><td><span class="status-badge green">Autorizada</span></td><td><button class="chip">XML</button></td></tr>
-            <tr><td>002845</td><td>001</td><td>NF-e</td><td>Moto Center LTDA</td><td>14/03 13:10</td><td>R$ 1.200,00</td><td><span class="status-badge green">Autorizada</span></td><td><button class="chip">XML</button></td></tr>
-            <tr><td>002844</td><td>001</td><td>NF-e</td><td>Auto Pecas Silva</td><td>13/03 17:42</td><td>R$ 348,00</td><td><span class="status-badge red">Rejeitada</span></td><td><button class="chip">Corrigir</button></td></tr>
-            <tr><td>002843</td><td>001</td><td>NFC-e</td><td>Consumidor</td><td>13/03 15:30</td><td>R$ 74,90</td><td><span class="status-badge green">Autorizada</span></td><td><button class="chip">XML</button></td></tr>
+          <thead>
+            <tr><th>Nº</th><th>Tipo</th><th>Destinatário</th><th>Data</th><th>Valor</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="nf-tbody">
+            <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Nenhuma nota gerada. Clique em "Gerar Nota Fiscal".</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════ CLIENTES ══════════ -->
+  <div class="content" id="page-clientes">
+    <div class="page-header">
+      <div>
+        <h2>Clientes</h2>
+        <p>Cadastre e gerencie seus clientes. Use-os nas vendas do PDV e acompanhe o histórico de compras.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-accent" onclick="openModal('add-cliente')">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          Novo Cliente
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Cadastro de Clientes</div>
+          <div class="card-subtitle" id="cli-subtitle">0 clientes cadastrados</div>
+        </div>
+        <div class="card-actions">
+          <input class="input-field" id="cli-search" type="text" placeholder="Buscar cliente..." style="width:200px;padding:7px 12px;font-size:12px;" oninput="filterClientes()">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Nome</th><th>Telefone</th><th>CPF/CNPJ</th><th>Cidade</th><th>Compras</th><th>Total Gasto</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="clientes-tbody">
+            <tr><td colspan="7" style="text-align:center;padding:36px;color:var(--text-muted)"><span class="loader-ring"></span></td></tr>
           </tbody>
         </table>
       </div>
@@ -2761,7 +2801,7 @@ select { font-size: 13.5px; }
     <div class="modal-header"><div class="modal-title">Novo Produto</div><div class="modal-close" onclick="closeModal('add-produto')">✕</div></div>
     <div class="modal-body">
       <div class="form-row full"><div class="form-group"><label class="form-label">Nome do Produto</label><input class="input-field" id="prod-nome" type="text" placeholder="Ex: Filtro de Oleo Honda CG 150/160"></div></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="prod-sku" type="text" placeholder="FLT-001"></div><div class="form-group"><label class="form-label">Categoria</label><select id="prod-categoria"><option>Filtros</option><option>Freios</option><option>Motor</option><option>Suspensao</option><option>Transmissao</option><option>Cabos</option><option>Rolamentos</option><option>Eletrica</option><option>Acessorios</option><option>Carroceria</option><option>Lubrificantes</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="prod-sku" type="text" placeholder="FLT-001"></div><div class="form-group"><label class="form-label">Categoria</label><select id="prod-categoria"><option value="">Selecione a categoria...</option></select></div></div>
       <div class="form-row three"><div class="form-group"><label class="form-label">Custo (R$)</label><input class="input-field" id="prod-custo" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Preco Venda (R$)</label><input class="input-field" id="prod-preco" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Estoque Inicial</label><input class="input-field" id="prod-estoque" type="number" value="0"></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Estoque Minimo</label><input class="input-field" id="prod-estoque-min" type="number" value="5"></div><div class="form-group"><label class="form-label">Marca / Fabricante</label><input class="input-field" id="prod-marca" type="text" placeholder="Honda, Yamaha, NGK..."></div></div>
     </div>
@@ -2775,7 +2815,7 @@ select { font-size: 13.5px; }
     <div class="modal-body">
       <input type="hidden" id="edit-prod-id">
       <div class="form-row full"><div class="form-group"><label class="form-label">Nome do Produto</label><input class="input-field" id="edit-prod-nome" type="text"></div></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="edit-prod-sku" type="text"></div><div class="form-group"><label class="form-label">Categoria</label><select id="edit-prod-categoria"><option>Filtros</option><option>Freios</option><option>Motor</option><option>Suspensao</option><option>Transmissao</option><option>Cabos</option><option>Rolamentos</option><option>Eletrica</option><option>Acessorios</option><option>Carroceria</option><option>Lubrificantes</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="edit-prod-sku" type="text"></div><div class="form-group"><label class="form-label">Categoria</label><select id="edit-prod-categoria"><option value="">Selecione a categoria...</option></select></div></div>
       <div class="form-row three"><div class="form-group"><label class="form-label">Custo (R$)</label><input class="input-field" id="edit-prod-custo" type="text"></div><div class="form-group"><label class="form-label">Preco Venda (R$)</label><input class="input-field" id="edit-prod-preco" type="text"></div><div class="form-group"><label class="form-label">Estoque</label><input class="input-field" id="edit-prod-estoque" type="number"></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Estoque Minimo</label><input class="input-field" id="edit-prod-estoque-min" type="number"></div><div class="form-group"><label class="form-label">Marca / Fabricante</label><input class="input-field" id="edit-prod-marca" type="text"></div></div>
     </div>
@@ -2912,16 +2952,68 @@ select { font-size: 13.5px; }
 </div>
 
 <div class="modal-overlay" id="modal-emitir-nf">
-  <div class="modal">
-    <div class="modal-header"><div class="modal-title">Emitir Nota Fiscal</div><div class="modal-close" onclick="closeModal('emitir-nf')">✕</div></div>
-    <div class="modal-body">
-      <div class="form-row"><div class="form-group"><label class="form-label">Tipo de Nota</label><select><option>NF-e (55)</option><option>NFC-e (65)</option></select></div><div class="form-group"><label class="form-label">Natureza de Operacao</label><select><option>Venda de Mercadoria</option><option>Remessa</option><option>Devolucao</option></select></div></div>
-      <div class="form-row full"><div class="form-group"><label class="form-label">Destinatario / CPF / CNPJ</label><input class="input-field" type="text" placeholder="Nome ou documento do destinatario..."></div></div>
-      <div class="form-row full"><div class="form-group"><label class="form-label">Produtos / Servicos</label><input class="input-field" type="text" placeholder="Adicionar itens a nota..."></div></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Valor Total (R$)</label><input class="input-field" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Forma Pagamento</label><select><option>Dinheiro</option><option>PIX</option><option>Cartao</option></select></div></div>
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <div class="modal-title">Gerar Nota Fiscal</div>
+      <div class="modal-close" onclick="closeModal('emitir-nf')">✕</div>
     </div>
-    <div class="modal-footer"><button class="btn-outline" onclick="closeModal('emitir-nf')">Cancelar</button><button class="btn-accent" onclick="closeModal('emitir-nf'); showToast('Nota fiscal emitida e autorizada!')">Emitir Nota</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Tipo de Nota</label>
+          <select id="nf-tipo"><option value="NF-e">NF-e (Nota Fiscal Eletrônica)</option><option value="NFC-e">NFC-e (Nota ao Consumidor)</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Natureza da Operação</label>
+          <select id="nf-natureza"><option>Venda de Mercadoria</option><option>Remessa</option><option>Devolução</option><option>Transferência</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Destinatário / Nome</label>
+          <input class="input-field" id="nf-dest" type="text" placeholder="Nome ou razão social...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">CPF / CNPJ</label>
+          <input class="input-field" id="nf-doc" type="text" placeholder="000.000.000-00">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Produtos / Descrição</label>
+          <input class="input-field" id="nf-produtos" type="text" placeholder="Descrição dos itens...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Valor Total (R$)</label>
+          <input class="input-field" id="nf-valor" type="number" step="0.01" min="0" placeholder="0,00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Forma de Pagamento</label>
+          <select id="nf-forma"><option>Dinheiro</option><option>PIX</option><option>Cartão</option><option>Transferência</option></select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Observações</label>
+          <input class="input-field" id="nf-obs" type="text" placeholder="Informações adicionais...">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('emitir-nf')">Cancelar</button>
+      <button class="btn-outline" onclick="gerarNFPDF(true)" style="border-color:var(--blue);color:var(--blue);">
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Térmica (80mm)
+      </button>
+      <button class="btn-accent" onclick="gerarNFPDF(false)">
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+        Gerar PDF A4
+      </button>
+    </div>
   </div>
+</div></div>
 </div>
 
 
@@ -3032,7 +3124,43 @@ ALTER TABLE configuracoes DISABLE ROW LEVEL SECURITY;
 -- Nome: produtos  |  Public: true
 -- Isso nao pode ser feito via SQL, use o painel do Supabase
 
--- PRONTO! Banco configurado com sucesso.</textarea>
+-- PRONTO! Banco configurado com sucesso.
+
+-- TABELAS EXTRAS (execute separadamente se necessário):
+
+DROP TABLE IF EXISTS clientes CASCADE;
+DROP TABLE IF EXISTS notas_fiscais CASCADE;
+
+CREATE TABLE clientes (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  nome text NOT NULL,
+  telefone text DEFAULT '',
+  cpf_cnpj text DEFAULT '',
+  email text DEFAULT '',
+  endereco text DEFAULT '',
+  cidade text DEFAULT '',
+  obs text DEFAULT '',
+  total_compras integer DEFAULT 0,
+  total_gasto numeric(10,2) DEFAULT 0,
+  created_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE notas_fiscais (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  numero text,
+  tipo text DEFAULT 'NF-e',
+  natureza text,
+  destinatario text,
+  cpf_cnpj text,
+  produtos text,
+  valor numeric(10,2) DEFAULT 0,
+  forma_pagamento text,
+  obs text,
+  emissao timestamptz DEFAULT now()
+);
+
+ALTER TABLE clientes DISABLE ROW LEVEL SECURITY;
+ALTER TABLE notas_fiscais DISABLE ROW LEVEL SECURITY;</textarea>
     </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('setup-db')">Fechar</button>
@@ -3108,7 +3236,7 @@ function toast(msg, col) {
 }
 
 // ━━━━ NAVEGAÇÃO
-const PAGES = ['dashboard','pdv','estoque','caixa','financeiro','nf','relatorios','catalogo'];
+const PAGES = ['dashboard','pdv','clientes','estoque','caixa','financeiro','nf','relatorios','catalogo'];
 const TITLES = {
   dashboard:  ['Painel Geral',           'Visão geral do negócio em tempo real'],
   pdv:        ['PDV — Vendas',            'Ponto de Venda'],
@@ -3116,6 +3244,7 @@ const TITLES = {
   caixa:      ['Controle de Caixa',       'Fluxo de entradas e saídas'],
   financeiro: ['Controle Financeiro',     'DRE, lucros e análise financeira'],
   nf:         ['Notas Fiscais',           'Emissão e gestão de NF-e e NFC-e'],
+  clientes:   ['Clientes',               'Cadastro e histórico de clientes'],
   relatorios: ['Relatórios Gerenciais',   'Dashboards e análise de dados'],
   catalogo:   ['Catálogo & Canais',       'Marketplaces e vendas online'],
 };
@@ -3136,7 +3265,9 @@ function showPage(id) {
   if (id === 'estoque')    loadProdutos();
   if (id === 'caixa')      loadCaixa();
   if (id === 'financeiro') loadFinanceiro();
+  if (id === 'clientes')   loadClientes();
   if (id === 'relatorios') loadRelatorios();
+  if (id === 'nf')         loadNF();
   if (id === 'catalogo')   loadCatalogo();
 }
 
@@ -3286,6 +3417,7 @@ function atualizarKpisEstoque(prods) {
   const rupt = prods.filter(p => Number(p.estoque) <= 0).length;
   const val  = prods.reduce((s, p) => s + Number(p.estoque) * Number(p.custo), 0);
   set('kpi-rupturas',   rupt);
+  set('est-kpi-rupt',   rupt);
   set('est-kpi-total',  tot.toLocaleString('pt-BR'));
   set('est-kpi-prods',  prods.length);
   set('est-kpi-rupt',   rupt);
@@ -3484,31 +3616,6 @@ async function confirmDelete() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let pdvCart = [];
 let pdvMode = 'venda'; // 'venda' ou 'orcamento'
-
-function pdvSwitchTab(mode) {
-  pdvMode = mode;
-  const btnV  = $('pdv-tab-venda');
-  const btnO  = $('pdv-tab-orc');
-  const title = $('pdv-cart-title');
-  const extra = $('pdv-orc-extra');
-  const pay   = $('pdv-payment-section');
-  const actBtn = $('pdv-action-btn');
-  if (mode === 'venda') {
-    if (btnV) { btnV.style.background = 'var(--gradient-accent)'; btnV.style.color = '#09090b'; }
-    if (btnO) { btnO.style.background = 'none'; btnO.style.color = 'var(--text-secondary)'; }
-    if (title) title.textContent = 'Carrinho de Venda';
-    if (extra) extra.style.display = 'none';
-    if (pay)   pay.style.display = '';
-    if (actBtn) actBtn.textContent = 'Finalizar Venda';
-  } else {
-    if (btnO) { btnO.style.background = 'var(--gradient-accent)'; btnO.style.color = '#09090b'; }
-    if (btnV) { btnV.style.background = 'none'; btnV.style.color = 'var(--text-secondary)'; }
-    if (title) title.textContent = 'Itens do Orçamento';
-    if (extra) extra.style.display = '';
-    if (pay)   pay.style.display = 'none';
-    if (actBtn) actBtn.textContent = 'Gerar Orçamento PDF';
-  }
-}
 
 // Adicionar produto pelo tile do PDV (usa dados do allProdutos)
 function pdvAddItemFromProduct(p) {
@@ -4620,9 +4727,610 @@ document.addEventListener('DOMContentLoaded', function() {
   if (ld) ld.value = today();
 
   // Primeira carga
+  loadCategorias();
+  loadClientesParaPDV();
   loadDashboard();
   loadProdutos();
+  loadNF();
 });
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CATEGORIAS — Gerenciamento dinâmico
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let allCategorias = [];
+
+async function loadCategorias() {
+  try {
+    const r = await sb.from('configuracoes').select('valor').eq('chave','categorias');
+    const d = r.data && r.data.length > 0 ? r.data[0] : null;
+    if (!d) {
+      allCategorias = ['Filtros','Freios','Motor','Suspensão','Transmissão','Cabos','Rolamentos','Elétrica','Acessórios','Lubrificantes'];
+      await sb.from('configuracoes').upsert({ chave:'categorias', valor: JSON.stringify(allCategorias) }, { onConflict:'chave' });
+    } else {
+      try { allCategorias = JSON.parse(d.valor); } catch(e) { allCategorias = []; }
+    }
+  } catch(e) { allCategorias = ['Filtros','Freios','Motor','Suspensão','Transmissão']; }
+  popularCategorySelects();
+}
+
+async function salvarCategorias() {
+  await sb.from('configuracoes').upsert({ chave:'categorias', valor: JSON.stringify(allCategorias) }, { onConflict:'chave' });
+}
+
+function popularCategorySelects() {
+  ['prod-categoria','edit-prod-categoria','cat-categoria'].forEach(function(id) {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const curr = sel.value;
+    sel.innerHTML = '<option value="">Selecione a categoria...</option>';
+    allCategorias.forEach(function(c) {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      sel.appendChild(o);
+    });
+    if (curr) sel.value = curr;
+  });
+  // PDV select filter
+  const pdvSel = document.getElementById('pdv-cat-sel');
+  if (pdvSel) {
+    pdvSel.innerHTML = '<option value="">Todas</option>';
+    allCategorias.forEach(function(c) {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      pdvSel.appendChild(o);
+    });
+  }
+  // PDV chips
+  const chips = document.querySelector('.pdv-cats');
+  if (chips) {
+    chips.innerHTML = '<button class="chip active" onclick="pdvFilterCat(this,\'\')">Todos</button>';
+    allCategorias.forEach(function(c) {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = c;
+      btn.setAttribute('onclick', "pdvFilterCat(this,'" + c.replace(/'/g,"\'") + "')");
+      chips.appendChild(btn);
+    });
+  }
+  // Estoque filter
+  const estSel = document.getElementById('est-cat-filter');
+  if (estSel) {
+    estSel.innerHTML = '<option value="">Todas as categorias</option>';
+    allCategorias.forEach(function(c) {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      estSel.appendChild(o);
+    });
+  }
+}
+
+async function abrirGerenciarCategorias() {
+  await loadCategorias();
+  renderListaCategorias();
+  openModal('gerenciar-categorias');
+}
+
+function renderListaCategorias() {
+  const lista = document.getElementById('lista-categorias');
+  if (!lista) return;
+  if (!allCategorias.length) {
+    lista.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted)">Nenhuma categoria.</div>';
+    return;
+  }
+  lista.innerHTML = allCategorias.map(function(c, i) {
+    return '<div style="display:flex;align-items:center;gap:8px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;">' +
+      '<svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:var(--accent);flex-shrink:0"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>' +
+      '<span style="flex:1;font-size:13px;font-weight:500;color:var(--text-primary)">' + c + '</span>' +
+      '<button class="icon-btn" onclick="editarCategoria(' + i + ')" title="Renomear"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
+      '<button class="icon-btn del" onclick="removerCategoria(' + i + ')" title="Remover"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+    '</div>';
+  }).join('');
+}
+
+async function adicionarCategoria() {
+  const inp = document.getElementById('nova-cat-nome');
+  const nome = inp ? inp.value.trim() : '';
+  if (!nome) { toast('Informe o nome.', 'y'); return; }
+  if (allCategorias.some(function(c){ return c.toLowerCase() === nome.toLowerCase(); })) { toast('Já existe!', 'y'); return; }
+  allCategorias.push(nome);
+  await salvarCategorias();
+  if (inp) inp.value = '';
+  renderListaCategorias();
+  popularCategorySelects();
+  toast('Categoria "' + nome + '" adicionada!');
+}
+
+async function removerCategoria(idx) {
+  const nome = allCategorias[idx];
+  if (!confirm('Remover "' + nome + '"?')) return;
+  allCategorias.splice(idx, 1);
+  await salvarCategorias();
+  renderListaCategorias();
+  popularCategorySelects();
+  toast('Categoria removida.');
+}
+
+function editarCategoria(idx) {
+  const nome = allCategorias[idx];
+  const novo = prompt('Novo nome para "' + nome + '":', nome);
+  if (!novo || novo.trim() === nome) return;
+  allCategorias[idx] = novo.trim();
+  salvarCategorias().then(function() {
+    renderListaCategorias();
+    popularCategorySelects();
+    toast('Categoria renomeada!');
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CLIENTES
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let allClientes = [];
+let pdvClientesCache = [];
+
+async function loadClientes() {
+  const tb = document.getElementById('clientes-tbody');
+  if (tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)"><span class="loader-ring"></span></td></tr>';
+  try {
+    const { data, error } = await sb.from('clientes').select('*').order('nome');
+    if (error) throw error;
+    allClientes = data || [];
+    renderClientes(allClientes);
+    const sub = document.getElementById('cli-subtitle');
+    if (sub) sub.textContent = allClientes.length + ' cliente' + (allClientes.length !== 1 ? 's' : '') + ' cadastrado' + (allClientes.length !== 1 ? 's' : '');
+    pdvClientesCache = allClientes;
+  } catch(e) {
+    if (tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--red)">Execute o SQL para criar a tabela clientes.</td></tr>';
+  }
+}
+
+function renderClientes(list) {
+  const tb = document.getElementById('clientes-tbody');
+  if (!tb) return;
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--text-muted)">Nenhum cliente cadastrado.</td></tr>';
+    return;
+  }
+  tb.innerHTML = list.map(function(c) {
+    return '<tr>' +
+      '<td style="color:var(--text-primary);font-weight:600">' + c.nome + '</td>' +
+      '<td>' + (c.telefone || '—') + '</td>' +
+      '<td class="mono">' + (c.cpf_cnpj || '—') + '</td>' +
+      '<td>' + (c.cidade || '—') + '</td>' +
+      '<td class="mono">' + (c.total_compras || 0) + '</td>' +
+      '<td class="mono" style="color:var(--accent);font-weight:700">' + fmt(c.total_gasto || 0) + '</td>' +
+      '<td><div style="display:flex;gap:4px">' +
+        '<button class="icon-btn" onclick="abrirEditarCliente('' + c.id + '')" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
+        '<button class="icon-btn del" onclick="deletarCliente('' + c.id + '','' + c.nome.replace(/'/g, "\'") + '')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+}
+
+function filterClientes() {
+  const q = (document.getElementById('cli-search') ? document.getElementById('cli-search').value.toLowerCase() : '');
+  renderClientes(q ? allClientes.filter(function(c){ return (c.nome+(c.telefone||'')+(c.cpf_cnpj||'')).toLowerCase().includes(q); }) : allClientes);
+}
+
+async function saveCliente() {
+  const nome = document.getElementById('cli-nome') ? document.getElementById('cli-nome').value.trim() : '';
+  if (!nome) { toast('Informe o nome.', 'y'); return; }
+  const obj = {
+    nome,
+    telefone:  document.getElementById('cli-tel')      ? document.getElementById('cli-tel').value.trim()      : '',
+    cpf_cnpj:  document.getElementById('cli-doc')      ? document.getElementById('cli-doc').value.trim()      : '',
+    email:     document.getElementById('cli-email')    ? document.getElementById('cli-email').value.trim()    : '',
+    endereco:  document.getElementById('cli-endereco') ? document.getElementById('cli-endereco').value.trim() : '',
+    cidade:    document.getElementById('cli-cidade')   ? document.getElementById('cli-cidade').value.trim()   : '',
+    obs:       document.getElementById('cli-obs')      ? document.getElementById('cli-obs').value.trim()      : '',
+    total_compras: 0, total_gasto: 0
+  };
+  const r = await sb.from('clientes').insert(obj);
+  if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
+  ['cli-nome','cli-tel','cli-doc','cli-email','cli-endereco','cli-cidade','cli-obs'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
+  closeModal('add-cliente');
+  toast('Cliente "' + nome + '" cadastrado!');
+  await loadClientesParaPDV();
+}
+
+function abrirEditarCliente(id) {
+  const c = allClientes.find(function(x){ return x.id === id; });
+  if (!c) return;
+  document.getElementById('edit-cli-id').value       = c.id;
+  document.getElementById('edit-cli-nome').value     = c.nome || '';
+  document.getElementById('edit-cli-tel').value      = c.telefone || '';
+  document.getElementById('edit-cli-doc').value      = c.cpf_cnpj || '';
+  document.getElementById('edit-cli-email').value    = c.email || '';
+  document.getElementById('edit-cli-endereco').value = c.endereco || '';
+  document.getElementById('edit-cli-cidade').value   = c.cidade || '';
+  document.getElementById('edit-cli-obs').value      = c.obs || '';
+  openModal('edit-cliente');
+}
+
+async function updateCliente() {
+  const id   = document.getElementById('edit-cli-id').value;
+  const nome = document.getElementById('edit-cli-nome').value.trim();
+  if (!nome) { toast('Nome obrigatório.', 'y'); return; }
+  const r = await sb.from('clientes').update({
+    nome,
+    telefone:  document.getElementById('edit-cli-tel').value.trim(),
+    cpf_cnpj:  document.getElementById('edit-cli-doc').value.trim(),
+    email:     document.getElementById('edit-cli-email').value.trim(),
+    endereco:  document.getElementById('edit-cli-endereco').value.trim(),
+    cidade:    document.getElementById('edit-cli-cidade').value.trim(),
+    obs:       document.getElementById('edit-cli-obs').value.trim(),
+  }).eq('id', id);
+  if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
+  closeModal('edit-cliente');
+  toast('Cliente atualizado!');
+  await loadClientesParaPDV();
+}
+
+async function deletarCliente(id, nome) {
+  if (!confirm('Excluir o cliente "' + nome + '"?')) return;
+  const r = await sb.from('clientes').delete().eq('id', id);
+  if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
+  toast('Cliente excluído.');
+  allClientes = allClientes.filter(function(c){ return c.id !== id; });
+  renderClientes(allClientes);
+  pdvClientesCache = allClientes;
+}
+
+async function loadClientesParaPDV() {
+  try {
+    const { data } = await sb.from('clientes').select('id,nome,telefone,cpf_cnpj').order('nome');
+    pdvClientesCache = data || [];
+    allClientes = pdvClientesCache;
+  } catch(e) { pdvClientesCache = []; }
+}
+
+function pdvSearchCliente(q) {
+  const res = document.getElementById('pdv-cliente-results');
+  if (!res) return;
+  if (!q || q.length < 1) { res.style.display = 'none'; return; }
+  const found = pdvClientesCache.filter(function(c){ return (c.nome+(c.telefone||'')).toLowerCase().includes(q.toLowerCase()); }).slice(0,6);
+  if (!found.length) { res.style.display = 'none'; return; }
+  res.innerHTML = found.map(function(c) {
+    return '<div class="nv-drop-item" style="cursor:pointer;" onclick="selecionarClientePDV('' + c.id + '','' + c.nome.replace(/'/g,"\'") + '')">' +
+      '<strong>' + c.nome + '</strong>' +
+      (c.telefone ? '<br><span style="font-size:11px;color:var(--text-muted)">' + c.telefone + '</span>' : '') +
+    '</div>';
+  }).join('');
+  res.style.display = 'block';
+}
+
+function selecionarClientePDV(id, nome) {
+  const inp = document.getElementById('pdv-cliente');
+  if (inp) { inp.value = nome; inp.dataset.clienteId = id; }
+  const res = document.getElementById('pdv-cliente-results');
+  if (res) res.style.display = 'none';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// NOTA FISCAL — PDF (A4 e Térmica)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let nfCounter = 1;
+
+async function gerarNFPDF(termica) {
+  const tipo     = document.getElementById('nf-tipo')     ? document.getElementById('nf-tipo').value      : 'NF-e';
+  const natureza = document.getElementById('nf-natureza') ? document.getElementById('nf-natureza').value  : '';
+  const dest     = document.getElementById('nf-dest')     ? document.getElementById('nf-dest').value.trim()  : '';
+  const docNum   = document.getElementById('nf-doc')      ? document.getElementById('nf-doc').value.trim()   : '';
+  const produtos = document.getElementById('nf-produtos') ? document.getElementById('nf-produtos').value.trim() : '';
+  const valor    = parseFloat(document.getElementById('nf-valor') ? document.getElementById('nf-valor').value : 0) || 0;
+  const forma    = document.getElementById('nf-forma')    ? document.getElementById('nf-forma').value     : 'Dinheiro';
+  const obs      = document.getElementById('nf-obs')      ? document.getElementById('nf-obs').value.trim() : '';
+  if (!dest)    { toast('Informe o destinatário.', 'y'); return; }
+  if (valor<=0) { toast('Informe o valor.', 'y'); return; }
+  const num  = String(nfCounter++).padStart(6,'0');
+  const data = new Date().toLocaleDateString('pt-BR');
+  const hora = timeNow();
+  try {
+    await sb.from('notas_fiscais').insert({ tipo, natureza, destinatario:dest, cpf_cnpj:docNum, produtos, valor, forma_pagamento:forma, obs, numero:num, emissao:new Date().toISOString() });
+  } catch(e) { console.log('NF save:', e.message); }
+  termica ? gerarNFTermica(num,tipo,natureza,dest,docNum,produtos,valor,forma,obs,data,hora)
+           : gerarNFA4(num,tipo,natureza,dest,docNum,produtos,valor,forma,obs,data,hora);
+  closeModal('emitir-nf');
+  loadNF();
+}
+
+function gerarNFTermica(num,tipo,natureza,dest,docNum,produtos,valor,forma,obs,data,hora) {
+  try {
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'portrait',unit:'mm',format:[80,200]});
+    const L=4, W=72; let y=7;
+    const ln = function(){ doc.setDrawColor(180); doc.line(L,y,L+W,y); y+=3; };
+    doc.setFont('helvetica','bold'); doc.setFontSize(13);
+    doc.text('MotoStock', 40, y, {align:'center'}); y+=5;
+    doc.setFontSize(7); doc.setFont('helvetica','normal');
+    doc.text('Peças e Acessórios para Motos', 40, y, {align:'center'}); y+=5;
+    doc.setDrawColor(0); doc.line(L,y,L+W,y); y+=1; doc.line(L,y,L+W,y); y+=3;
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(tipo, 40, y, {align:'center'}); y+=4;
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.text('Nº '+num+' | '+data+' '+hora, 40, y, {align:'center'}); y+=4;
+    doc.text('Nat.Op.: '+natureza, L, y); y+=4; ln();
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.text('DESTINATÁRIO', L, y); y+=4;
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.text('Nome: '+dest, L, y); y+=3.5;
+    if(docNum){ doc.text('CPF/CNPJ: '+docNum, L, y); y+=3.5; }
+    ln();
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.text('PRODUTOS', L, y); y+=4;
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    var pl = doc.splitTextToSize(produtos||'—', W); doc.text(pl, L, y); y+=pl.length*3.5+2; ln();
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.text('Pgto: '+forma, L, y); y+=5;
+    doc.setFontSize(11); doc.text('TOTAL:', L, y);
+    doc.text('R$'+valor.toFixed(2).replace('.',','), L+W, y, {align:'right'}); y+=6;
+    doc.setDrawColor(0); doc.line(L,y,L+W,y); y+=1; doc.line(L,y,L+W,y); y+=4;
+    if(obs){ var ol=doc.splitTextToSize('Obs: '+obs,W); doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text(ol,L,y); y+=ol.length*3.5+2; }
+    doc.setFontSize(7); doc.text('Documento sem validade fiscal', 40, y, {align:'center'}); y+=3;
+    doc.text('Obrigado pela preferência!', 40, y, {align:'center'});
+    doc.save(tipo+'_'+num+'_termica.pdf');
+    toast(tipo+' térmica gerada!');
+  } catch(e){ toast('Erro PDF: '+e.message,'r'); }
+}
+
+function gerarNFA4(num,tipo,natureza,dest,docNum,produtos,valor,forma,obs,data,hora) {
+  try {
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const L=15, RW=180;
+    doc.setFillColor(240,165,0); doc.rect(0,0,210,22,'F');
+    doc.setTextColor(15,15,20); doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('MotoStock',L,14);
+    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.text('Peças e Acessórios para Motos',210-L,14,{align:'right'});
+    let y=34; doc.setTextColor(0,0,0);
+    doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text(tipo,L,y); y+=6;
+    doc.setFontSize(10); doc.setFont('helvetica','normal');
+    doc.text('Número: '+num+'    Data/Hora: '+data+' '+hora, L, y); y+=5;
+    doc.text('Natureza: '+natureza, L, y); y+=10;
+    doc.setFillColor(245,245,245); doc.rect(L,y,RW,22,'F'); doc.setDrawColor(200); doc.rect(L,y,RW,22);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('DESTINATÁRIO',L+3,y+6);
+    doc.setFont('helvetica','normal'); doc.text('Nome: '+dest,L+3,y+12);
+    if(docNum) doc.text('CPF/CNPJ: '+docNum,L+3,y+18); y+=28;
+    doc.setFillColor(30,30,40); doc.rect(L,y,RW,8,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text('PRODUTOS / SERVIÇOS',L+3,y+5.5); y+=12;
+    doc.setTextColor(0,0,0); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    const pl = doc.splitTextToSize(produtos||'—', RW-6); doc.text(pl,L+3,y); y+=pl.length*6+10;
+    doc.setDrawColor(200); doc.line(L,y,L+RW,y); y+=6;
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text('Pagamento: '+forma,L,y); y+=8;
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(200,130,0);
+    doc.text('VALOR TOTAL:', L, y); doc.text('R$'+valor.toFixed(2).replace('.',','),L+RW,y,{align:'right'}); y+=12;
+    if(obs){ doc.setTextColor(100,100,100); doc.setFont('helvetica','normal'); doc.setFontSize(9); const ol=doc.splitTextToSize('Obs: '+obs,RW); doc.text(ol,L,y); y+=ol.length*5+4; }
+    y=Math.max(y,240);
+    doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.setDrawColor(200); doc.line(L,y,L+RW,y); y+=5;
+    doc.text('Documento auxiliar — sem validade fiscal | MotoStock',105,y,{align:'center'});
+    doc.save(tipo+'_'+num+'.pdf');
+    toast(tipo+' A4 gerada!');
+  } catch(e){ toast('Erro PDF: '+e.message,'r'); }
+}
+
+async function loadNF() {
+  const tb = document.getElementById('nf-tbody');
+  if (!tb) return;
+  try {
+    const { data, error } = await sb.from('notas_fiscais').select('*').order('emissao',{ascending:false}).limit(50);
+    if (error) throw error;
+    const list = data || [];
+    const sub = document.getElementById('nf-subtitle');
+    if (sub) sub.textContent = list.length + ' nota'+(list.length!==1?'s':'')+' gerada'+(list.length!==1?'s':'');
+    if (!list.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Nenhuma nota gerada.</td></tr>'; return; }
+    tb.innerHTML = list.map(function(n) {
+      return '<tr>' +
+        '<td class="mono" style="color:var(--accent)">' + (n.numero||'—') + '</td>' +
+        '<td><span class="status-badge blue">'+(n.tipo||'NF-e')+'</span></td>' +
+        '<td>'+(n.destinatario||'—')+'</td>' +
+        '<td class="mono">'+(n.emissao?new Date(n.emissao).toLocaleDateString('pt-BR'):'—')+'</td>' +
+        '<td class="mono" style="color:var(--accent);font-weight:700">'+fmt(n.valor||0)+'</td>' +
+        '<td><button class="icon-btn del" onclick="deletarNF(''+n.id+'')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></td>' +
+      '</tr>';
+    }).join('');
+  } catch(e) {
+    if(tb) tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-muted)">Execute o SQL para criar a tabela notas_fiscais.</td></tr>';
+  }
+}
+
+async function deletarNF(id) {
+  if (!confirm('Excluir esta nota?')) return;
+  await sb.from('notas_fiscais').delete().eq('id', id);
+  toast('Nota excluída.'); loadNF();
+}
+
+function filtrarNF(btn, tipo) {
+  document.querySelectorAll('#page-nf .chip').forEach(function(c){ c.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('#nf-tbody tr').forEach(function(tr) {
+    if (tipo === 'todas') { tr.style.display = ''; return; }
+    const badge = tr.querySelector('.status-badge');
+    tr.style.display = (badge && badge.textContent.toLowerCase().includes(tipo)) ? '' : 'none';
+  });
+}
+
+// ━━━━ Impressão Térmica de Orçamento PDV
+function pdvImprimirTermica() {
+  if (!pdvCart.length) { toast('Carrinho vazio.', 'y'); return; }
+  const cli      = (document.getElementById('pdv-cliente') ? document.getElementById('pdv-cliente').value.trim() : '') || 'Cliente';
+  const validade = (document.getElementById('pdv-orc-validade') ? document.getElementById('pdv-orc-validade').value.trim() : '') || '3 dias';
+  const desc     = parseFloat((document.getElementById('pdv-desconto') ? document.getElementById('pdv-desconto').value : 0)) || 0;
+  const sub      = pdvCart.reduce(function(s,i){ return s+i.preco*i.qty; }, 0);
+  const total    = Math.max(0, sub - desc);
+  const num      = 'ORC-' + String(Date.now()).slice(-5);
+  const data     = new Date().toLocaleDateString('pt-BR');
+  try {
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'portrait',unit:'mm',format:[80,200]});
+    const L=4, W=72; let y=7;
+    const ln = function(){ doc.setDrawColor(180); doc.line(L,y,L+W,y); y+=3; };
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.text('MotoStock',40,y,{align:'center'}); y+=5;
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.text('Peças e Acessórios',40,y,{align:'center'}); y+=5; ln();
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('ORÇAMENTO '+num,40,y,{align:'center'}); y+=4;
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text('Data: '+data+'  Válido: '+validade,40,y,{align:'center'}); y+=4;
+    doc.text('Cliente: '+cli, L, y); y+=5; ln();
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.text('ITEM',L,y); doc.text('QTD',47,y); doc.text('TOTAL',62,y); y+=3; ln();
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    pdvCart.forEach(function(item) {
+      var nl = doc.splitTextToSize(item.nome, 40); doc.text(nl,L,y);
+      doc.text(String(item.qty),48,y); doc.text('R$'+(item.preco*item.qty).toFixed(2).replace('.',','),76,y,{align:'right'});
+      y+=nl.length*3.5+1;
+    });
+    ln();
+    if(desc>0){ doc.text('Subtotal:',L,y); doc.text('R$'+sub.toFixed(2).replace('.',','),76,y,{align:'right'}); y+=4;
+      doc.text('Desconto:',L,y); doc.text('-R$'+desc.toFixed(2).replace('.',','),76,y,{align:'right'}); y+=4; }
+    doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.text('TOTAL:',L,y); doc.text('R$'+total.toFixed(2).replace('.',','),76,y,{align:'right'}); y+=7;
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text('Obrigado pela preferência!',40,y,{align:'center'});
+    doc.save(num+'_termica.pdf'); toast('Orçamento térmico gerado!');
+  } catch(e){ toast('Erro PDF: '+e.message,'r'); }
+}
+
+// Redef pdvSwitchTab to control thermal btn
+function pdvSwitchTab(mode) {
+  pdvMode = mode;
+  var btnV=document.getElementById('pdv-tab-venda'), btnO=document.getElementById('pdv-tab-orc');
+  var title=document.getElementById('pdv-cart-title'), extra=document.getElementById('pdv-orc-extra');
+  var pay=document.getElementById('pdv-payment-section'), actBtn=document.getElementById('pdv-action-btn');
+  var termBtn=document.getElementById('pdv-termica-btn');
+  if (mode==='venda') {
+    if(btnV){btnV.style.background='var(--gradient-accent)';btnV.style.color='#09090b';} if(btnO){btnO.style.background='none';btnO.style.color='var(--text-secondary)';}
+    if(title)title.textContent='Carrinho de Venda'; if(extra)extra.style.display='none'; if(pay)pay.style.display=''; if(actBtn)actBtn.textContent='Finalizar Venda'; if(termBtn)termBtn.style.display='none';
+  } else {
+    if(btnO){btnO.style.background='var(--gradient-accent)';btnO.style.color='#09090b';} if(btnV){btnV.style.background='none';btnV.style.color='var(--text-secondary)';}
+    if(title)title.textContent='Itens do Orçamento'; if(extra)extra.style.display=''; if(pay)pay.style.display='none'; if(actBtn)actBtn.textContent='Gerar Orçamento PDF'; if(termBtn)termBtn.style.display='';
+  }
+}
+
 </script>
+<div class="modal-overlay" id="modal-add-cliente">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">Novo Cliente</div>
+      <div class="modal-close" onclick="closeModal('add-cliente')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nome Completo *</label>
+          <input class="input-field" id="cli-nome" type="text" placeholder="Nome do cliente...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone / WhatsApp</label>
+          <input class="input-field" id="cli-tel" type="text" placeholder="(00) 00000-0000">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">CPF / CNPJ</label>
+          <input class="input-field" id="cli-doc" type="text" placeholder="000.000.000-00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input class="input-field" id="cli-email" type="email" placeholder="email@exemplo.com">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Endereço</label>
+          <input class="input-field" id="cli-endereco" type="text" placeholder="Rua, número, bairro...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cidade</label>
+          <input class="input-field" id="cli-cidade" type="text" placeholder="Cidade...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observações</label>
+          <input class="input-field" id="cli-obs" type="text" placeholder="Obs. internas...">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('add-cliente')">Cancelar</button>
+      <button class="btn-accent" onclick="saveCliente()">
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        Salvar Cliente
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-cliente">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">Editar Cliente</div>
+      <div class="modal-close" onclick="closeModal('edit-cliente')">✕</div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-cli-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nome Completo *</label>
+          <input class="input-field" id="edit-cli-nome" type="text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone / WhatsApp</label>
+          <input class="input-field" id="edit-cli-tel" type="text">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">CPF / CNPJ</label>
+          <input class="input-field" id="edit-cli-doc" type="text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input class="input-field" id="edit-cli-email" type="email">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Endereço</label>
+          <input class="input-field" id="edit-cli-endereco" type="text">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cidade</label>
+          <input class="input-field" id="edit-cli-cidade" type="text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observações</label>
+          <input class="input-field" id="edit-cli-obs" type="text">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('edit-cliente')">Cancelar</button>
+      <button class="btn-accent" onclick="updateCliente()">Salvar Alterações</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-gerenciar-categorias">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div class="modal-title">⚙ Categorias de Produtos</div>
+      <div class="modal-close" onclick="closeModal('gerenciar-categorias')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <input class="input-field" id="nova-cat-nome" type="text" placeholder="Nome da nova categoria..." style="flex:1">
+        <button class="btn-accent" onclick="adicionarCategoria()" style="flex-shrink:0;">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Adicionar
+        </button>
+      </div>
+      <div id="lista-categorias" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;">
+        <div style="text-align:center;padding:16px;color:var(--text-muted)"><span class="loader-ring"></span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('gerenciar-categorias')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
