@@ -283,75 +283,139 @@ select.input-field{cursor:pointer}
 
 <!-- ══ TAB: BACKUP ══ -->
 <div class="page" id="tab-backup">
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
 
-    <div class="card">
-      <div class="card-header"><div class="card-title">🏪 Clientes</div></div>
-      <div class="card-body">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Exporta todos os clientes cadastrados no sistema em formato CSV.</p>
-        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="admBackup('clientes')">
-          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Baixar CSV
+  <!-- ── TELEGRAM CONFIG ── -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">📱 Configuração do Telegram</div>
+        <div class="card-subtitle">Backup automático enviado direto no seu Telegram como arquivo JSON</div>
+      </div>
+      <div id="tg-status-badge" style="display:none;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:700;"></div>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div class="form-group">
+          <label class="form-label">Token do Bot</label>
+          <input class="input-field" id="tg-token" type="text" placeholder="1234567890:AAH..." value="8442744116:AAHWv3P01uGnHL5EC7aU5Od2TvyF61ahhRc">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Chat ID</label>
+          <input class="input-field" id="tg-chat" type="text" placeholder="677584042" value="677584042">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn btn-outline" onclick="tgTestar()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          Testar Conexão
         </button>
+        <button class="btn btn-accent" onclick="tgEnviarAgora()">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Enviar Backup Agora
+        </button>
+        <span id="tg-teste-resultado" style="font-size:12px;font-weight:600;"></span>
       </div>
     </div>
-
-    <div class="card">
-      <div class="card-header"><div class="card-title">📦 Produtos / Estoque</div></div>
-      <div class="card-body">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Exporta todos os produtos, preços e quantidades em estoque.</p>
-        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="admBackup('produtos')">
-          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Baixar CSV
-        </button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header"><div class="card-title">💰 Vendas</div></div>
-      <div class="card-body">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Exporta o histórico completo de vendas e formas de pagamento.</p>
-        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="admBackup('vendas')">
-          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Baixar CSV
-        </button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header"><div class="card-title">📅 Agendamentos</div></div>
-      <div class="card-body">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Exporta todos os agendamentos e serviços registrados.</p>
-        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="admBackup('agendamentos')">
-          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Baixar CSV
-        </button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header"><div class="card-title">👥 Usuários do Sistema</div></div>
-      <div class="card-body">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Exporta a lista de logins (sem senhas) para controle.</p>
-        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="admBackup('usuarios')">
-          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Baixar CSV
-        </button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header"><div class="card-title">🗂️ Backup Completo</div></div>
-      <div class="card-body">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Baixa todos os dados em um único arquivo ZIP com vários CSVs.</p>
-        <button class="btn btn-accent" style="width:100%;justify-content:center" onclick="admBackupCompleto()">
-          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Backup Completo
-        </button>
-      </div>
-    </div>
-
   </div>
+
+  <!-- ── AGENDAMENTO AUTOMÁTICO ── -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">⏰ Backup Automático</div>
+        <div class="card-subtitle">Define o intervalo e o sistema envia sozinho enquanto a aba estiver aberta</div>
+      </div>
+      <div id="auto-status" style="display:flex;align-items:center;gap:8px;">
+        <div id="auto-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);"></div>
+        <span id="auto-txt" style="font-size:12px;color:var(--text-muted);font-weight:600;">Inativo</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div class="form-group">
+          <label class="form-label">Intervalo</label>
+          <input class="input-field" id="auto-intervalo" type="number" min="1" value="6" style="font-size:16px;font-weight:700;text-align:center;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Unidade</label>
+          <select class="input-field" id="auto-unidade">
+            <option value="minutos">Minutos</option>
+            <option value="horas" selected>Horas</option>
+            <option value="dias">Dias</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">O que enviar</label>
+          <select class="input-field" id="auto-tipo">
+            <option value="completo">Backup Completo</option>
+            <option value="clientes">Só Clientes</option>
+            <option value="produtos">Só Produtos</option>
+            <option value="vendas">Só Vendas</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Próximo envio + histórico -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Próximo envio em</div>
+          <div id="auto-proximo" style="font-size:22px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif;">—</div>
+        </div>
+        <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Último envio</div>
+          <div id="auto-ultimo" style="font-size:13px;font-weight:700;color:var(--text-primary);">—</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-accent" id="auto-start-btn" onclick="autoIniciar()">
+          ▶ Iniciar Automático
+        </button>
+        <button class="btn btn-red" id="auto-stop-btn" onclick="autoParar()" style="display:none;">
+          ⏹ Parar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MANUAL POR TABELA ── -->
+  <div class="card">
+    <div class="card-header"><div class="card-title">📤 Envio Manual por Tabela</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('clientes')">
+          🏪 Clientes
+        </button>
+        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('produtos')">
+          📦 Produtos
+        </button>
+        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('vendas')">
+          💰 Vendas
+        </button>
+        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('agendamentos')">
+          📅 Agendamentos
+        </button>
+        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('usuarios')">
+          👥 Usuários
+        </button>
+        <button class="btn btn-accent" style="justify-content:center;padding:14px;" onclick="tgEnviarAgora()">
+          🗂️ Tudo (JSON)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📋 Log de Envios</div>
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('tg-log').innerHTML='<div style=\'padding:16px;text-align:center;color:var(--text-muted);font-size:12px;\'>Log limpo.</div>'">Limpar</button>
+    </div>
+    <div id="tg-log" style="max-height:200px;overflow-y:auto;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);line-height:1.8;">
+      <div style="text-align:center;padding:16px;color:var(--text-muted);">Nenhum envio ainda.</div>
+    </div>
+  </div>
+
 </div>
 
 </div><!-- /admin-app -->
@@ -729,48 +793,209 @@ function csvDownload(nome, headers, rows) {
   toast(nome + ' exportado!');
 }
 
-async function admBackup(tipo) {
-  toast('Gerando ' + tipo + '...', 'y');
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// TELEGRAM BACKUP
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let _autoTimer    = null;
+let _autoContagem = 0;
+let _autoTotal    = 0;
+
+function tgToken() { return (document.getElementById('tg-token')||{}).value.trim(); }
+function tgChat()  { return (document.getElementById('tg-chat')||{}).value.trim(); }
+
+function tgLog(msg, ok) {
+  const log = document.getElementById('tg-log');
+  if (!log) return;
+  const agora = new Date().toLocaleTimeString('pt-BR');
+  const cor   = ok === false ? 'var(--red)' : ok === true ? 'var(--green)' : 'var(--accent)';
+  const linha = '<div style="color:' + cor + ';padding:2px 0;border-bottom:1px solid var(--border);">[' + agora + '] ' + msg + '</div>';
+  if (log.querySelector('div[style*="Nenhum"]')) log.innerHTML = '';
+  log.innerHTML = linha + log.innerHTML;
+}
+
+async function tgEnviar(nomeArquivo, conteudoJson, descricao) {
+  const token = tgToken();
+  const chat  = tgChat();
+  if (!token || !chat) { toast('Configure o Token e Chat ID.', 'y'); return false; }
+
+  const blob = new Blob([conteudoJson], { type: 'application/json' });
+  const form = new FormData();
+  form.append('chat_id', chat);
+  form.append('document', blob, nomeArquivo);
+  form.append('caption', descricao);
+
   try {
-    if (tipo === 'clientes') {
-      const { data } = await sb.from('clientes').select('*').order('nome');
-      csvDownload('Clientes', ['Nome','Telefone','CPF/CNPJ','Cidade','E-mail','Total Compras','Total Gasto','Criado em'],
-        (data||[]).map(c => [c.nome,c.telefone,c.cpf_cnpj,c.cidade,c.email,c.total_compras,c.total_gasto,fmtDate(c.created_at)]));
-    } else if (tipo === 'produtos') {
-      const { data } = await sb.from('produtos').select('*').order('nome');
-      csvDownload('Produtos', ['Código','Nome','Categoria','Marca','Custo','Preço','Estoque','Estoque Mín.'],
-        (data||[]).map(p => [p.codigo,p.nome,p.categoria,p.marca,p.custo,p.preco,p.estoque,p.estoque_minimo]));
-    } else if (tipo === 'vendas') {
-      const { data } = await sb.from('vendas').select('*').order('created_at', {ascending:false});
-      csvDownload('Vendas', ['Nº','Data','Cliente','Forma Pagamento','Total','Status'],
-        (data||[]).map(v => [v.numero,fmtDate(v.created_at),v.cliente_nome||v.cliente,v.forma_pagamento,v.total,v.status]));
-    } else if (tipo === 'agendamentos') {
-      const { data } = await sb.from('agendamentos').select('*').order('data_hora', {ascending:false});
-      csvDownload('Agendamentos', ['Cliente','Telefone','Serviço','Data/Hora','Duração','Valor','Status','Obs'],
-        (data||[]).map(a => [a.cliente_nome,a.cliente_tel,a.servico,a.data_hora,a.duracao_min,a.valor,a.status,a.obs]));
-    } else if (tipo === 'usuarios') {
-      const { data } = await sb.from('usuarios').select('id,nome,email,perfil,plano_nome,plano_expiracao,ativo,ultimo_acesso,created_at');
-      csvDownload('Usuarios', ['Nome','E-mail','Perfil','Plano','Expira','Ativo','Último Acesso','Criado em'],
-        (data||[]).map(u => [u.nome,u.email,u.perfil,u.plano_nome,fmtDate(u.plano_expiracao),u.ativo?'Sim':'Não',fmtDatetime(u.ultimo_acesso),fmtDate(u.created_at)]));
+    const r = await fetch('https://api.telegram.org/bot' + token + '/sendDocument', {
+      method: 'POST', body: form
+    });
+    const res = await r.json();
+    if (res.ok) {
+      tgLog('✅ ' + nomeArquivo + ' enviado com sucesso!', true);
+      return true;
+    } else {
+      tgLog('❌ Erro: ' + (res.description || 'Falha no envio'), false);
+      return false;
     }
-  } catch(e) { toast('Erro: ' + e.message, 'r'); }
+  } catch(e) {
+    tgLog('❌ Erro de rede: ' + e.message, false);
+    return false;
+  }
 }
 
-async function admBackupCompleto() {
-  toast('Gerando backup completo...', 'y');
-  await admBackup('clientes');
-  await new Promise(r => setTimeout(r, 400));
-  await admBackup('produtos');
-  await new Promise(r => setTimeout(r, 400));
-  await admBackup('vendas');
-  await new Promise(r => setTimeout(r, 400));
-  await admBackup('agendamentos');
-  await new Promise(r => setTimeout(r, 400));
-  await admBackup('usuarios');
-  toast('Backup completo baixado!');
+async function tgTestar() {
+  const token = tgToken();
+  const chat  = tgChat();
+  const res   = document.getElementById('tg-teste-resultado');
+  if (!token || !chat) { if (res) { res.textContent = '⚠ Preencha token e chat ID'; res.style.color = 'var(--accent)'; } return; }
+  if (res) { res.textContent = 'Testando...'; res.style.color = 'var(--text-muted)'; }
+  try {
+    const r = await fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chat, text: '✅ *MotoStock Admin* — Conexão com Telegram funcionando!\n\n🕐 ' + new Date().toLocaleString('pt-BR'), parse_mode: 'Markdown' })
+    });
+    const data = await r.json();
+    if (data.ok) {
+      if (res) { res.textContent = '✅ Funcionando!'; res.style.color = 'var(--green)'; }
+      tgLog('✅ Teste de conexão OK', true);
+    } else {
+      if (res) { res.textContent = '❌ ' + (data.description || 'Erro'); res.style.color = 'var(--red)'; }
+    }
+  } catch(e) {
+    if (res) { res.textContent = '❌ Sem conexão'; res.style.color = 'var(--red)'; }
+  }
 }
 
-function admExportarClientesCSV() { admBackup('clientes'); }
+async function tgColetarTudo() {
+  const [r1, r2, r3, r4, r5] = await Promise.all([
+    sb.from('clientes').select('*').order('nome'),
+    sb.from('produtos').select('*').order('nome'),
+    sb.from('vendas').select('*').order('created_at', {ascending:false}).limit(500),
+    sb.from('agendamentos').select('*').order('data_hora', {ascending:false}).limit(500),
+    sb.from('usuarios').select('id,nome,email,perfil,plano_nome,plano_expiracao,ativo,ultimo_acesso,created_at')
+  ]);
+  return {
+    gerado_em:    new Date().toISOString(),
+    clientes:     r1.data || [],
+    produtos:     r2.data || [],
+    vendas:       r3.data || [],
+    agendamentos: r4.data || [],
+    usuarios:     r5.data || []
+  };
+}
+
+async function tgEnviarAgora() {
+  toast('Coletando dados...', 'y');
+  tgLog('🔄 Iniciando backup completo...', null);
+  try {
+    const dados    = await tgColetarTudo();
+    const json     = JSON.stringify(dados, null, 2);
+    const agora    = new Date();
+    const nomeFmt  = 'MotoStock_Backup_' + agora.toISOString().split('T')[0] + '_' + agora.toTimeString().substr(0,5).replace(':','h') + '.json';
+    const descricao = '📦 *Backup MotoStock*\n📅 ' + agora.toLocaleString('pt-BR') + '\n\n' +
+      '👥 Clientes: ' + dados.clientes.length + '\n' +
+      '📦 Produtos: ' + dados.produtos.length + '\n' +
+      '💰 Vendas: ' + dados.vendas.length + '\n' +
+      '📅 Agendamentos: ' + dados.agendamentos.length;
+    const ok = await tgEnviar(nomeFmt, json, descricao);
+    if (ok) {
+      toast('✅ Backup enviado ao Telegram!');
+      document.getElementById('auto-ultimo').textContent = agora.toLocaleString('pt-BR');
+    } else {
+      toast('❌ Falha no envio', 'r');
+    }
+  } catch(e) {
+    toast('Erro: ' + e.message, 'r');
+    tgLog('❌ Erro: ' + e.message, false);
+  }
+}
+
+async function tgEnviarTabela(tipo) {
+  toast('Coletando ' + tipo + '...', 'y');
+  tgLog('🔄 Enviando tabela: ' + tipo, null);
+  try {
+    let data = [], headers = tipo;
+    if (tipo === 'clientes')     { ({ data } = await sb.from('clientes').select('*').order('nome')); }
+    else if (tipo === 'produtos') { ({ data } = await sb.from('produtos').select('*').order('nome')); }
+    else if (tipo === 'vendas')   { ({ data } = await sb.from('vendas').select('*').order('created_at',{ascending:false}).limit(500)); }
+    else if (tipo === 'agendamentos') { ({ data } = await sb.from('agendamentos').select('*').order('data_hora',{ascending:false}).limit(500)); }
+    else if (tipo === 'usuarios') { ({ data } = await sb.from('usuarios').select('id,nome,email,perfil,plano_nome,plano_expiracao,ativo,ultimo_acesso,created_at')); }
+
+    const payload  = { tabela: tipo, gerado_em: new Date().toISOString(), total: (data||[]).length, dados: data || [] };
+    const json     = JSON.stringify(payload, null, 2);
+    const agora    = new Date();
+    const nomeFmt  = 'MotoStock_' + tipo.charAt(0).toUpperCase() + tipo.slice(1) + '_' + agora.toISOString().split('T')[0] + '.json';
+    const descricao = '📊 *' + tipo.toUpperCase() + '* — ' + (data||[]).length + ' registros\n📅 ' + agora.toLocaleString('pt-BR');
+    const ok = await tgEnviar(nomeFmt, json, descricao);
+    if (ok) toast('✅ ' + tipo + ' enviado!');
+    else    toast('❌ Falha no envio', 'r');
+  } catch(e) {
+    toast('Erro: ' + e.message, 'r');
+    tgLog('❌ Erro ao coletar ' + tipo + ': ' + e.message, false);
+  }
+}
+
+// ━━━━ AGENDAMENTO AUTOMÁTICO ━━━━
+function autoMs() {
+  const v = parseInt(document.getElementById('auto-intervalo').value) || 1;
+  const u = document.getElementById('auto-unidade').value;
+  if (u === 'minutos') return v * 60 * 1000;
+  if (u === 'dias')    return v * 24 * 60 * 60 * 1000;
+  return v * 60 * 60 * 1000; // horas
+}
+
+function autoFmtContagem(ms) {
+  if (ms <= 0) return '00:00:00';
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function autoIniciar() {
+  if (_autoTimer) autoParar();
+  const totalMs = autoMs();
+  _autoTotal    = totalMs;
+  _autoContagem = totalMs;
+
+  document.getElementById('auto-dot').style.background = 'var(--green)';
+  document.getElementById('auto-txt').textContent = 'Ativo';
+  document.getElementById('auto-txt').style.color = 'var(--green)';
+  document.getElementById('auto-start-btn').style.display = 'none';
+  document.getElementById('auto-stop-btn').style.display  = 'flex';
+
+  const v = document.getElementById('auto-intervalo').value;
+  const u = document.getElementById('auto-unidade').value;
+  tgLog('⏰ Backup automático iniciado: a cada ' + v + ' ' + u, true);
+  toast('Backup automático ativo: a cada ' + v + ' ' + u);
+
+  // Tick a cada segundo
+  _autoTimer = setInterval(function() {
+    _autoContagem -= 1000;
+    document.getElementById('auto-proximo').textContent = autoFmtContagem(_autoContagem);
+    if (_autoContagem <= 0) {
+      _autoContagem = _autoTotal;
+      const tipo = document.getElementById('auto-tipo').value;
+      if (tipo === 'completo') tgEnviarAgora();
+      else tgEnviarTabela(tipo);
+    }
+  }, 1000);
+}
+
+function autoParar() {
+  if (_autoTimer) { clearInterval(_autoTimer); _autoTimer = null; }
+  document.getElementById('auto-dot').style.background = 'var(--text-muted)';
+  document.getElementById('auto-txt').textContent = 'Inativo';
+  document.getElementById('auto-txt').style.color = 'var(--text-muted)';
+  document.getElementById('auto-start-btn').style.display = 'flex';
+  document.getElementById('auto-stop-btn').style.display  = 'none';
+  document.getElementById('auto-proximo').textContent = '—';
+  tgLog('⏹ Backup automático pausado.', null);
+  toast('Backup automático pausado.', 'y');
+}
+
+async function admBackupCompleto() { await tgEnviarAgora(); }
+function admExportarClientesCSV() { tgEnviarTabela('clientes'); }
 
 // ── INIT ──
 function admCarregarTudo() {
