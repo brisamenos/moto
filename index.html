@@ -3547,29 +3547,49 @@ ALTER TABLE agendamentos DISABLE ROW LEVEL SECURITY;</textarea>
 
 document.documentElement.setAttribute('data-theme', 'dark');
 
-// ━━━━ SUPABASE
-const SUPABASE_URL = 'https://lhrzwccbvdintqgebisq.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxocnp3Y2NidmRpbnRxZ2ViaXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODY0NzEsImV4cCI6MjA4OTE2MjQ3MX0.gbljgt0rzOf9eBoTcXxxfl0e_0Y-6XYxve-HGY7meJo';
-let sb;
-try {
-  sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch(e) {
-  console.error('Supabase CDN erro:', e.message);
+// ━━━━ SUPABASE — MASTER (apenas para autenticação de usuários)
+const MASTER_URL = 'https://lhrzwccbvdintqgebisq.supabase.co';
+const MASTER_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxocnp3Y2NidmRpbnRxZ2ViaXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODY0NzEsImV4cCI6MjA4OTE2MjQ3MX0.gbljgt0rzOf9eBoTcXxxfl0e_0Y-6XYxve-HGY7meJo';
+let sbMaster; // conexão master (login)
+let sb;        // conexão do cliente (banco próprio)
+
+function criarFallback() {
   const noop = () => Promise.resolve({ data: [], error: null });
   const chainObj = () => {
     const chain = {
       select: () => chain, insert: () => chain, update: () => chain,
       delete: () => chain, upsert: () => chain, single: noop,
       eq: () => chain, gte: () => chain, lte: () => chain,
-      order: () => chain, limit: () => chain, then: noop
+      in: () => chain, order: () => chain, limit: () => chain,
+      then: (resolve) => resolve({ data: [], error: null })
     };
-    chain[Symbol.iterator] = undefined;
-    // make it thenable
-    chain.then = (resolve) => resolve({ data: [], error: null });
     return chain;
   };
-  sb = { from: () => chainObj(), storage: { from: () => ({ upload: noop, getPublicUrl: () => ({ data: { publicUrl: '' } }) }) } };
+  return { from: () => chainObj(), storage: { from: () => ({ upload: noop, getPublicUrl: () => ({ data: { publicUrl: '' } }) }) } };
 }
+
+try {
+  sbMaster = supabase.createClient(MASTER_URL, MASTER_KEY);
+  sb = sbMaster; // fallback até o login
+} catch(e) {
+  console.error('Supabase CDN erro:', e.message);
+  sbMaster = criarFallback();
+  sb = criarFallback();
+}
+
+// Conecta no banco próprio do cliente após login
+function conectarBancoCliente(url, key) {
+  try {
+    sb = supabase.createClient(url, key);
+    console.log('✅ Conectado ao banco do cliente:', url.split('//')[1].split('.')[0]);
+  } catch(e) {
+    console.error('Erro ao conectar banco do cliente:', e.message);
+    sb = criarFallback();
+  }
+}
+
+let SUPABASE_URL = MASTER_URL; // para compatibilidade com código existente
+
 
 // ━━━━ HELPERS
 const $   = id => document.getElementById(id);
@@ -5419,16 +5439,23 @@ async function carregarDadosEmpresa() {
     // Aplica nome + logo na sidebar
     aplicarPerfilNaSidebar(cfg);
 
-    // Último acesso
-    const ua = document.getElementById('cfg-ultimo-acesso');
-    if (ua && cfg.ultimo_acesso) ua.textContent = new Date(cfg.ultimo_acesso).toLocaleString('pt-BR');
+    // ── Dados da conta logada ──
+    if (_sessaoUsuario) {
+      const nome  = document.getElementById('cfg-user-nome');
+      const email = document.getElementById('cfg-user-email');
+      const ua    = document.getElementById('cfg-ultimo-acesso');
+      if (nome)  nome.textContent  = _sessaoUsuario.nome  || '—';
+      if (email) email.textContent = _sessaoUsuario.email || '—';
+      if (ua && _sessaoUsuario.ultimo_acesso)
+        ua.textContent = new Date(_sessaoUsuario.ultimo_acesso).toLocaleString('pt-BR');
 
-    // ID da loja
-    const lojaId = document.getElementById('cfg-loja-id');
-    if (lojaId) lojaId.textContent = SUPABASE_URL.split('//')[1].split('.')[0];
-
-    // Status do plano
-    carregarStatusPlano(cfg);
+      // ── Plano vem da sessão (tabela usuarios) ──
+      carregarStatusPlano({
+        plano_nome:      _sessaoUsuario.plano_nome,
+        plano_expiracao: _sessaoUsuario.plano_expiracao,
+        plano_inicio:    _sessaoUsuario.plano_inicio
+      });
+    }
 
   } catch(e) { /* silencioso */ }
 }
@@ -7209,13 +7236,6 @@ function agEnviarWhatsapp() {
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
           <div>
-            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Banco de Dados</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Ver instruções de configuração SQL</div>
-          </div>
-          <button class="btn-outline" onclick="openModal('setup-db')" style="min-width:90px;">🗄️ Ver SQL</button>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
-          <div>
             <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Categorias</div>
             <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Gerenciar categorias de produtos</div>
           </div>
@@ -7228,32 +7248,35 @@ function agEnviarWhatsapp() {
           </div>
           <button class="btn-outline" onclick="exportarDashboard()" style="min-width:90px;">📥 Exportar</button>
         </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Sair do sistema</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Encerrar sessão e voltar ao login</div>
+          </div>
+          <button class="btn-outline" onclick="fazerLogout()" style="min-width:90px;color:var(--red);border-color:var(--red);">🚪 Sair</button>
+        </div>
       </div>
     </div>
 
-    <!-- Info do sistema -->
+    <!-- Info da conta -->
     <div class="card">
-      <div class="card-header"><div class="card-title">ℹ️ Informações do Sistema</div></div>
+      <div class="card-header"><div class="card-title">👤 Minha Conta</div></div>
       <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
-          <span style="color:var(--text-muted);">Versão</span>
-          <span style="font-weight:700;color:var(--accent);">MotoStock v2.1</span>
+          <span style="color:var(--text-muted);">Usuário</span>
+          <span id="cfg-user-nome" style="font-weight:700;color:var(--text-primary);">—</span>
         </div>
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
-          <span style="color:var(--text-muted);">Banco de dados</span>
-          <span style="font-weight:600;color:var(--green);">Supabase ✓</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
-          <span style="color:var(--text-muted);">Armazenamento</span>
-          <span style="font-weight:600;color:var(--green);">Supabase Storage ✓</span>
+          <span style="color:var(--text-muted);">E-mail</span>
+          <span id="cfg-user-email" style="font-weight:600;color:var(--text-secondary);">—</span>
         </div>
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
           <span style="color:var(--text-muted);">Último acesso</span>
           <span id="cfg-ultimo-acesso" style="font-weight:600;color:var(--text-primary);">—</span>
         </div>
         <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;">
-          <span style="color:var(--text-muted);">ID da loja</span>
-          <span id="cfg-loja-id" style="font-weight:600;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:11px;">—</span>
+          <span style="color:var(--text-muted);">Versão</span>
+          <span style="font-weight:700;color:var(--accent);">MotoStock v2.1</span>
         </div>
       </div>
     </div>
