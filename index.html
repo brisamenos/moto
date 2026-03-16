@@ -3670,14 +3670,18 @@ function pdvRenderCart() {
         '<div class="cart-item-price">' + (i.cod || '-') + ' · ' + fmt(i.preco) + ' / un</div>' +
       '</div>' +
       '<div class="cart-item-qty">' +
-        '<div class="qty-btn" onclick="pdvChangeQty(\'' + i.id + '\',-1)">−</div>' +
+        '<div class="qty-btn" data-pdv-qty="' + i.id + '" data-pdv-delta="-1">−</div>' +
         '<span class="qty-num">' + i.qty + '</span>' +
-        '<div class="qty-btn" onclick="pdvChangeQty(\'' + i.id + '\',1)">+</div>' +
+        '<div class="qty-btn" data-pdv-qty="' + i.id + '" data-pdv-delta="1">+</div>' +
       '</div>' +
       '<div class="cart-item-total">' + fmt(i.preco * i.qty) + '</div>' +
     '</div>';
   });
   el.innerHTML = html;
+  el.onclick = function(e) {
+    const btnQty = e.target.closest('[data-pdv-qty]');
+    if (btnQty) pdvChangeQty(btnQty.dataset.pdvQty, parseInt(btnQty.dataset.pdvDelta));
+  };
   pdvUpdateTotals();
 }
 
@@ -4095,14 +4099,18 @@ function renderNvCart() {
     html += '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">' +
       '<div style="flex:1;font-size:13px;font-weight:500;color:var(--text-primary)">' + i.nome + '</div>' +
       '<div style="display:flex;align-items:center;gap:5px">' +
-        '<div class="qty-btn" onclick="changeNvQty(\'' + i.id + '\',-1)">−</div>' +
+        '<div class="qty-btn" data-nv-qty="' + i.id + '" data-nv-delta="-1">−</div>' +
         '<span class="qty-num">' + i.qty + '</span>' +
-        '<div class="qty-btn" onclick="changeNvQty(\'' + i.id + '\',1)">+</div>' +
+        '<div class="qty-btn" data-nv-qty="' + i.id + '" data-nv-delta="1">+</div>' +
       '</div>' +
       '<div style="min-width:70px;text-align:right;font-family:monospace;font-size:13px;font-weight:700;color:var(--accent)">' + fmt(i.preco * i.qty) + '</div>' +
     '</div>';
   });
   cont.innerHTML = html;
+  cont.onclick = function(e) {
+    const btn = e.target.closest('[data-nv-qty]');
+    if (btn) changeNvQty(btn.dataset.nvQty, parseInt(btn.dataset.nvDelta));
+  };
 }
 
 function resetNvCart() {
@@ -4892,8 +4900,9 @@ function renderClientes(list) {
     tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--text-muted)">Nenhum cliente cadastrado.</td></tr>';
     return;
   }
-  tb.innerHTML = list.map(function(c) {
-    return '<tr>' +
+  let rows = '';
+  list.forEach(function(c) {
+    rows += '<tr>' +
       '<td style="color:var(--text-primary);font-weight:600">' + c.nome + '</td>' +
       '<td>' + (c.telefone || '—') + '</td>' +
       '<td class="mono">' + (c.cpf_cnpj || '—') + '</td>' +
@@ -4901,11 +4910,18 @@ function renderClientes(list) {
       '<td class="mono">' + (c.total_compras || 0) + '</td>' +
       '<td class="mono" style="color:var(--accent);font-weight:700">' + fmt(c.total_gasto || 0) + '</td>' +
       '<td><div style="display:flex;gap:4px">' +
-        '<button class="icon-btn" onclick="abrirEditarCliente('' + c.id + '')" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
-        '<button class="icon-btn del" onclick="deletarCliente('' + c.id + '','' + c.nome.replace(/'/g, "\'") + '')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+        '<button class="icon-btn" data-cli-edit="' + c.id + '" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
+        '<button class="icon-btn del" data-cli-del="' + c.id + '" data-cli-nome="' + c.nome.replace(/"/g, '&quot;') + '" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
       '</div></td>' +
     '</tr>';
-  }).join('');
+  });
+  tb.innerHTML = rows;
+  tb.onclick = function(e) {
+    const editBtn = e.target.closest('[data-cli-edit]');
+    const delBtn  = e.target.closest('[data-cli-del]');
+    if (editBtn) abrirEditarCliente(editBtn.dataset.cliEdit);
+    if (delBtn)  deletarCliente(delBtn.dataset.cliDel, delBtn.dataset.cliNome);
+  };
 }
 
 function filterClientes() {
@@ -4991,13 +5007,19 @@ function pdvSearchCliente(q) {
   if (!q || q.length < 1) { res.style.display = 'none'; return; }
   const found = pdvClientesCache.filter(function(c){ return (c.nome+(c.telefone||'')).toLowerCase().includes(q.toLowerCase()); }).slice(0,6);
   if (!found.length) { res.style.display = 'none'; return; }
-  res.innerHTML = found.map(function(c) {
-    return '<div class="nv-drop-item" style="cursor:pointer;" onclick="selecionarClientePDV('' + c.id + '','' + c.nome.replace(/'/g,"\'") + '')">' +
+  let html = '';
+  found.forEach(function(c) {
+    html += '<div class="nv-drop-item" style="cursor:pointer;" data-cli-id="' + c.id + '" data-cli-nome="' + c.nome.replace(/"/g,'&quot;') + '">' +
       '<strong>' + c.nome + '</strong>' +
       (c.telefone ? '<br><span style="font-size:11px;color:var(--text-muted)">' + c.telefone + '</span>' : '') +
     '</div>';
-  }).join('');
+  });
+  res.innerHTML = html;
   res.style.display = 'block';
+  res.onclick = function(e) {
+    const item = e.target.closest('[data-cli-id]');
+    if (item) selecionarClientePDV(item.dataset.cliId, item.dataset.cliNome);
+  };
 }
 
 function selecionarClientePDV(id, nome) {
@@ -5117,16 +5139,22 @@ async function loadNF() {
     const sub = document.getElementById('nf-subtitle');
     if (sub) sub.textContent = list.length + ' nota'+(list.length!==1?'s':'')+' gerada'+(list.length!==1?'s':'');
     if (!list.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Nenhuma nota gerada.</td></tr>'; return; }
-    tb.innerHTML = list.map(function(n) {
-      return '<tr>' +
+    let nfRows = '';
+    list.forEach(function(n) {
+      nfRows += '<tr>' +
         '<td class="mono" style="color:var(--accent)">' + (n.numero||'—') + '</td>' +
         '<td><span class="status-badge blue">'+(n.tipo||'NF-e')+'</span></td>' +
         '<td>'+(n.destinatario||'—')+'</td>' +
         '<td class="mono">'+(n.emissao?new Date(n.emissao).toLocaleDateString('pt-BR'):'—')+'</td>' +
         '<td class="mono" style="color:var(--accent);font-weight:700">'+fmt(n.valor||0)+'</td>' +
-        '<td><button class="icon-btn del" onclick="deletarNF(''+n.id+'')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></td>' +
+        '<td><button class="icon-btn del" data-nf-del="' + n.id + '" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></td>' +
       '</tr>';
-    }).join('');
+    });
+    tb.innerHTML = nfRows;
+    tb.onclick = function(e) {
+      const btn = e.target.closest('[data-nf-del]');
+      if (btn) deletarNF(btn.dataset.nfDel);
+    };
   } catch(e) {
     if(tb) tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-muted)">Execute o SQL para criar a tabela notas_fiscais.</td></tr>';
   }
