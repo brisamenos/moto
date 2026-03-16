@@ -905,6 +905,19 @@ tbody td:first-child {
   overflow: hidden;
 }
 
+/* Left panel: products - scrollable internally */
+.pdv-products {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Right panel cart: scrollable as a whole */
+.pdv-cart {
+  min-height: 0;
+}
+
 .pdv-products {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -1014,8 +1027,9 @@ select:focus { border-color: var(--border-accent); }
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  display: flex; flex-direction: column;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
   box-shadow: var(--shadow-card);
   min-height: 0;
 }
@@ -1025,6 +1039,9 @@ select:focus { border-color: var(--border-accent); }
   border-bottom: 1px solid var(--border);
   background: var(--bg-surface);
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .cart-header h3 {
@@ -1037,7 +1054,7 @@ select:focus { border-color: var(--border-accent); }
 
 .cart-client { margin-top: 8px; display: flex; gap: 8px; }
 
-.cart-items { flex: 1; overflow-y: auto; padding: 10px; min-height: 60px; }
+.cart-items { padding: 10px; flex-shrink: 0; }
 
 .cart-item {
   display: flex; gap: 10px;
@@ -1091,12 +1108,13 @@ select:focus { border-color: var(--border-accent); }
 
 /* CART FOOTER */
 .cart-footer {
-  padding: 10px 12px;
+  padding: 10px 12px 14px;
   border-top: 1px solid var(--border);
   background: var(--bg-surface);
   flex-shrink: 0;
-  overflow-y: auto;
-  max-height: 65vh;
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
 }
 
 .cart-totals { margin-bottom: 12px; }
