@@ -889,12 +889,18 @@ tbody td:first-child {
 /* ════════════════════════════════
    PDV
 ════════════════════════════════ */
+#page-pdv {
+  height: calc(100vh - var(--topbar-h));
+  overflow: hidden;
+  padding-bottom: 14px !important;
+}
+
 .pdv-grid {
   display: grid;
   grid-template-columns: 1fr 370px;
   gap: 18px;
-  height: calc(100vh - var(--topbar-h) - 200px);
-  min-height: 480px;
+  flex: 1;
+  min-height: 0;
 }
 
 .pdv-products {
