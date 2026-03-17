@@ -94,14 +94,16 @@ router.get('/backup', (req, res) => {
     } else if (tipo === 'usuarios') {
       data = { tabela: 'usuarios', dados: query('SELECT id,nome,email,perfil,plano_nome,plano_expiracao,ativo,ultimo_acesso,created_at FROM usuarios') };
     } else {
-      // completo
+      // completo — filtra por loja se informado
       data = {
         gerado_em:    new Date().toISOString(),
-        clientes:     query('SELECT * FROM clientes ORDER BY nome'),
-        produtos:     query('SELECT * FROM produtos ORDER BY nome'),
-        vendas:       query('SELECT * FROM vendas ORDER BY created_at DESC LIMIT 500'),
-        agendamentos: query('SELECT * FROM agendamentos ORDER BY data_hora DESC LIMIT 500'),
-        usuarios:     query('SELECT id,nome,email,perfil,plano_nome,plano_expiracao,ativo,ultimo_acesso,created_at FROM usuarios'),
+        loja:         loja || 'todas',
+        clientes:     query(loja ? 'SELECT * FROM clientes WHERE loja_token=? ORDER BY nome'                          : 'SELECT * FROM clientes ORDER BY nome',                          loja ? [loja] : []),
+        produtos:     query(loja ? 'SELECT * FROM produtos WHERE loja_token=? ORDER BY nome'                          : 'SELECT * FROM produtos ORDER BY nome',                          loja ? [loja] : []),
+        vendas:       query(loja ? 'SELECT * FROM vendas WHERE loja_token=? ORDER BY created_at DESC LIMIT 500'       : 'SELECT * FROM vendas ORDER BY created_at DESC LIMIT 500',       loja ? [loja] : []),
+        venda_itens:  query(loja ? 'SELECT * FROM venda_itens WHERE loja_token=? ORDER BY created_at DESC LIMIT 2000' : 'SELECT * FROM venda_itens ORDER BY created_at DESC LIMIT 2000', loja ? [loja] : []),
+        agendamentos: query(loja ? 'SELECT * FROM agendamentos WHERE loja_token=? ORDER BY data_hora DESC LIMIT 500'  : 'SELECT * FROM agendamentos ORDER BY data_hora DESC LIMIT 500',  loja ? [loja] : []),
+        usuarios:     query('SELECT id,nome,email,perfil,loja_token,plano_nome,plano_expiracao,ativo,ultimo_acesso,created_at FROM usuarios' + (loja ? ' WHERE loja_token=?' : ''), loja ? [loja] : []),
       };
     }
     res.json({ data, error: null });
