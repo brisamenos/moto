@@ -139,6 +139,7 @@ select.input-field{cursor:pointer}
 #admin-login{position:fixed;inset:0;background:var(--bg-base);display:flex;align-items:center;justify-content:center;z-index:9999}
 .login-card{background:var(--bg-card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:32px;width:100%;max-width:380px;box-shadow:var(--shadow-card)}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
@@ -225,7 +226,6 @@ select.input-field{cursor:pointer}
           <tr>
             <th>Nome</th>
             <th>E-mail</th>
-            <th>Token / Catálogo</th>
             <th>Perfil</th>
             <th>Plano</th>
             <th>Expira em</th>
@@ -290,7 +290,7 @@ select.input-field{cursor:pointer}
     <div class="card-header">
       <div>
         <div class="card-title">📱 Configuração do Telegram</div>
-        <div class="card-subtitle">Backup automático enviado direto no seu Telegram como arquivo JSON</div>
+        <div class="card-subtitle">Backup automático enviado como arquivo ZIP direto no seu Telegram</div>
       </div>
       <div id="tg-status-badge" style="display:none;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:700;"></div>
     </div>
@@ -310,7 +310,7 @@ select.input-field{cursor:pointer}
           <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           Testar Conexão
         </button>
-        <button class="btn btn-accent" onclick="tgEnviarAgora()">
+        <button class="btn btn-accent" onclick="tgEnviarAgora('geral')">
           <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
           Enviar Backup Agora
         </button>
@@ -319,12 +319,83 @@ select.input-field{cursor:pointer}
     </div>
   </div>
 
+  <!-- ── BACKUP MANUAL ── -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">💾 Gerar Backup ZIP</div>
+      <div class="card-subtitle">Baixe um arquivo .zip com os dados em JSON organizados por tabela</div>
+    </div>
+    <div class="card-body">
+
+      <!-- Tipo: Geral ou Individual -->
+      <div style="display:flex;gap:10px;margin-bottom:18px;">
+        <button id="bk-tab-geral" onclick="bkSwitchTipo('geral')"
+          style="padding:9px 22px;background:var(--gradient-accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">
+          🌐 Geral (todas as lojas)
+        </button>
+        <button id="bk-tab-individual" onclick="bkSwitchTipo('individual')"
+          style="padding:9px 22px;background:none;color:var(--text-muted);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">
+          🏪 Individual (por loja)
+        </button>
+      </div>
+
+      <!-- Campo loja (só no individual) -->
+      <div id="bk-loja-wrap" style="display:none;margin-bottom:16px;">
+        <label class="form-label" style="display:block;margin-bottom:6px;">Loja (loja_token)</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input class="input-field" id="bk-loja-token" type="text" placeholder="ex: padrao, manoel, carlos..."
+            style="width:260px;font-family:'JetBrains Mono',monospace;">
+          <span style="font-size:11px;color:var(--text-muted);">ou selecione:</span>
+          <select class="input-field" id="bk-loja-select" onchange="document.getElementById('bk-loja-token').value=this.value" style="width:200px;">
+            <option value="">— selecionar usuário —</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabelas para incluir -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:10px;">Incluir no ZIP</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
+            <input type="checkbox" id="bk-chk-clientes" checked style="accent-color:var(--accent);width:14px;height:14px;"> 🏪 Clientes
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
+            <input type="checkbox" id="bk-chk-produtos" checked style="accent-color:var(--accent);width:14px;height:14px;"> 📦 Produtos
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
+            <input type="checkbox" id="bk-chk-vendas" checked style="accent-color:var(--accent);width:14px;height:14px;"> 💰 Vendas
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
+            <input type="checkbox" id="bk-chk-agendamentos" checked style="accent-color:var(--accent);width:14px;height:14px;"> 📅 Agendamentos
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
+            <input type="checkbox" id="bk-chk-usuarios" style="accent-color:var(--accent);width:14px;height:14px;"> 👥 Usuários
+          </label>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-accent" onclick="bkGerarZip('download')">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Baixar ZIP
+        </button>
+        <button class="btn btn-outline" onclick="bkGerarZip('telegram')">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          Enviar por Telegram
+        </button>
+        <span id="bk-status" style="font-size:12px;font-weight:600;color:var(--text-muted);"></span>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ── AGENDAMENTO AUTOMÁTICO ── -->
   <div class="card">
     <div class="card-header">
       <div>
         <div class="card-title">⏰ Backup Automático</div>
-        <div class="card-subtitle">Define o intervalo e o sistema envia sozinho enquanto a aba estiver aberta</div>
+        <div class="card-subtitle">O sistema envia o ZIP pelo Telegram automaticamente no intervalo definido</div>
       </div>
       <div id="auto-status" style="display:flex;align-items:center;gap:8px;">
         <div id="auto-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);"></div>
@@ -346,17 +417,17 @@ select.input-field{cursor:pointer}
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">O que enviar</label>
+          <label class="form-label">Tipo de backup</label>
           <select class="input-field" id="auto-tipo">
-            <option value="completo">Backup Completo</option>
-            <option value="clientes">Só Clientes</option>
-            <option value="produtos">Só Produtos</option>
-            <option value="vendas">Só Vendas</option>
+            <option value="geral">Geral (todas as lojas)</option>
+            <option value="individual">Individual (loja específica)</option>
           </select>
         </div>
       </div>
-
-      <!-- Próximo envio + histórico -->
+      <div id="auto-loja-wrap" style="display:none;margin-bottom:16px;">
+        <label class="form-label" style="display:block;margin-bottom:6px;">Loja para backup individual</label>
+        <input class="input-field" id="auto-loja-token" type="text" placeholder="loja_token..." style="width:260px;font-family:'JetBrains Mono',monospace;">
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
         <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
           <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Próximo envio em</div>
@@ -367,41 +438,61 @@ select.input-field{cursor:pointer}
           <div id="auto-ultimo" style="font-size:13px;font-weight:700;color:var(--text-primary);">—</div>
         </div>
       </div>
-
       <div style="display:flex;gap:8px;">
-        <button class="btn btn-accent" id="auto-start-btn" onclick="autoIniciar()">
-          ▶ Iniciar Automático
-        </button>
-        <button class="btn btn-red" id="auto-stop-btn" onclick="autoParar()" style="display:none;">
-          ⏹ Parar
-        </button>
+        <button class="btn btn-accent" id="auto-start-btn" onclick="autoIniciar()">▶ Iniciar Automático</button>
+        <button class="btn btn-red" id="auto-stop-btn" onclick="autoParar()" style="display:none;">⏹ Parar</button>
       </div>
     </div>
   </div>
 
-  <!-- ── MANUAL POR TABELA ── -->
+  <!-- ── IMPORTAR BACKUP ── -->
   <div class="card">
-    <div class="card-header"><div class="card-title">📤 Envio Manual por Tabela</div></div>
+    <div class="card-header">
+      <div>
+        <div class="card-title">📥 Importar Backup</div>
+        <div class="card-subtitle">Restaure dados a partir de um arquivo .zip ou .json gerado pelo sistema</div>
+      </div>
+    </div>
     <div class="card-body">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('clientes')">
-          🏪 Clientes
+      <div style="margin-bottom:14px;">
+        <label class="form-label" style="display:block;margin-bottom:6px;">Loja destino (loja_token)</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input class="input-field" id="import-loja-token" type="text" placeholder="ex: padrao, manoel..."
+            style="width:220px;font-family:'JetBrains Mono',monospace;">
+          <select class="input-field" id="import-loja-select" onchange="document.getElementById('import-loja-token').value=this.value" style="width:200px;">
+            <option value="">— selecionar usuário —</option>
+          </select>
+        </div>
+      </div>
+      <div id="import-dropzone"
+        style="border:2px dashed var(--border-strong);border-radius:var(--radius);padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:14px;"
+        onclick="document.getElementById('import-file-input').click()"
+        ondragover="event.preventDefault();this.style.borderColor='var(--accent)';this.style.background='var(--accent-soft)'"
+        ondragleave="this.style.borderColor='var(--border-strong)';this.style.background=''"
+        ondrop="importOnDrop(event)">
+        <input type="file" id="import-file-input" accept=".zip,.json" style="display:none" onchange="importLerArquivo(this.files[0])">
+        <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:var(--text-muted);margin:0 auto 10px;display:block"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        <div id="import-dropzone-txt" style="font-size:13px;font-weight:600;color:var(--text-secondary);">Clique ou arraste o arquivo .zip ou .json aqui</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Backup geral, individual ou por tabela</div>
+      </div>
+      <div id="import-preview" style="display:none;margin-bottom:14px;padding:14px;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:10px;">📋 Conteúdo detectado</div>
+        <div id="import-preview-rows" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+      <div id="import-opcoes" style="display:none;margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Selecionar tabelas</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="import-checkboxes"></div>
+      </div>
+      <div id="import-aviso" style="display:none;padding:10px 14px;background:rgba(255,200,50,0.07);border:1px solid rgba(255,200,50,0.22);border-radius:var(--radius-sm);font-size:12px;color:#f5c842;margin-bottom:14px;">
+        ⚠️ A importação <strong>adiciona</strong> os registros. IDs existentes são ignorados para evitar duplicatas.
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-accent" id="import-btn" onclick="importExecutar()" style="display:none;">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Importar Dados
         </button>
-        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('produtos')">
-          📦 Produtos
-        </button>
-        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('vendas')">
-          💰 Vendas
-        </button>
-        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('agendamentos')">
-          📅 Agendamentos
-        </button>
-        <button class="btn btn-outline" style="justify-content:center;padding:14px;" onclick="tgEnviarTabela('usuarios')">
-          👥 Usuários
-        </button>
-        <button class="btn btn-accent" style="justify-content:center;padding:14px;" onclick="tgEnviarAgora()">
-          🗂️ Tudo (JSON)
-        </button>
+        <button class="btn btn-outline" onclick="importLimpar()" id="import-limpar-btn" style="display:none;">✕ Cancelar</button>
+        <span id="import-status" style="font-size:12px;font-weight:600;color:var(--text-muted);"></span>
       </div>
     </div>
   </div>
@@ -445,13 +536,7 @@ select.input-field{cursor:pointer}
           <label class="form-label" id="usr-senha-label">Senha *</label>
           <input class="input-field" id="usr-senha" type="password" placeholder="Mínimo 6 caracteres">
         </div>
-        <div class="form-group">
-          <label class="form-label">Token da Loja *
-            <span style="font-size:10px;font-weight:400;color:var(--text-muted);margin-left:4px;">usado no link do catálogo</span>
-          </label>
-          <input class="input-field" id="usr-loja-token" type="text" placeholder="ex: manoel, carlos, sportbike" style="font-family:'JetBrains Mono',monospace;">
-          <span style="font-size:10px;color:var(--text-muted);margin-top:3px;">Link: /catalogo.html?loja=<strong id="usr-token-preview" style="color:var(--accent)">token</strong></span>
-        </div>
+
       </div>
       <div class="form-grid three">
         <div class="form-group">
@@ -631,10 +716,7 @@ function admRenderUsuarios(list) {
     return '<tr>' +
       '<td style="font-weight:600;color:var(--text-primary)">' + u.nome + '</td>' +
       '<td class="mono" style="font-size:12px">' + u.email + '</td>' +
-      '<td>' +
-        '<div class="mono" style="font-size:12px;color:var(--accent);font-weight:700">' + (u.loja_token || '—') + '</div>' +
-        (u.loja_token ? '<div style="font-size:10px;color:var(--text-muted);margin-top:2px;cursor:pointer;" onclick="navigator.clipboard&&navigator.clipboard.writeText(window.location.origin+\'/catalogo.html?loja=' + u.loja_token + '\').then(()=>toast(\'Link copiado!\'))" title="Clique para copiar o link">📋 /catalogo.html?loja=' + u.loja_token + '</div>' : '') +
-      '</td>' +
+
       '<td>' + perfilBadge + '</td>' +
       '<td style="color:var(--accent);font-weight:600">' + (u.plano_nome || '—') + '</td>' +
       '<td>' + planoBadge + '<span style="font-size:11px;color:var(--text-muted);margin-left:6px">' + fmtDate(u.plano_expiracao) + '</span></td>' +
@@ -665,8 +747,6 @@ function admOpenNovoUsuario() {
   document.getElementById('usr-email').value = '';
   document.getElementById('usr-senha').value = '';
   document.getElementById('usr-senha-label').textContent = 'Senha *';
-  document.getElementById('usr-loja-token').value = '';
-  document.getElementById('usr-token-preview').textContent = 'token';
   document.getElementById('usr-perfil').value = 'cliente';
   document.getElementById('usr-plano').value = 'Mensal';
   document.getElementById('usr-plano-inicio').value = new Date().toISOString().split('T')[0];
@@ -688,8 +768,6 @@ function admEditarUsuario(id) {
   document.getElementById('usr-email').value = u.email || '';
   document.getElementById('usr-senha').value = '';
   document.getElementById('usr-senha-label').textContent = 'Nova Senha (deixe em branco para manter)';
-  document.getElementById('usr-loja-token').value = u.loja_token || '';
-  document.getElementById('usr-token-preview').textContent = u.loja_token || 'token';
   document.getElementById('usr-perfil').value = u.perfil || 'cliente';
   document.getElementById('usr-plano').value = u.plano_nome || 'Mensal';
   document.getElementById('usr-plano-inicio').value = u.plano_inicio || '';
@@ -739,7 +817,7 @@ async function admSalvarUsuario() {
   const nome       = document.getElementById('usr-nome').value.trim();
   const email      = document.getElementById('usr-email').value.trim().toLowerCase();
   const senha      = document.getElementById('usr-senha').value;
-  const lojaToken  = document.getElementById('usr-loja-token').value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,'');
+  const lojaToken  = email.split('@')[0].replace(/[^a-z0-9_-]/g,'') || 'padrao';
   const perfil     = document.getElementById('usr-perfil').value;
   const plano      = document.getElementById('usr-plano').value;
   const inicio     = document.getElementById('usr-plano-inicio').value;
@@ -750,7 +828,6 @@ async function admSalvarUsuario() {
   const btn        = document.getElementById('usr-save-btn');
 
   if (!nome || !email)    { erroEl.textContent = 'Nome e e-mail são obrigatórios.'; erroEl.style.display = 'block'; return; }
-  if (!lojaToken)         { erroEl.textContent = 'Token da loja é obrigatório.'; erroEl.style.display = 'block'; return; }
   if (!id && !senha)      { erroEl.textContent = 'Senha obrigatória para novo usuário.'; erroEl.style.display = 'block'; return; }
   if (senha && senha.length < 6) { erroEl.textContent = 'Senha deve ter mínimo 6 caracteres.'; erroEl.style.display = 'block'; return; }
 
@@ -820,9 +897,7 @@ function csvDownload(nome, headers, rows) {
   toast(nome + ' exportado!');
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// TELEGRAM BACKUP
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━ TELEGRAM + AUTO BACKUP ━━━━
 let _autoTimer    = null;
 let _autoContagem = 0;
 let _autoTotal    = 0;
@@ -830,136 +905,64 @@ let _autoTotal    = 0;
 function tgToken() { return (document.getElementById('tg-token')||{}).value.trim(); }
 function tgChat()  { return (document.getElementById('tg-chat')||{}).value.trim(); }
 
-// ── Persistência das config do Telegram ──────────────────────────────────────
-function tgSalvarConfig() {
-  localStorage.setItem('ms_tg_token', tgToken());
-  localStorage.setItem('ms_tg_chat',  tgChat());
+async function tgSalvarConfig() {
+  await apiFetch('POST', '/configuracoes/upsert-batch', [
+    { chave: 'tg_bot_token', valor: tgToken(), loja_token: '_admin' },
+    { chave: 'tg_chat_id',   valor: tgChat(),  loja_token: '_admin' }
+  ]);
 }
-
-function tgCarregarConfig() {
-  const token = localStorage.getItem('ms_tg_token') || '';
-  const chat  = localStorage.getItem('ms_tg_chat')  || '';
-  const elToken = document.getElementById('tg-token');
-  const elChat  = document.getElementById('tg-chat');
-  if (elToken) elToken.value = token;
-  if (elChat)  elChat.value  = chat;
+async function tgCarregarConfig() {
+  try {
+    const { data } = await apiFetch('GET', '/configuracoes?loja_token=_admin&in=tg_bot_token,tg_chat_id');
+    if (!data) return;
+    const map = {};
+    data.forEach(r => { map[r.chave] = r.valor; });
+    if (map.tg_bot_token) document.getElementById('tg-token').value = map.tg_bot_token;
+    if (map.tg_chat_id)   document.getElementById('tg-chat').value  = map.tg_chat_id;
+  } catch(e) {}
 }
-
 function tgLog(msg, ok) {
   const log = document.getElementById('tg-log');
   if (!log) return;
   const agora = new Date().toLocaleTimeString('pt-BR');
   const cor   = ok === false ? 'var(--red)' : ok === true ? 'var(--green)' : 'var(--accent)';
-  const linha = '<div style="color:' + cor + ';padding:2px 0;border-bottom:1px solid var(--border);">[' + agora + '] ' + msg + '</div>';
+  const linha = `<div style="color:${cor};padding:2px 0;border-bottom:1px solid var(--border);">[${agora}] ${msg}</div>`;
   if (log.querySelector('div[style*="Nenhum"]')) log.innerHTML = '';
   log.innerHTML = linha + log.innerHTML;
 }
-
-async function tgEnviar(nomeArquivo, conteudoJson, descricao) {
-  const token = tgToken();
-  const chat  = tgChat();
+async function tgEnviarBlob(nomeArquivo, blob, descricao) {
+  const token = tgToken(), chat = tgChat();
   if (!token || !chat) { toast('Configure o Token e Chat ID.', 'y'); return false; }
-
-  const blob = new Blob([conteudoJson], { type: 'application/json' });
   const form = new FormData();
   form.append('chat_id', chat);
   form.append('document', blob, nomeArquivo);
   form.append('caption', descricao);
-
   try {
-    const r = await fetch('https://api.telegram.org/bot' + token + '/sendDocument', {
-      method: 'POST', body: form
-    });
+    const r   = await fetch('https://api.telegram.org/bot' + token + '/sendDocument', { method:'POST', body:form });
     const res = await r.json();
-    if (res.ok) {
-      tgLog('✅ ' + nomeArquivo + ' enviado com sucesso!', true);
-      return true;
-    } else {
-      tgLog('❌ Erro: ' + (res.description || 'Falha no envio'), false);
-      return false;
-    }
-  } catch(e) {
-    tgLog('❌ Erro de rede: ' + e.message, false);
-    return false;
-  }
+    if (res.ok) { tgLog('✅ ' + nomeArquivo + ' enviado!', true); return true; }
+    tgLog('❌ ' + (res.description || 'Falha'), false); return false;
+  } catch(e) { tgLog('❌ Rede: ' + e.message, false); return false; }
 }
-
-async function tgTestar() {
-  const token = tgToken();
-  const chat  = tgChat();
-  const res   = document.getElementById('tg-teste-resultado');
-  if (!token || !chat) { if (res) { res.textContent = '⚠ Preencha token e chat ID'; res.style.color = 'var(--accent)'; } return; }
-  if (res) { res.textContent = 'Testando...'; res.style.color = 'var(--text-muted)'; }
-  try {
-    const r = await fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chat, text: '✅ *MotoStock Admin* — Conexão com Telegram funcionando!\n\n🕐 ' + new Date().toLocaleString('pt-BR'), parse_mode: 'Markdown' })
-    });
-    const data = await r.json();
-    if (data.ok) {
-      if (res) { res.textContent = '✅ Funcionando!'; res.style.color = 'var(--green)'; }
-      tgLog('✅ Teste de conexão OK', true);
-    } else {
-      if (res) { res.textContent = '❌ ' + (data.description || 'Erro'); res.style.color = 'var(--red)'; }
-    }
-  } catch(e) {
-    if (res) { res.textContent = '❌ Sem conexão'; res.style.color = 'var(--red)'; }
-  }
-}
-
-async function tgColetarTudo() {
-  const { data } = await apiFetch('GET', '/admin/backup?tipo=completo');
-  return data || { gerado_em: new Date().toISOString(), clientes:[], produtos:[], vendas:[], agendamentos:[], usuarios:[] };
-}
-
 async function tgEnviarAgora() {
-  toast('Coletando dados...', 'y');
-  tgLog('🔄 Iniciando backup completo...', null);
-  try {
-    const dados    = await tgColetarTudo();
-    const json     = JSON.stringify(dados, null, 2);
-    const agora    = new Date();
-    const nomeFmt  = 'MotoStock_Backup_' + agora.toISOString().split('T')[0] + '_' + agora.toTimeString().substr(0,5).replace(':','h') + '.json';
-    const descricao = '📦 *Backup MotoStock*\n📅 ' + agora.toLocaleString('pt-BR') + '\n\n' +
-      '👥 Clientes: ' + dados.clientes.length + '\n' +
-      '📦 Produtos: ' + dados.produtos.length + '\n' +
-      '💰 Vendas: ' + dados.vendas.length + '\n' +
-      '📅 Agendamentos: ' + dados.agendamentos.length;
-    const ok = await tgEnviar(nomeFmt, json, descricao);
-    if (ok) {
-      toast('✅ Backup enviado ao Telegram!');
-      document.getElementById('auto-ultimo').textContent = agora.toLocaleString('pt-BR');
-    } else {
-      toast('❌ Falha no envio', 'r');
-    }
-  } catch(e) {
-    toast('Erro: ' + e.message, 'r');
-    tgLog('❌ Erro: ' + e.message, false);
-  }
+  const _old = _bkTipo; _bkTipo = 'geral';
+  await bkGerarZip('telegram');
+  _bkTipo = _old;
 }
-
-async function tgEnviarTabela(tipo) {
-  toast('Coletando ' + tipo + '...', 'y');
-  tgLog('🔄 Enviando tabela: ' + tipo, null);
+async function tgTestar() {
+  const token = tgToken(), chat = tgChat();
+  const res = document.getElementById('tg-teste-resultado');
+  if (!token || !chat) { if(res){res.textContent='⚠ Preencha token e chat ID';res.style.color='var(--accent)'} return; }
+  if(res){res.textContent='Testando...';res.style.color='var(--text-muted)'}
   try {
-    let data = [], headers = tipo;
-    const bkResp = await apiFetch('GET', '/admin/backup?tipo=' + tipo);
-    const bkData = bkResp.data || {};
-    data = bkData.dados || [];
-
-    const payload  = { tabela: tipo, gerado_em: new Date().toISOString(), total: (data||[]).length, dados: data || [] };
-    const json     = JSON.stringify(payload, null, 2);
-    const agora    = new Date();
-    const nomeFmt  = 'MotoStock_' + tipo.charAt(0).toUpperCase() + tipo.slice(1) + '_' + agora.toISOString().split('T')[0] + '.json';
-    const descricao = '📊 *' + tipo.toUpperCase() + '* — ' + (data||[]).length + ' registros\n📅 ' + agora.toLocaleString('pt-BR');
-    const ok = await tgEnviar(nomeFmt, json, descricao);
-    if (ok) toast('✅ ' + tipo + ' enviado!');
-    else    toast('❌ Falha no envio', 'r');
-  } catch(e) {
-    toast('Erro: ' + e.message, 'r');
-    tgLog('❌ Erro ao coletar ' + tipo + ': ' + e.message, false);
-  }
+    const r = await fetch('https://api.telegram.org/bot'+token+'/sendMessage', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({chat_id:chat, text:'✅ *MotoStock Admin* — Conexão com Telegram funcionando!\n\n🕐 '+new Date().toLocaleString('pt-BR'), parse_mode:'Markdown'})
+    });
+    const d = await r.json();
+    if(d.ok){if(res){res.textContent='✅ Funcionando!';res.style.color='var(--green)'};tgLog('✅ Teste OK',true);}
+    else{if(res){res.textContent='❌ '+(d.description||'Erro');res.style.color='var(--red)'}}
+  } catch(e){if(res){res.textContent='❌ Sem conexão';res.style.color='var(--red)'}}
 }
 
 // ━━━━ AGENDAMENTO AUTOMÁTICO ━━━━
@@ -968,49 +971,69 @@ function autoMs() {
   const u = document.getElementById('auto-unidade').value;
   if (u === 'minutos') return v * 60 * 1000;
   if (u === 'dias')    return v * 24 * 60 * 60 * 1000;
-  return v * 60 * 60 * 1000; // horas
+  return v * 60 * 60 * 1000;
 }
-
 function autoFmtContagem(ms) {
   if (ms <= 0) return '00:00:00';
-  const h = Math.floor(ms / 3600000);
-  const m = Math.floor((ms % 3600000) / 60000);
-  const s = Math.floor((ms % 60000) / 1000);
-  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
 }
-
-function autoIniciar() {
-  if (_autoTimer) autoParar();
-  const totalMs = autoMs();
-  _autoTotal    = totalMs;
-  _autoContagem = totalMs;
-
+async function autoSalvarEstado() {
+  const estado = {
+    ativo:true, totalMs:_autoTotal, proximo:Date.now()+_autoContagem,
+    intervalo: document.getElementById('auto-intervalo').value,
+    unidade:   document.getElementById('auto-unidade').value,
+    tipo:      document.getElementById('auto-tipo').value,
+    lojaToken: document.getElementById('auto-loja-token').value.trim()
+  };
+  await apiFetch('POST','/configuracoes/upsert',{chave:'auto_backup_estado',valor:JSON.stringify(estado),loja_token:'_admin'});
+}
+async function autoLimparEstado() {
+  await apiFetch('POST','/configuracoes/upsert',{chave:'auto_backup_estado',valor:JSON.stringify({ativo:false}),loja_token:'_admin'});
+}
+async function autoCarregarEstado() {
+  try {
+    const { data } = await apiFetch('GET','/configuracoes?loja_token=_admin&chave=auto_backup_estado');
+    if(!data||!data.length) return null;
+    return JSON.parse(data[0].valor);
+  } catch(e){ return null; }
+}
+function _autoIniciarInterno(totalMs, contagemMs) {
+  if (_autoTimer) clearInterval(_autoTimer);
+  _autoTotal = totalMs; _autoContagem = contagemMs;
   document.getElementById('auto-dot').style.background = 'var(--green)';
   document.getElementById('auto-txt').textContent = 'Ativo';
   document.getElementById('auto-txt').style.color = 'var(--green)';
   document.getElementById('auto-start-btn').style.display = 'none';
   document.getElementById('auto-stop-btn').style.display  = 'flex';
-
-  const v = document.getElementById('auto-intervalo').value;
-  const u = document.getElementById('auto-unidade').value;
-  tgLog('⏰ Backup automático iniciado: a cada ' + v + ' ' + u, true);
-  toast('Backup automático ativo: a cada ' + v + ' ' + u);
-
-  // Tick a cada segundo
   _autoTimer = setInterval(function() {
     _autoContagem -= 1000;
     document.getElementById('auto-proximo').textContent = autoFmtContagem(_autoContagem);
+    if (_autoContagem % 10000 < 1000) autoSalvarEstado();
     if (_autoContagem <= 0) {
       _autoContagem = _autoTotal;
-      const tipo = document.getElementById('auto-tipo').value;
-      if (tipo === 'completo') tgEnviarAgora();
-      else tgEnviarTabela(tipo);
+      const tipo  = document.getElementById('auto-tipo').value;
+      const loja  = document.getElementById('auto-loja-token').value.trim() || null;
+      const _old  = _bkTipo;
+      _bkTipo     = tipo === 'individual' ? 'individual' : 'geral';
+      if (tipo === 'individual' && loja) document.getElementById('bk-loja-token').value = loja;
+      bkGerarZip('telegram');
+      _bkTipo = _old;
     }
   }, 1000);
 }
-
-function autoParar() {
+async function autoIniciar() {
+  const totalMs = autoMs();
+  const v = document.getElementById('auto-intervalo').value;
+  const u = document.getElementById('auto-unidade').value;
+  _autoIniciarInterno(totalMs, totalMs);
+  await autoSalvarEstado();
+  tgLog('⏰ Backup automático iniciado: a cada ' + v + ' ' + u, true);
+  toast('Backup automático ativo: a cada ' + v + ' ' + u);
+}
+async function autoParar() {
   if (_autoTimer) { clearInterval(_autoTimer); _autoTimer = null; }
+  await autoLimparEstado();
   document.getElementById('auto-dot').style.background = 'var(--text-muted)';
   document.getElementById('auto-txt').textContent = 'Inativo';
   document.getElementById('auto-txt').style.color = 'var(--text-muted)';
@@ -1020,8 +1043,23 @@ function autoParar() {
   tgLog('⏹ Backup automático pausado.', null);
   toast('Backup automático pausado.', 'y');
 }
+async function autoRestaurar() {
+  const estado = await autoCarregarEstado();
+  if (!estado || !estado.ativo) return;
+  document.getElementById('auto-intervalo').value = estado.intervalo || '6';
+  document.getElementById('auto-unidade').value   = estado.unidade   || 'horas';
+  document.getElementById('auto-tipo').value      = estado.tipo      || 'geral';
+  if (estado.lojaToken) document.getElementById('auto-loja-token').value = estado.lojaToken;
+  if (estado.tipo === 'individual') document.getElementById('auto-loja-wrap').style.display = 'block';
+  const totalMs = estado.totalMs || autoMs();
+  const faltaMs = Math.max(estado.proximo - Date.now(), 0);
+  _autoIniciarInterno(totalMs, faltaMs || totalMs);
+  if (!faltaMs) bkGerarZip('telegram');
+  tgLog('♻️ Backup automático restaurado após refresh.', true);
+}
 
-async function admBackupCompleto() { await tgEnviarAgora(); }
+
+async function admBackupCompleto() { await bkGerarZip('telegram'); }
 async function admExportarClientesCSV() {
   const { data } = await apiFetch('GET', '/admin/clientes');
   const list = data || [];
@@ -1030,10 +1068,226 @@ async function admExportarClientesCSV() {
   );
 }
 
+// ━━━━ BACKUP ZIP ━━━━
+let _bkTipo = 'geral';
+
+function bkSwitchTipo(tipo) {
+  _bkTipo = tipo;
+  const isInd = tipo === 'individual';
+  document.getElementById('bk-loja-wrap').style.display = isInd ? 'block' : 'none';
+  document.getElementById('bk-tab-geral').style.background      = isInd ? 'none' : 'var(--gradient-accent)';
+  document.getElementById('bk-tab-geral').style.color           = isInd ? 'var(--text-muted)' : '#fff';
+  document.getElementById('bk-tab-geral').style.border          = isInd ? '1px solid var(--border)' : 'none';
+  document.getElementById('bk-tab-individual').style.background = isInd ? 'var(--gradient-accent)' : 'none';
+  document.getElementById('bk-tab-individual').style.color      = isInd ? '#fff' : 'var(--text-muted)';
+  document.getElementById('bk-tab-individual').style.border     = isInd ? 'none' : '1px solid var(--border)';
+}
+
+async function bkColetarDados(lojaToken) {
+  const tabelas = ['clientes','produtos','vendas','agendamentos','usuarios'];
+  const chks    = { clientes:'bk-chk-clientes', produtos:'bk-chk-produtos', vendas:'bk-chk-vendas', agendamentos:'bk-chk-agendamentos', usuarios:'bk-chk-usuarios' };
+  const dados   = {};
+  for (const tab of tabelas) {
+    const chkEl = document.getElementById(chks[tab]);
+    if (chkEl && !chkEl.checked) continue;
+    const params = lojaToken ? `?tipo=${tab}&loja_token=${lojaToken}` : `?tipo=${tab}`;
+    const r = await apiFetch('GET', '/admin/backup' + params);
+    const raw = r.data;
+    if (!raw) continue;
+    dados[tab] = raw.dados || (Array.isArray(raw) ? raw : []);
+  }
+  return dados;
+}
+
+async function bkCriarZip(dados, lojaToken) {
+  const zip  = new JSZip();
+  const agora = new Date();
+  zip.file('info.json', JSON.stringify({
+    gerado_em: agora.toISOString(), sistema: 'MotoStock v2.1',
+    loja: lojaToken || 'todas',
+    tabelas: Object.keys(dados),
+    totais: Object.fromEntries(Object.entries(dados).map(([k,v]) => [k, v.length]))
+  }, null, 2));
+  for (const [tab, rows] of Object.entries(dados)) {
+    zip.file(tab + '.json', JSON.stringify({ tabela: tab, gerado_em: agora.toISOString(), total: rows.length, dados: rows }, null, 2));
+  }
+  return await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+}
+
+function bkNomeArquivo(tipo, lojaToken) {
+  const d = new Date().toISOString().split('T')[0];
+  const t = new Date().toTimeString().substr(0,5).replace(':','h');
+  return tipo === 'individual' && lojaToken
+    ? `MotoStock_${lojaToken}_${d}_${t}.zip`
+    : `MotoStock_Backup_Geral_${d}_${t}.zip`;
+}
+
+async function bkGerarZip(acao) {
+  const status = document.getElementById('bk-status');
+  status.style.color = 'var(--accent)'; status.textContent = '⏳ Coletando dados...';
+  const lojaToken = _bkTipo === 'individual'
+    ? (document.getElementById('bk-loja-token').value.trim() || null) : null;
+  if (_bkTipo === 'individual' && !lojaToken) {
+    status.style.color = 'var(--red)'; status.textContent = '⚠️ Informe o loja_token.'; return;
+  }
+  try {
+    const dados = await bkColetarDados(lojaToken);
+    const total = Object.values(dados).reduce((s,v) => s + v.length, 0);
+    if (!total) { status.style.color = 'var(--red)'; status.textContent = '⚠️ Nenhum dado encontrado.'; return; }
+    status.textContent = '📦 Gerando ZIP...';
+    const zipBlob = await bkCriarZip(dados, lojaToken);
+    const nome    = bkNomeArquivo(_bkTipo, lojaToken);
+    if (acao === 'download') {
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement('a'); a.href = url; a.download = nome;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      status.style.color = 'var(--green)'; status.textContent = `✅ ${nome} (${total} registros)`;
+      tgLog('💾 ZIP baixado: ' + nome, true); toast('ZIP baixado!');
+    } else {
+      status.textContent = '📤 Enviando pelo Telegram...';
+      const desc = `📦 *Backup MotoStock*\n📅 ${new Date().toLocaleString('pt-BR')}\n🏪 ${lojaToken || 'Todas as lojas'}\n\n` +
+        Object.entries(dados).map(([k,v]) => `• ${k}: ${v.length}`).join('\n');
+      const ok = await tgEnviarBlob(nome, zipBlob, desc);
+      if (ok) {
+        status.style.color = 'var(--green)'; status.textContent = `✅ Enviado: ${nome}`;
+        document.getElementById('auto-ultimo').textContent = new Date().toLocaleString('pt-BR');
+      } else { status.style.color = 'var(--red)'; status.textContent = '❌ Falha no envio'; }
+    }
+  } catch(e) {
+    status.style.color = 'var(--red)'; status.textContent = '❌ Erro: ' + e.message; tgLog('❌ ' + e.message, false);
+  }
+}
+
+async function bkPopularSelectLojas() {
+  const { data } = await apiFetch('GET', '/admin/usuarios');
+  const usuarios = (data || []).filter(u => u.loja_token && u.loja_token !== '_admin');
+  ['bk-loja-select','import-loja-select'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    el.innerHTML = '<option value="">— selecionar usuário —</option>';
+    usuarios.forEach(u => { el.innerHTML += `<option value="${u.loja_token}">${u.nome} (${u.loja_token})</option>`; });
+  });
+}
+
+// ━━━━ IMPORTAR BACKUP (.zip ou .json) ━━━━
+let _importDados = null;
+const IMPORT_TABELAS = {
+  clientes:     { label:'🏪 Clientes',    endpoint:'/clientes',     campos:['nome','telefone','cpf_cnpj','email','endereco','cidade','obs','total_compras','total_gasto'] },
+  produtos:     { label:'📦 Produtos',    endpoint:'/produtos',     campos:['sku','nome','categoria','marca','custo','preco_venda','estoque','estoque_minimo','imagem_url'] },
+  vendas:       { label:'💰 Vendas',      endpoint:'/vendas',       campos:['numero','cliente','total','desconto','forma_pagamento','status','created_at'] },
+  agendamentos: { label:'📅 Agendamentos',endpoint:'/agendamentos', campos:['cliente_nome','cliente_tel','servico','data_hora','duracao_min','valor','status','obs'] },
+};
+function importOnDrop(e) {
+  e.preventDefault();
+  document.getElementById('import-dropzone').style.borderColor='var(--border-strong)';
+  document.getElementById('import-dropzone').style.background='';
+  const file = e.dataTransfer.files[0]; if (file) importLerArquivo(file);
+}
+async function importLerArquivo(file) {
+  if (!file) return;
+  if (file.name.endsWith('.zip')) {
+    try {
+      const zip = await JSZip.loadAsync(file);
+      const dados = {};
+      for (const [nome, entry] of Object.entries(zip.files)) {
+        if (entry.dir || !nome.endsWith('.json') || nome === 'info.json') continue;
+        const tabela = nome.replace('.json','');
+        if (!IMPORT_TABELAS[tabela]) continue;
+        const txt = await entry.async('text');
+        const json = JSON.parse(txt);
+        dados[tabela] = json.dados || (Array.isArray(json) ? json : []);
+      }
+      importProcessarDados(dados, file.name);
+    } catch(e) { toast('ZIP inválido: ' + e.message, 'r'); }
+  } else {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const json = JSON.parse(e.target.result);
+        let dados = {};
+        if (json.tabela && Array.isArray(json.dados)) { dados[json.tabela] = json.dados; }
+        else { for (const k of Object.keys(IMPORT_TABELAS)) { if (Array.isArray(json[k])) dados[k] = json[k]; } }
+        importProcessarDados(dados, file.name);
+      } catch(err) { toast('JSON inválido.', 'r'); }
+    };
+    reader.readAsText(file);
+  }
+}
+function importProcessarDados(dados, nomeArquivo) {
+  if (!Object.keys(dados).length) { toast('Nenhuma tabela reconhecida.', 'r'); return; }
+  _importDados = dados;
+  const rowsEl = document.getElementById('import-preview-rows');
+  rowsEl.innerHTML = '';
+  for (const [tab, regs] of Object.entries(dados)) {
+    const cfg = IMPORT_TABELAS[tab]; if (!cfg) continue;
+    rowsEl.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--bg-card);border-radius:8px;border:1px solid var(--border);">
+      <span style="font-size:13px;font-weight:600;color:var(--text-primary);">${cfg.label}</span>
+      <span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700;">${regs.length} registros</span>
+    </div>`;
+  }
+  document.getElementById('import-preview').style.display = 'block';
+  const chkEl = document.getElementById('import-checkboxes'); chkEl.innerHTML = '';
+  for (const tab of Object.keys(dados)) {
+    const cfg = IMPORT_TABELAS[tab]; if (!cfg) continue;
+    chkEl.innerHTML += `<label style="display:flex;align-items:center;gap:8px;padding:7px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
+      <input type="checkbox" id="import-chk-${tab}" checked style="width:15px;height:15px;accent-color:var(--accent);">
+      ${cfg.label} <span style="font-size:11px;color:var(--text-muted);">(${dados[tab].length})</span>
+    </label>`;
+  }
+  ['import-opcoes','import-aviso','import-btn','import-limpar-btn'].forEach(id => document.getElementById(id).style.display='block');
+  document.getElementById('import-btn').style.display = 'inline-flex';
+  document.getElementById('import-limpar-btn').style.display = 'inline-flex';
+  document.getElementById('import-dropzone-txt').textContent = '✅ ' + nomeArquivo;
+  document.getElementById('import-status').textContent = '';
+}
+async function importExecutar() {
+  if (!_importDados) return;
+  const lojaToken = (document.getElementById('import-loja-token').value.trim() || 'padrao').toLowerCase().replace(/[^a-z0-9_-]/g,'');
+  const btn = document.getElementById('import-btn'), status = document.getElementById('import-status');
+  btn.disabled = true; btn.textContent = 'Importando...';
+  let totalOk = 0, totalErro = 0;
+  for (const [tab, registros] of Object.entries(_importDados)) {
+    const chk = document.getElementById('import-chk-' + tab);
+    if (!chk || !chk.checked) continue;
+    const cfg = IMPORT_TABELAS[tab]; if (!cfg) continue;
+    for (const reg of registros) {
+      const payload = { loja_token: lojaToken };
+      for (const campo of cfg.campos) { if (reg[campo] !== undefined) payload[campo] = reg[campo]; }
+      try { const r = await apiFetch('POST', cfg.endpoint, payload); r.error ? totalErro++ : totalOk++; }
+      catch(e) { totalErro++; }
+    }
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#ffffff"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Importar Dados';
+  if (totalOk > 0) {
+    status.style.color = 'var(--green)';
+    status.textContent = `✅ ${totalOk} registro(s) importado(s)` + (totalErro ? ` · ⚠️ ${totalErro} erro(s)` : '');
+    toast('Importação concluída: ' + totalOk + ' registros!'); admCarregarUsuarios();
+  } else {
+    status.style.color = 'var(--red)'; status.textContent = `❌ Nenhum registro importado (${totalErro} erro(s))`;
+    toast('Falha na importação.', 'r');
+  }
+}
+function importLimpar() {
+  _importDados = null;
+  document.getElementById('import-file-input').value = '';
+  ['import-preview','import-opcoes','import-aviso','import-btn','import-limpar-btn'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById('import-status').textContent = '';
+  document.getElementById('import-dropzone-txt').textContent = 'Clique ou arraste o arquivo .zip ou .json aqui';
+  document.getElementById('import-dropzone').style.borderColor = 'var(--border-strong)';
+  document.getElementById('import-dropzone').style.background = '';
+}
+
+
 // ── INIT ──
 function admCarregarTudo() {
   admCarregarUsuarios();
   tgCarregarConfig();
+  autoRestaurar();
+  bkPopularSelectLojas();
+  // Wire auto-tipo change
+  document.getElementById('auto-tipo').addEventListener('change', function() {
+    document.getElementById('auto-loja-wrap').style.display = this.value === 'individual' ? 'block' : 'none';
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1048,15 +1302,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) admCloseModal();
   });
 
-  // Preview do token em tempo real
-  const tokenInput = document.getElementById('usr-loja-token');
-  if (tokenInput) {
-    tokenInput.addEventListener('input', function() {
-      const clean = this.value.toLowerCase().replace(/[^a-z0-9_-]/g, '');
-      const prev = document.getElementById('usr-token-preview');
-      if (prev) prev.textContent = clean || 'token';
-    });
-  }
+
 });
 </script>
 </body>
