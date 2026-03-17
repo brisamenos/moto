@@ -322,13 +322,13 @@ select.input-field{cursor:pointer}
   <!-- ── BACKUP MANUAL ── -->
   <div class="card">
     <div class="card-header">
-      <div class="card-title">💾 Gerar Backup ZIP</div>
-      <div class="card-subtitle">Baixe um arquivo .zip com os dados em JSON organizados por tabela</div>
+      <div class="card-title">💾 Gerar Backup</div>
+      <div class="card-subtitle">Geral: um .json com todas as lojas · Individual: .zip com um .json por loja</div>
     </div>
     <div class="card-body">
 
-      <!-- Tipo: Geral ou Individual -->
-      <div style="display:flex;gap:10px;margin-bottom:18px;">
+      <!-- Tipo -->
+      <div style="display:flex;gap:10px;margin-bottom:20px;">
         <button id="bk-tab-geral" onclick="bkSwitchTipo('geral')"
           style="padding:9px 22px;background:var(--gradient-accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">
           🌐 Geral (todas as lojas)
@@ -339,50 +339,24 @@ select.input-field{cursor:pointer}
         </button>
       </div>
 
-      <!-- Campo loja (só no individual) -->
-      <div id="bk-loja-wrap" style="display:none;margin-bottom:16px;">
-        <label class="form-label" style="display:block;margin-bottom:6px;">Loja (loja_token)</label>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input class="input-field" id="bk-loja-token" type="text" placeholder="ex: padrao, manoel, carlos..."
-            style="width:260px;font-family:'JetBrains Mono',monospace;">
-          <span style="font-size:11px;color:var(--text-muted);">ou selecione:</span>
-          <select class="input-field" id="bk-loja-select" onchange="document.getElementById('bk-loja-token').value=this.value" style="width:200px;">
-            <option value="">— selecionar usuário —</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Tabelas para incluir -->
-      <div style="margin-bottom:18px;">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:10px;">Incluir no ZIP</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
-          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
-            <input type="checkbox" id="bk-chk-clientes" checked style="accent-color:var(--accent);width:14px;height:14px;"> 🏪 Clientes
-          </label>
-          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
-            <input type="checkbox" id="bk-chk-produtos" checked style="accent-color:var(--accent);width:14px;height:14px;"> 📦 Produtos
-          </label>
-          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
-            <input type="checkbox" id="bk-chk-vendas" checked style="accent-color:var(--accent);width:14px;height:14px;"> 💰 Vendas
-          </label>
-          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
-            <input type="checkbox" id="bk-chk-agendamentos" checked style="accent-color:var(--accent);width:14px;height:14px;"> 📅 Agendamentos
-          </label>
-          <label style="display:flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);">
-            <input type="checkbox" id="bk-chk-usuarios" style="accent-color:var(--accent);width:14px;height:14px;"> 👥 Usuários
-          </label>
-        </div>
+      <!-- Descrição dinâmica -->
+      <div id="bk-desc" style="padding:10px 14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);font-size:12px;color:var(--text-muted);margin-bottom:18px;">
+        📄 Gera um único <strong style="color:var(--text-primary);">backup_geral.json</strong> com os dados de todas as lojas. Para baixar ou enviar pelo Telegram.
       </div>
 
       <!-- Ações -->
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <button class="btn btn-accent" onclick="bkGerarZip('download')">
+        <button class="btn btn-accent" onclick="bkExecutar('download')">
           <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Baixar ZIP
+          <span id="bk-btn-download-txt">Baixar JSON</span>
         </button>
-        <button class="btn btn-outline" onclick="bkGerarZip('telegram')">
+        <button class="btn btn-outline" onclick="bkExecutar('telegram-ambos')" id="bk-btn-telegram-ambos" style="display:none;">
           <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-          Enviar por Telegram
+          Enviar Geral + Individual
+        </button>
+        <button class="btn btn-outline" onclick="bkExecutar('telegram')" id="bk-btn-telegram">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          <span id="bk-btn-telegram-txt">Enviar pelo Telegram</span>
         </button>
         <span id="bk-status" style="font-size:12px;font-weight:600;color:var(--text-muted);"></span>
       </div>
@@ -395,7 +369,7 @@ select.input-field{cursor:pointer}
     <div class="card-header">
       <div>
         <div class="card-title">⏰ Backup Automático</div>
-        <div class="card-subtitle">O sistema envia o ZIP pelo Telegram automaticamente no intervalo definido</div>
+        <div class="card-subtitle">Geral: envia JSON · Individual: envia ZIP · Ambos: envia os dois</div>
       </div>
       <div id="auto-status" style="display:flex;align-items:center;gap:8px;">
         <div id="auto-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);"></div>
@@ -419,14 +393,11 @@ select.input-field{cursor:pointer}
         <div class="form-group">
           <label class="form-label">Tipo de backup</label>
           <select class="input-field" id="auto-tipo">
-            <option value="geral">Geral (todas as lojas)</option>
-            <option value="individual">Individual (loja específica)</option>
+            <option value="geral">Geral (JSON único)</option>
+            <option value="individual">Individual (ZIP por loja)</option>
+            <option value="ambos">Ambos (Geral + Individual)</option>
           </select>
         </div>
-      </div>
-      <div id="auto-loja-wrap" style="display:none;margin-bottom:16px;">
-        <label class="form-label" style="display:block;margin-bottom:6px;">Loja para backup individual</label>
-        <input class="input-field" id="auto-loja-token" type="text" placeholder="loja_token..." style="width:260px;font-family:'JetBrains Mono',monospace;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
         <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
@@ -946,7 +917,7 @@ async function tgEnviarBlob(nomeArquivo, blob, descricao) {
 }
 async function tgEnviarAgora() {
   const _old = _bkTipo; _bkTipo = 'geral';
-  await bkGerarZip('telegram');
+  await bkExecutar('telegram');
   _bkTipo = _old;
 }
 async function tgTestar() {
@@ -984,7 +955,6 @@ async function autoSalvarEstado() {
     intervalo: document.getElementById('auto-intervalo').value,
     unidade:   document.getElementById('auto-unidade').value,
     tipo:      document.getElementById('auto-tipo').value,
-    lojaToken: document.getElementById('auto-loja-token').value.trim()
   };
   await apiFetch('POST','/configuracoes/upsert',{chave:'auto_backup_estado',valor:JSON.stringify(estado),loja_token:'_admin'});
 }
@@ -1013,11 +983,10 @@ function _autoIniciarInterno(totalMs, contagemMs) {
     if (_autoContagem <= 0) {
       _autoContagem = _autoTotal;
       const tipo  = document.getElementById('auto-tipo').value;
-      const loja  = document.getElementById('auto-loja-token').value.trim() || null;
       const _old  = _bkTipo;
-      _bkTipo     = tipo === 'individual' ? 'individual' : 'geral';
-      if (tipo === 'individual' && loja) document.getElementById('bk-loja-token').value = loja;
-      bkGerarZip('telegram');
+      _bkTipo = (tipo === 'individual') ? 'individual' : 'geral';
+      const acao  = (tipo === 'ambos') ? 'telegram-ambos' : 'telegram';
+      await bkExecutar(acao);
       _bkTipo = _old;
     }
   }, 1000);
@@ -1049,8 +1018,6 @@ async function autoRestaurar() {
   document.getElementById('auto-intervalo').value = estado.intervalo || '6';
   document.getElementById('auto-unidade').value   = estado.unidade   || 'horas';
   document.getElementById('auto-tipo').value      = estado.tipo      || 'geral';
-  if (estado.lojaToken) document.getElementById('auto-loja-token').value = estado.lojaToken;
-  if (estado.tipo === 'individual') document.getElementById('auto-loja-wrap').style.display = 'block';
   const totalMs = estado.totalMs || autoMs();
   const faltaMs = Math.max(estado.proximo - Date.now(), 0);
   _autoIniciarInterno(totalMs, faltaMs || totalMs);
@@ -1083,85 +1050,130 @@ function bkSwitchTipo(tipo) {
   document.getElementById('bk-tab-individual').style.border     = isInd ? 'none' : '1px solid var(--border)';
 }
 
-async function bkColetarDados(lojaToken) {
-  const tabelas = ['clientes','produtos','vendas','agendamentos','usuarios'];
-  const chks    = { clientes:'bk-chk-clientes', produtos:'bk-chk-produtos', vendas:'bk-chk-vendas', agendamentos:'bk-chk-agendamentos', usuarios:'bk-chk-usuarios' };
-  const dados   = {};
-  for (const tab of tabelas) {
-    const chkEl = document.getElementById(chks[tab]);
-    if (chkEl && !chkEl.checked) continue;
-    const params = lojaToken ? `?tipo=${tab}&loja_token=${lojaToken}` : `?tipo=${tab}`;
-    const r = await apiFetch('GET', '/admin/backup' + params);
-    const raw = r.data;
-    if (!raw) continue;
-    dados[tab] = raw.dados || (Array.isArray(raw) ? raw : []);
+// ── Helpers de data/hora ─────────────────────────────────────────────────────
+function bkDataHora() {
+  const d = new Date();
+  return d.toISOString().split('T')[0] + '_' + d.toTimeString().substr(0,5).replace(':','h');
+}
+
+// ── Coletar dados de uma loja (ou todas) ─────────────────────────────────────
+async function bkColetarLoja(lojaToken) {
+  // lojaToken=null → todas as lojas
+  const qs = lojaToken ? `?tipo=completo&loja_token=${lojaToken}` : '?tipo=completo';
+  const r  = await apiFetch('GET', '/admin/backup' + qs);
+  return r.data || {};
+}
+
+// ── GERAL: JSON único com todas as lojas ─────────────────────────────────────
+async function bkGeralJson() {
+  const dados = await bkColetarLoja(null);
+  const nome  = `MotoStock_Geral_${bkDataHora()}.json`;
+  const blob  = new Blob([JSON.stringify({ gerado_em: new Date().toISOString(), sistema: 'MotoStock v2.1', tipo: 'geral', ...dados }, null, 2)], { type: 'application/json' });
+  return { blob, nome };
+}
+
+// ── INDIVIDUAL: ZIP com um JSON por loja ─────────────────────────────────────
+async function bkIndividualZip() {
+  const { data: usuarios } = await apiFetch('GET', '/admin/usuarios');
+  const lojas = [...new Set((usuarios || []).map(u => u.loja_token).filter(t => t && t !== '_admin'))];
+  if (!lojas.length) throw new Error('Nenhuma loja encontrada.');
+
+  const zip = new JSZip();
+  for (const loja of lojas) {
+    const dados = await bkColetarLoja(loja);
+    const payload = { gerado_em: new Date().toISOString(), sistema: 'MotoStock v2.1', tipo: 'individual', loja, ...dados };
+    zip.file(`${loja}.json`, JSON.stringify(payload, null, 2));
   }
-  return dados;
+  const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+  const nome = `MotoStock_Individual_${bkDataHora()}.zip`;
+  return { blob, nome, lojas };
 }
 
-async function bkCriarZip(dados, lojaToken) {
-  const zip  = new JSZip();
-  const agora = new Date();
-  zip.file('info.json', JSON.stringify({
-    gerado_em: agora.toISOString(), sistema: 'MotoStock v2.1',
-    loja: lojaToken || 'todas',
-    tabelas: Object.keys(dados),
-    totais: Object.fromEntries(Object.entries(dados).map(([k,v]) => [k, v.length]))
-  }, null, 2));
-  for (const [tab, rows] of Object.entries(dados)) {
-    zip.file(tab + '.json', JSON.stringify({ tabela: tab, gerado_em: agora.toISOString(), total: rows.length, dados: rows }, null, 2));
-  }
-  return await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+// ── Download helper ───────────────────────────────────────────────────────────
+function bkDownload(blob, nome) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
-function bkNomeArquivo(tipo, lojaToken) {
-  const d = new Date().toISOString().split('T')[0];
-  const t = new Date().toTimeString().substr(0,5).replace(':','h');
-  return tipo === 'individual' && lojaToken
-    ? `MotoStock_${lojaToken}_${d}_${t}.zip`
-    : `MotoStock_Backup_Geral_${d}_${t}.zip`;
+// ── Botão switch Geral / Individual ──────────────────────────────────────────
+function bkSwitchTipo(tipo) {
+  _bkTipo = tipo;
+  const isInd = tipo === 'individual';
+  document.getElementById('bk-tab-geral').style.background      = isInd ? 'none' : 'var(--gradient-accent)';
+  document.getElementById('bk-tab-geral').style.color           = isInd ? 'var(--text-muted)' : '#fff';
+  document.getElementById('bk-tab-geral').style.border          = isInd ? '1px solid var(--border)' : 'none';
+  document.getElementById('bk-tab-individual').style.background = isInd ? 'var(--gradient-accent)' : 'none';
+  document.getElementById('bk-tab-individual').style.color      = isInd ? '#fff' : 'var(--text-muted)';
+  document.getElementById('bk-tab-individual').style.border     = isInd ? 'none' : '1px solid var(--border)';
+  document.getElementById('bk-desc').innerHTML = isInd
+    ? '🗜️ Gera um <strong style="color:var(--text-primary);">.zip</strong> com um <strong style="color:var(--text-primary);">JSON por loja</strong> (ex: manoel.json, carlos.json…). Para baixar ou enviar pelo Telegram.'
+    : '📄 Gera um único <strong style="color:var(--text-primary);">backup_geral.json</strong> com os dados de todas as lojas. Para baixar ou enviar pelo Telegram.';
+  document.getElementById('bk-btn-download-txt').textContent  = isInd ? 'Baixar ZIP' : 'Baixar JSON';
+  document.getElementById('bk-btn-telegram-txt').textContent  = isInd ? 'Enviar ZIP pelo Telegram' : 'Enviar JSON pelo Telegram';
+  document.getElementById('bk-btn-telegram-ambos').style.display = isInd ? 'none' : 'inline-flex';
 }
 
-async function bkGerarZip(acao) {
+// ── Executar backup (download ou telegram) ────────────────────────────────────
+async function bkExecutar(acao) {
   const status = document.getElementById('bk-status');
   status.style.color = 'var(--accent)'; status.textContent = '⏳ Coletando dados...';
-  const lojaToken = _bkTipo === 'individual'
-    ? (document.getElementById('bk-loja-token').value.trim() || null) : null;
-  if (_bkTipo === 'individual' && !lojaToken) {
-    status.style.color = 'var(--red)'; status.textContent = '⚠️ Informe o loja_token.'; return;
-  }
   try {
-    const dados = await bkColetarDados(lojaToken);
-    const total = Object.values(dados).reduce((s,v) => s + v.length, 0);
-    if (!total) { status.style.color = 'var(--red)'; status.textContent = '⚠️ Nenhum dado encontrado.'; return; }
-    status.textContent = '📦 Gerando ZIP...';
-    const zipBlob = await bkCriarZip(dados, lojaToken);
-    const nome    = bkNomeArquivo(_bkTipo, lojaToken);
-    if (acao === 'download') {
-      const url = URL.createObjectURL(zipBlob);
-      const a = document.createElement('a'); a.href = url; a.download = nome;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-      status.style.color = 'var(--green)'; status.textContent = `✅ ${nome} (${total} registros)`;
-      tgLog('💾 ZIP baixado: ' + nome, true); toast('ZIP baixado!');
+    if (_bkTipo === 'geral') {
+      const { blob, nome } = await bkGeralJson();
+      if (acao === 'download') {
+        bkDownload(blob, nome);
+        status.style.color = 'var(--green)'; status.textContent = '✅ ' + nome;
+        tgLog('💾 JSON baixado: ' + nome, true); toast('Backup Geral baixado!');
+      } else if (acao === 'telegram') {
+        status.textContent = '📤 Enviando JSON...';
+        const desc = `📄 *Backup Geral MotoStock*\n📅 ${new Date().toLocaleString('pt-BR')}\nTodas as lojas`;
+        const ok = await tgEnviarBlob(nome, blob, desc);
+        status.style.color = ok ? 'var(--green)' : 'var(--red)';
+        status.textContent = ok ? '✅ JSON Geral enviado!' : '❌ Falha';
+        if (ok) document.getElementById('auto-ultimo').textContent = new Date().toLocaleString('pt-BR');
+      } else if (acao === 'telegram-ambos') {
+        // Envia Geral (JSON) + Individual (ZIP) ao mesmo tempo
+        status.textContent = '📤 Enviando Geral + Individual...';
+        const descGeral = `📄 *Backup Geral MotoStock*\n📅 ${new Date().toLocaleString('pt-BR')}\nTodas as lojas`;
+        const okGeral   = await tgEnviarBlob(nome, blob, descGeral);
+        const { blob: zipBlob, nome: zipNome, lojas } = await bkIndividualZip();
+        const descInd   = `🗜️ *Backup Individual MotoStock*\n📅 ${new Date().toLocaleString('pt-BR')}\nLojas: ${lojas.join(', ')}`;
+        const okInd     = await tgEnviarBlob(zipNome, zipBlob, descInd);
+        status.style.color = (okGeral && okInd) ? 'var(--green)' : 'var(--red)';
+        status.textContent = `${okGeral?'✅':'❌'} Geral · ${okInd?'✅':'❌'} Individual`;
+        if (okGeral || okInd) document.getElementById('auto-ultimo').textContent = new Date().toLocaleString('pt-BR');
+      }
     } else {
-      status.textContent = '📤 Enviando pelo Telegram...';
-      const desc = `📦 *Backup MotoStock*\n📅 ${new Date().toLocaleString('pt-BR')}\n🏪 ${lojaToken || 'Todas as lojas'}\n\n` +
-        Object.entries(dados).map(([k,v]) => `• ${k}: ${v.length}`).join('\n');
-      const ok = await tgEnviarBlob(nome, zipBlob, desc);
-      if (ok) {
-        status.style.color = 'var(--green)'; status.textContent = `✅ Enviado: ${nome}`;
-        document.getElementById('auto-ultimo').textContent = new Date().toLocaleString('pt-BR');
-      } else { status.style.color = 'var(--red)'; status.textContent = '❌ Falha no envio'; }
+      // Individual
+      const { blob, nome, lojas } = await bkIndividualZip();
+      if (acao === 'download') {
+        bkDownload(blob, nome);
+        status.style.color = 'var(--green)'; status.textContent = `✅ ${nome} (${lojas.length} lojas)`;
+        tgLog('💾 ZIP baixado: ' + nome, true); toast('Backup Individual baixado!');
+      } else {
+        status.textContent = '📤 Enviando ZIP...';
+        const desc = `🗜️ *Backup Individual MotoStock*\n📅 ${new Date().toLocaleString('pt-BR')}\nLojas: ${lojas.join(', ')}`;
+        const ok   = await tgEnviarBlob(nome, blob, desc);
+        status.style.color = ok ? 'var(--green)' : 'var(--red)';
+        status.textContent = ok ? `✅ ZIP enviado (${lojas.length} lojas)` : '❌ Falha';
+        if (ok) document.getElementById('auto-ultimo').textContent = new Date().toLocaleString('pt-BR');
+      }
     }
   } catch(e) {
-    status.style.color = 'var(--red)'; status.textContent = '❌ Erro: ' + e.message; tgLog('❌ ' + e.message, false);
+    status.style.color = 'var(--red)'; status.textContent = '❌ Erro: ' + e.message;
+    tgLog('❌ ' + e.message, false);
   }
 }
+
+// Compat: tgEnviarAgora chama bkExecutar geral telegram
+async function bkGerarZip(acao) { await bkExecutar(acao === 'download' ? 'download' : 'telegram'); }
 
 async function bkPopularSelectLojas() {
   const { data } = await apiFetch('GET', '/admin/usuarios');
   const usuarios = (data || []).filter(u => u.loja_token && u.loja_token !== '_admin');
-  ['bk-loja-select','import-loja-select'].forEach(id => {
+  ['import-loja-select'].forEach(id => {
     const el = document.getElementById(id); if (!el) return;
     el.innerHTML = '<option value="">— selecionar usuário —</option>';
     usuarios.forEach(u => { el.innerHTML += `<option value="${u.loja_token}">${u.nome} (${u.loja_token})</option>`; });
@@ -1286,7 +1298,6 @@ function admCarregarTudo() {
   bkPopularSelectLojas();
   // Wire auto-tipo change
   document.getElementById('auto-tipo').addEventListener('change', function() {
-    document.getElementById('auto-loja-wrap').style.display = this.value === 'individual' ? 'block' : 'none';
   });
 }
 
