@@ -196,6 +196,35 @@ CREATE TABLE IF NOT EXISTS orcamento_itens (
   created_at   TEXT DEFAULT (datetime('now'))
 );
 
+
+CREATE TABLE IF NOT EXISTS fornecedores (
+  id         TEXT PRIMARY KEY,
+  nome       TEXT NOT NULL,
+  telefone   TEXT DEFAULT '',
+  email      TEXT DEFAULT '',
+  cnpj       TEXT DEFAULT '',
+  endereco   TEXT DEFAULT '',
+  obs        TEXT DEFAULT '',
+  loja_token TEXT NOT NULL DEFAULT 'padrao',
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS entradas_estoque (
+  id                   TEXT PRIMARY KEY,
+  produto_id           TEXT NOT NULL,
+  fornecedor_id        TEXT DEFAULT NULL,
+  quantidade           INTEGER NOT NULL,
+  custo_unitario       REAL NOT NULL,
+  custo_total          REAL DEFAULT 0,
+  custo_medio_anterior REAL DEFAULT 0,
+  custo_medio_novo     REAL DEFAULT 0,
+  estoque_anterior     INTEGER DEFAULT 0,
+  estoque_novo         INTEGER DEFAULT 0,
+  obs                  TEXT DEFAULT '',
+  loja_token           TEXT NOT NULL DEFAULT 'padrao',
+  created_at           TEXT DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS vendas_numero_seq (
   loja_token TEXT PRIMARY KEY,
   ultimo     INTEGER DEFAULT 0
