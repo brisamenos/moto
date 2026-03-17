@@ -840,8 +840,8 @@ function admRenderUsuarios(list) {
       '<td>' +
         '<div style="display:flex;align-items:center;gap:6px">' +
           '<span id="pw-text-' + u.id + '" style="font-family:monospace;font-size:12px;filter:blur(4px);cursor:pointer;transition:filter 0.2s;user-select:all;" onclick="toggleSenhaVis(\'' + u.id + '\')" title="Clique para revelar">' + (u.senha_texto || '(hash)') + '</span>' +
-          '<button onclick="copiarSenha(\'' + u.id + '\', \'' + (u.senha_texto||'').replace(/\'/g,\"\\\'\")+'\')"
-            style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;color:var(--text-muted);" title="Copiar">📋</button>' +
+          '<button onclick="copiarSenha(\'' + u.id + '\', this.dataset.senha)" data-senha="' + (u.senha_texto||'').replace(/"/g,'&quot;') + '"' +
+            ' style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;color:var(--text-muted);" title="Copiar">📋</button>' +
         '</div>' +
       '</td>' +
       '<td>' + perfilBadge + '</td>' +
@@ -1469,7 +1469,8 @@ function toggleSenhaVis(id) {
   el.title = blurred ? 'Clique para ocultar' : 'Clique para revelar';
 }
 
-function copiarSenha(id, senha) {
+function copiarSenha(id, senhaOuBtn) {
+  const senha = (typeof senhaOuBtn === 'string') ? senhaOuBtn : (senhaOuBtn && senhaOuBtn.dataset ? senhaOuBtn.dataset.senha : '');
   navigator.clipboard.writeText(senha).then(() => {
     toast('Senha copiada!');
   }).catch(() => {
