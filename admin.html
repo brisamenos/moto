@@ -352,6 +352,7 @@ select.input-field{cursor:pointer}
           <tr>
             <th>Nome</th>
             <th>E-mail</th>
+            <th>Senha</th>
             <th>Perfil</th>
             <th>Plano</th>
             <th>Expira em</th>
@@ -361,7 +362,7 @@ select.input-field{cursor:pointer}
           </tr>
         </thead>
         <tbody id="adm-usuarios-tbody">
-          <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted)">Carregando...</td></tr>
+          <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted)">Carregando...</td></tr>
         </tbody>
       </table>
     </div>
@@ -789,7 +790,7 @@ function admShowTab(id, el) {
 // ── CARREGAR USUÁRIOS ──
 async function admCarregarUsuarios() {
   const tb = document.getElementById('adm-usuarios-tbody');
-  tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text-muted)">Carregando...</td></tr>';
+  tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--text-muted)">Carregando...</td></tr>';
   const { data } = await apiFetch('GET', '/admin/usuarios');
   _allUsuarios = data || [];
   admRenderUsuarios(_allUsuarios);
@@ -813,7 +814,7 @@ function admAtualizarKPIs(list) {
 
 function admRenderUsuarios(list) {
   const tb = document.getElementById('adm-usuarios-tbody');
-  if (!list.length) { tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted)">Nenhum usuário encontrado.</td></tr>'; return; }
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted)">Nenhum usuário encontrado.</td></tr>'; return; }
   const hoje = new Date();
   tb.innerHTML = list.map(u => {
     const expira = u.plano_expiracao ? new Date(u.plano_expiracao) : null;
@@ -836,7 +837,13 @@ function admRenderUsuarios(list) {
     return '<tr>' +
       '<td style="font-weight:600;color:var(--text-primary)">' + u.nome + '</td>' +
       '<td class="mono" style="font-size:12px">' + u.email + '</td>' +
-
+      '<td>' +
+        '<div style="display:flex;align-items:center;gap:6px">' +
+          '<span id="pw-text-' + u.id + '" style="font-family:monospace;font-size:12px;filter:blur(4px);cursor:pointer;transition:filter 0.2s;user-select:all;" onclick="toggleSenhaVis(\'' + u.id + '\')" title="Clique para revelar">' + (u.senha_texto || '(hash)') + '</span>' +
+          '<button onclick="copiarSenha(\'' + u.id + '\', \'' + (u.senha_texto||'').replace(/\'/g,\"\\\'\")+'\')"
+            style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;color:var(--text-muted);" title="Copiar">📋</button>' +
+        '</div>' +
+      '</td>' +
       '<td>' + perfilBadge + '</td>' +
       '<td style="color:var(--accent);font-weight:600">' + (u.plano_nome || '—') + '</td>' +
       '<td>' + planoBadge + '<span style="font-size:11px;color:var(--text-muted);margin-left:6px">' + fmtDate(u.plano_expiracao) + '</span></td>' +
@@ -956,7 +963,7 @@ async function admSalvarUsuario() {
 
   try {
     const payload = { nome, email, perfil, loja_token: lojaToken, plano_nome: plano, plano_inicio: inicio || null, plano_expiracao: expira || null, obs, ativo };
-    if (senha) payload.senha_hash = await sha256(senha);
+    if (senha) { payload.senha_hash = await sha256(senha); payload.senha_texto = senha; }
 
     let error;
     if (id) {
@@ -1464,6 +1471,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 });
+
+// ── Senha visibility toggle ──────────────────────────────────────────
+function toggleSenhaVis(id) {
+  const el = document.getElementById('pw-text-' + id);
+  if (!el) return;
+  const blurred = el.style.filter === 'blur(4px)' || el.style.filter === 'blur(4px)';
+  el.style.filter = blurred ? 'none' : 'blur(4px)';
+  el.title = blurred ? 'Clique para ocultar' : 'Clique para revelar';
+}
+
+function copiarSenha(id, senha) {
+  navigator.clipboard.writeText(senha).then(() => {
+    toast('Senha copiada!');
+  }).catch(() => {
+    const el = document.getElementById('pw-text-' + id);
+    if (el) { el.style.filter = 'none'; toast('Senha visível — selecione e copie.', 'y'); }
+  });
+}
+
+
+// ── Senha visibility toggle ──────────────────────────────────────────
+function toggleSenhaVis(id) {
+  const el = document.getElementById('pw-text-' + id);
+  if (!el) return;
+  const blurred = el.style.filter === 'blur(4px)' || el.style.filter === 'blur(4px)';
+  el.style.filter = blurred ? 'none' : 'blur(4px)';
+  el.title = blurred ? 'Clique para ocultar' : 'Clique para revelar';
+}
+
+function copiarSenha(id, senha) {
+  navigator.clipboard.writeText(senha).then(() => {
+    toast('Senha copiada!');
+  }).catch(() => {
+    const el = document.getElementById('pw-text-' + id);
+    if (el) { el.style.filter = 'none'; toast('Senha visível — selecione e copie.', 'y'); }
+  });
+}
+
 </script>
 </body>
 </html>
