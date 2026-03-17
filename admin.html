@@ -1009,7 +1009,7 @@ function _autoIniciarInterno(totalMs, contagemMs) {
       const _old  = _bkTipo;
       _bkTipo = (tipo === 'individual') ? 'individual' : 'geral';
       const acao  = (tipo === 'ambos') ? 'telegram-ambos' : 'telegram';
-      await bkExecutar(acao);
+      bkExecutar(acao).catch(e => tgLog('❌ ' + e.message, false));
       _bkTipo = _old;
     }
   }, 1000);
