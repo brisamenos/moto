@@ -13,6 +13,12 @@ require('./db');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// ── Helper: resolve rota de routes/ ou raiz ──────────────────────────────────
+function route(name) {
+  try { return require('./routes/' + name); }
+  catch(e) { return require('./' + name); }
+}
+
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '10mb' }));
@@ -22,14 +28,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 // ── Rotas API ─────────────────────────────────────────────────────────────────
-app.use('/api/auth',           require('./routes/auth'));
-app.use('/api/produtos',       require('./routes/produtos'));
-app.use('/api/vendas',         require('./routes/vendas'));
-app.use('/api/caixa',          require('./routes/caixa'));
-app.use('/api/clientes',       require('./routes/clientes'));
-app.use('/api/configuracoes',  require('./routes/configuracoes'));
-app.use('/api/admin',          require('./routes/admin'));
-app.use('/api',                require('./routes/extras'));
+app.use('/api/auth',           route('auth'));
+app.use('/api/produtos',       route('produtos'));
+app.use('/api/vendas',         route('vendas'));
+app.use('/api/caixa',          route('caixa'));
+app.use('/api/clientes',       route('clientes'));
+app.use('/api/configuracoes',  route('configuracoes'));
+app.use('/api/admin',          route('admin'));
+app.use('/api',                route('extras'));
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
