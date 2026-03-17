@@ -8,6 +8,18 @@
 <meta name="theme-color" content="#6BB5F8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script>
+// Limpa caches antigos do Service Worker para garantir que o arquivo novo seja servido
+if ('serviceWorker' in navigator && 'caches' in window) {
+  caches.keys().then(function(names) {
+    names.forEach(function(name) {
+      if (name.indexOf('motostock') !== -1 && name !== 'motostock-v2.4' && name !== 'motostock-static-v2.4') {
+        caches.delete(name);
+      }
+    });
+  });
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -5126,37 +5138,40 @@ async function saveLancamento() {
 // FINANCEIRO
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 async function loadFinanceiro() {
-  const loja = _lojaToken || 'padrao';
-  const hoje = new Date().toISOString().split('T')[0];
+  const loja   = _lojaToken || 'padrao';
+  const hoje   = new Date().toISOString().split('T')[0];
   const mesIni = hoje.slice(0,7) + '-01';
+  // Helper local: independente de qualquer função global
+  async function get(path) {
+    const r = await fetch((window.API_BASE || (window.location.origin + '/api')) + path);
+    return r.json();
+  }
   try {
-    const { data } = await apiFetch('/relatorios/dre?loja_token=' + loja + '&data_ini=' + mesIni + '&data_fim=' + hoje);
-    if (data) {
-      set('fin-faturamento', fmt(data.receitas.receita_total));
-      set('fin-despesas',    fmt(data.total_despesas));
-      set('fin-lucro',       fmt(data.lucro_operacional));
-      set('fin-margem',      data.margem_pct.toFixed(1) + '%');
+    const dreRes = await get('/relatorios/dre?loja_token=' + loja + '&data_ini=' + mesIni + '&data_fim=' + hoje);
+    if (dreRes.data) {
+      const d = dreRes.data;
+      set('fin-faturamento', fmt(d.receitas.receita_total));
+      set('fin-despesas',    fmt(d.total_despesas));
+      set('fin-lucro',       fmt(d.lucro_operacional));
+      set('fin-margem',      d.margem_pct.toFixed(1) + '%');
     }
-    // Contas a receber: orçamentos abertos com valor
-    const { data: orcs } = await apiFetch('/orcamentos?loja_token=' + loja + '&status=aberto');
+    // Contas a receber: orçamentos abertos
+    const orcRes = await get('/orcamentos?loja_token=' + loja + '&status=aberto');
     const tb = document.getElementById('fin-receber-tbody');
     if (tb) {
-      const lista = (orcs || []).slice(0, 15);
+      const lista = ((orcRes.data) || []).slice(0, 15);
       if (!lista.length) {
         tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted)">Nenhum orcamento em aberto.</td></tr>';
       } else {
         tb.innerHTML = lista.map(function(o) {
           const dt = o.updated_at ? new Date(o.updated_at).toLocaleDateString('pt-BR') : '—';
-          return '<tr>' +
-            '<td>' + (o.cliente || 'Consumidor') + '</td>' +
+          return '<tr><td>' + (o.cliente || 'Consumidor') + '</td>' +
             '<td class="mono">' + dt + '</td>' +
             '<td class="mono" style="color:var(--accent)">' + fmt(o.total) + '</td>' +
-            '<td><span class="status-badge amber">Orc. #' + o.numero + '</span></td>' +
-            '</tr>';
+            '<td><span class="status-badge amber">Orc. #' + o.numero + '</span></td></tr>';
         }).join('');
       }
     }
-    // Gráfico mensal de caixa
     await carregarGraficoFinanceiro();
   } catch(e) {
     toast('Erro financeiro: ' + e.message, 'r');
@@ -5168,10 +5183,14 @@ async function carregarGraficoFinanceiro() {
   const hoje = new Date();
   const ini  = new Date(hoje.getFullYear(), hoje.getMonth() - 5, 1).toISOString().split('T')[0];
   const fim  = hoje.toISOString().split('T')[0];
+  async function get(path) {
+    const r = await fetch((window.API_BASE || (window.location.origin + '/api')) + path);
+    return r.json();
+  }
   try {
-    const { data } = await apiFetch('/relatorios/caixa?loja_token=' + loja + '&data_ini=' + ini + '&data_fim=' + fim);
+    const res = await get('/relatorios/caixa?loja_token=' + loja + '&data_ini=' + ini + '&data_fim=' + fim);
+    const data = res.data;
     if (!data) return;
-    // Agrupa por mês
     const meses = {};
     (data.por_dia || []).forEach(function(d) {
       const m = d.data.slice(0, 7);
@@ -5180,7 +5199,7 @@ async function carregarGraficoFinanceiro() {
       meses[m].sai += d.saidas  || 0;
     });
     const keys   = Object.keys(meses).sort();
-    const maxVal = Math.max(...keys.map(k => meses[k].ent), 1);
+    const maxVal = Math.max.apply(null, keys.map(function(k){ return meses[k].ent; }).concat([1]));
     const mNomes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
     const areaEl = document.querySelector('#page-financeiro .chart-area');
     const lblEl  = document.querySelector('#page-financeiro .chart-labels');
@@ -5188,10 +5207,9 @@ async function carregarGraficoFinanceiro() {
       areaEl.innerHTML = keys.map(function(k) {
         const pct = Math.round((meses[k].ent / maxVal) * 88);
         const pcs = Math.round((meses[k].sai / maxVal) * 88);
-        return '<div class="chart-bar-group" title="' + k + ': Ent ' + fmt(meses[k].ent) + ' / Sai ' + fmt(meses[k].sai) + '">' +
+        return '<div class="chart-bar-group" title="' + k + '">' +
           '<div class="chart-bar" style="height:' + pct + '%"></div>' +
-          '<div class="chart-bar secondary" style="height:' + pcs + '%"></div>' +
-          '</div>';
+          '<div class="chart-bar secondary" style="height:' + pcs + '%"></div></div>';
       }).join('');
       if (lblEl) lblEl.innerHTML = keys.map(function(k) {
         return '<span>' + mNomes[parseInt(k.slice(5,7),10) - 1] + '</span>';
