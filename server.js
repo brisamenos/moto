@@ -29,10 +29,35 @@ app.use('/api/clientes',       route('clientes'));
 app.use('/api/configuracoes',  route('configuracoes'));
 app.use('/api/admin',          route('admin'));
 app.use('/api/orcamentos',     route('orcamentos'));
+app.use('/api/os',             route('ordens_servico'));
+app.use('/api/relatorios',     route('relatorios'));
+app.use('/api/fornecedores',   route('fornecedores'));
 app.use('/api',                route('extras'));
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', version: '2.2', engine: 'SQLite' });
+  res.json({ status: 'ok', version: '2.3', engine: 'SQLite' });
+});
+
+// ── Busca Global ──────────────────────────────────────────────────────────────
+app.get('/api/busca', (req, res) => {
+  const { db } = require('./db');
+  const { q, loja_token } = req.query;
+  if (!q || q.length < 2) return res.json({ data: { produtos: [], clientes: [], vendas: [], orcamentos: [], os: [] }, error: null });
+
+  const loja  = loja_token || 'padrao';
+  const termo = '%' + q + '%';
+
+  try {
+    const produtos   = db.prepare(`SELECT id,'produto' as tipo,nome as titulo,sku as sub,preco_venda as valor FROM produtos WHERE loja_token=? AND (nome LIKE ? OR sku LIKE ?) LIMIT 6`).all(loja, termo, termo);
+    const clientes   = db.prepare(`SELECT id,'cliente' as tipo,nome as titulo,telefone as sub,total_gasto as valor FROM clientes WHERE loja_token=? AND (nome LIKE ? OR telefone LIKE ? OR cpf_cnpj LIKE ?) LIMIT 6`).all(loja, termo, termo, termo);
+    const vendas     = db.prepare(`SELECT id,'venda' as tipo,'Venda #'||numero as titulo,cliente as sub,total as valor FROM vendas WHERE loja_token=? AND (cliente LIKE ? OR CAST(numero as TEXT) LIKE ?) ORDER BY created_at DESC LIMIT 6`).all(loja, termo, termo);
+    const orcamentos = db.prepare(`SELECT id,'orcamento' as tipo,'Orçamento #'||numero as titulo,cliente as sub,total as valor FROM orcamentos WHERE loja_token=? AND (cliente LIKE ? OR CAST(numero as TEXT) LIKE ?) ORDER BY updated_at DESC LIMIT 6`).all(loja, termo, termo);
+    const os         = db.prepare(`SELECT id,'os' as tipo,'OS #'||numero as titulo,placa||' — '||modelo_moto as sub,total as valor FROM ordens_servico WHERE loja_token=? AND (placa LIKE ? OR cliente_nome LIKE ? OR modelo_moto LIKE ?) ORDER BY created_at DESC LIMIT 6`).all(loja, termo, termo, termo);
+
+    res.json({ data: { produtos, clientes, vendas, orcamentos, os }, error: null });
+  } catch(e) {
+    res.json({ data: null, error: { message: e.message } });
+  }
 });
 
 // ── Dashboard stats endpoint ──────────────────────────────────────────────────

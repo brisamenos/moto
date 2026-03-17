@@ -1,0 +1,19 @@
+{
+  "name": "MotoStock — Gestão de Peças",
+  "short_name": "MotoStock",
+  "description": "Sistema completo de gestão para oficinas de motos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06080f",
+  "theme_color": "#6BB5F8",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%236BB5F8'/><text x='50%25' y='58%25' font-size='100' text-anchor='middle' dominant-baseline='middle' font-family='sans-serif' fill='white'>M</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "lang": "pt-BR"
+}

@@ -235,6 +235,51 @@ CREATE TABLE IF NOT EXISTS orcamentos_numero_seq (
   ultimo     INTEGER DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS os_numero_seq (
+  loja_token TEXT PRIMARY KEY,
+  ultimo     INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS ordens_servico (
+  id                 TEXT PRIMARY KEY,
+  numero             INTEGER,
+  cliente_nome       TEXT DEFAULT '',
+  cliente_tel        TEXT DEFAULT '',
+  cliente_id         TEXT DEFAULT NULL,
+  placa              TEXT NOT NULL,
+  modelo_moto        TEXT DEFAULT '',
+  ano_moto           TEXT DEFAULT '',
+  km_entrada         INTEGER DEFAULT 0,
+  km_saida           INTEGER DEFAULT 0,
+  defeito_relatado   TEXT DEFAULT '',
+  servico_descricao  TEXT NOT NULL,
+  mecanico           TEXT DEFAULT '',
+  status             TEXT DEFAULT 'aberta',
+  valor_mao_obra     REAL DEFAULT 0,
+  desconto           REAL DEFAULT 0,
+  subtotal_pecas     REAL DEFAULT 0,
+  total              REAL DEFAULT 0,
+  obs                TEXT DEFAULT '',
+  previsao_entrega   TEXT DEFAULT NULL,
+  entrega_at         TEXT DEFAULT NULL,
+  loja_token         TEXT NOT NULL DEFAULT 'padrao',
+  created_at         TEXT DEFAULT (datetime('now')),
+  updated_at         TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS os_itens (
+  id              TEXT PRIMARY KEY,
+  os_id           TEXT REFERENCES ordens_servico(id) ON DELETE CASCADE,
+  produto_id      TEXT DEFAULT NULL,
+  nome_produto    TEXT NOT NULL,
+  preco           REAL DEFAULT 0,
+  quantidade      INTEGER DEFAULT 1,
+  total           REAL DEFAULT 0,
+  estoque_baixado INTEGER DEFAULT 0,
+  loja_token      TEXT DEFAULT 'padrao',
+  created_at      TEXT DEFAULT (datetime('now'))
+);
+
 `);
 
 // ── Migrações seguras (colunas novas em tabelas existentes) ──────────────────
@@ -276,4 +321,11 @@ function proximoNumeroOrcamento(loja_token) {
   return proximo;
 }
 
-module.exports = { db, proximoNumeroVenda, proximoNumeroOrcamento };
+function proximoNumeroOS(loja_token) {
+  const row = db.prepare('SELECT ultimo FROM os_numero_seq WHERE loja_token = ?').get(loja_token);
+  const proximo = (row ? row.ultimo : 0) + 1;
+  db.prepare(`INSERT INTO os_numero_seq (loja_token, ultimo) VALUES (?, ?) ON CONFLICT(loja_token) DO UPDATE SET ultimo = ?`).run(loja_token, proximo, proximo);
+  return proximo;
+}
+
+module.exports = { db, proximoNumeroVenda, proximoNumeroOrcamento, proximoNumeroOS };
