@@ -3581,6 +3581,12 @@ async function loadConfig() {
     const { data } = await sb.from('configuracoes').select('chave, valor').eq('loja_token', _lojaToken);
     const cfg = {};
     (data || []).forEach(r => { cfg[r.chave] = r.valor; });
+    // ── Popula cache global usado nos impressos ──
+    if (cfg.nome_loja) _lojaConfig.nome_loja = cfg.nome_loja;
+    if (cfg.slogan)    _lojaConfig.slogan    = cfg.slogan;
+    if (cfg.endereco)  _lojaConfig.endereco  = cfg.endereco;
+    if (cfg.telefone)  _lojaConfig.telefone  = cfg.telefone;
+    if (cfg.logo_url)  _lojaConfig.logo_url  = cfg.logo_url;
     const tema = cfg['tema'] || 'dark';
     document.documentElement.setAttribute('data-theme', tema);
     const btn = $('theme-btn');
@@ -4221,25 +4227,12 @@ function pdvMostrarSucesso(venda, itens, cli, formaPag, total, recebido, troco) 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function gerarReciboPDF(venda, itens, cliente, formaPag, total, recebido, troco) {
-  // Busca dados da loja nas configurações
-  let nomeLoja = 'MOTOSTOCK';
-  let slogan   = 'Peças e Acessórios para Motos';
-  let endereco = '';
-  let telefone = '';
-  let logoUrl  = '';
-  try {
-    const res  = await fetch(API_BASE + '/configuracoes?loja_token=' + (_lojaToken || 'padrao') + '&in=nome_loja,slogan,logo_url,endereco,telefone');
-    const json = await res.json();
-    if (json.data) {
-      json.data.forEach(function(c) {
-        if (c.chave === 'nome_loja' && c.valor) nomeLoja = c.valor;
-        if (c.chave === 'slogan'    && c.valor) slogan   = c.valor;
-        if (c.chave === 'logo_url'  && c.valor) logoUrl  = c.valor;
-        if (c.chave === 'endereco'  && c.valor) endereco = c.valor;
-        if (c.chave === 'telefone'  && c.valor) telefone = c.valor;
-      });
-    }
-  } catch(e) {}
+  // Usa cache global da loja — carregado no login
+  const nomeLoja = _lojaConfig.nome_loja || 'MOTOSTOCK';
+  const slogan   = _lojaConfig.slogan    || '';
+  const endereco = _lojaConfig.endereco  || '';
+  const telefone = _lojaConfig.telefone  || '';
+  const logoUrl  = _lojaConfig.logo_url  || '';
   const num   = String(venda.numero).padStart(4,'0');
   const data  = new Date().toLocaleDateString('pt-BR');
   const hora  = timeNow();
@@ -4353,139 +4346,119 @@ function mostrarModalRecibo(venda, itens, cliente, formaPag, total) {
 // ━━━━ ORÇAMENTO PDF
 function gerarOrcamentoPDF() {
   if (!pdvCart.length) { toast('Adicione produtos ao orçamento.', 'y'); return; }
-  const cli      = ($('pdv-cliente')     ? $('pdv-cliente').value.trim()     : '') || 'Cliente';
+  const cli      = ($('pdv-cliente')      ? $('pdv-cliente').value.trim()      : '') || 'Sem cliente';
   const validade = ($('pdv-orc-validade') ? $('pdv-orc-validade').value.trim() : '') || '3 dias';
-  const desc     = parseFloat(($('pdv-desconto') ? $('pdv-desconto').value : 0)) || 0;
+  const desc     = parseFloat(($('pdv-desconto') ? $('pdv-desconto').value : '0')) || 0;
   const sub      = pdvCart.reduce((s, i) => s + i.preco * i.qty, 0);
   const total    = Math.max(0, sub - desc);
   const num      = 'ORC-' + String(Date.now()).slice(-5);
   const data     = new Date().toLocaleDateString('pt-BR');
+  const hora     = timeNow();
 
-  // Busca dados da loja
-  fetch(API_BASE + '/configuracoes?loja_token=' + (_lojaToken||'padrao') + '&in=nome_loja,slogan,logo_url,endereco,telefone')
-    .then(r => r.json()).then(json => {
-      let nomeLoja = 'MotoStock', sloganL = 'Peças e Acessórios para Motos';
-      let enderecoL = '', telefoneL = '', logoUrlL = '';
-      if (json.data) json.data.forEach(c => {
-        if (c.chave === 'nome_loja') nomeLoja = c.valor;
-        if (c.chave === 'slogan')    sloganL  = c.valor;
-        if (c.chave === 'logo_url')  logoUrlL = c.valor;
-        if (c.chave === 'endereco')  enderecoL = c.valor;
-        if (c.chave === 'telefone')  telefoneL = c.valor;
-      });
-      _gerarOrcamentoPDFComDados(cli, validade, desc, sub, total, num, data, nomeLoja, sloganL, enderecoL, telefoneL, logoUrlL);
-    }).catch(() => {
-      _gerarOrcamentoPDFComDados(cli, validade, desc, sub, total, num, data, 'MotoStock', 'Peças e Acessórios para Motos', '', '', '');
-    });
+  // Usa o cache global _lojaConfig preenchido em loadConfig() no login
+  _imprimirOrcamentoTermica(
+    pdvCart, cli, validade, desc, sub, total, num, data, hora,
+    _lojaConfig.nome_loja || 'MotoStock',
+    _lojaConfig.slogan    || '',
+    _lojaConfig.endereco  || '',
+    _lojaConfig.telefone  || '',
+    _lojaConfig.logo_url  || ''
+  );
 }
 
-function _gerarOrcamentoPDFComDados(cli, validade, desc, sub, total, num, data, nomeLoja, sloganL, enderecoL, telefoneL, logoUrlL) {
+// ─── Impressão térmica 80mm do orçamento ─────────────────────────────────────
+function _imprimirOrcamentoTermica(cart, cli, validade, desc, sub, total, num, data, hora, nomeLoja, sloganL, enderecoL, telefoneL, logoUrlL) {
   try {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const L = 15, RW = 180;
-    let y = 20;
+    const fmtV    = function(v) { return 'R$\u00a0' + Number(v).toFixed(2).replace('.', ','); };
+    const linhaHr = '<hr style="border:none;border-top:1px dashed #aaa;margin:7px 0;">';
 
-    // Header com cor accent
-    doc.setFillColor(91, 164, 245);
-    doc.rect(0, 0, 210, 22, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.text(nomeLoja, L, 13);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.text(sloganL, 210 - L, 10, { align: 'right' });
-    if (enderecoL) doc.text('📍 ' + enderecoL, 210 - L, 15, { align: 'right' });
-    if (telefoneL) doc.text('📞 ' + telefoneL, 210 - L, 20, { align: 'right' });
+    // Logo (se tiver)
+    const logoHtml = logoUrlL
+      ? '<img src="' + logoUrlL + '" style="max-height:55px;max-width:140px;object-fit:contain;margin-bottom:5px;" onerror="this.style.display=\'none\'">'
+      : '';
 
-    y = 34;
-    doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
-    doc.text('ORÇAMENTO', L, y); y += 6;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.text('Nº ' + num, L, y);
-    doc.text('Data: ' + data, 210 - L, y, { align: 'right' });
-    y += 5;
-    doc.text('Validade: ' + validade, L, y); y += 8;
+    // Cabeçalho da loja
+    const endEl = enderecoL ? '<div style="font-size:10px;color:#555;margin-top:2px;">' + enderecoL + '</div>' : '';
+    const telEl = telefoneL ? '<div style="font-size:10px;color:#555;">' + telefoneL + '</div>'               : '';
+    const sloEl = sloganL   ? '<div style="font-size:10px;color:#666;">'  + sloganL   + '</div>'              : '';
 
-    // Cliente
-    doc.setFillColor(245, 245, 245);
-    doc.rect(L, y, RW, 8, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.text('CLIENTE: ' + cli, L + 2, y + 5.5);
-    y += 14;
-
-    // Tabela cabeçalho
-    doc.setFillColor(30, 30, 40);
-    doc.rect(L, y, RW, 8, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.text('PRODUTO', L + 2, y + 5.5);
-    doc.text('QTD', L + 110, y + 5.5);
-    doc.text('UNIT.', L + 130, y + 5.5);
-    doc.text('TOTAL', L + 158, y + 5.5);
-    y += 10;
-
-    doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'normal');
-    let rowBg = false;
-    pdvCart.forEach(item => {
-      if (rowBg) { doc.setFillColor(250, 250, 250); doc.rect(L, y - 1, RW, 8, 'F'); }
-      rowBg = !rowBg;
-      doc.setFontSize(9);
-      const nomeLines = doc.splitTextToSize(item.nome, 100);
-      doc.text(nomeLines, L + 2, y + 4);
-      doc.text(String(item.qty), L + 112, y + 4);
-      doc.text('R$' + item.preco.toFixed(2).replace('.', ','), L + 132, y + 4);
-      doc.setFont('helvetica', 'bold');
-      doc.text('R$' + (item.preco * item.qty).toFixed(2).replace('.', ','), L + 160, y + 4);
-      doc.setFont('helvetica', 'normal');
-      y += (nomeLines.length > 1 ? 9 + (nomeLines.length - 1) * 4 : 9);
+    // Itens
+    let itensHtml = '';
+    cart.forEach(function(it) {
+      const nome  = it.nome_produto || it.nome || '—';
+      const qty   = Number(it.quantidade || it.qty  || 1);
+      const preco = Number(it.preco || 0);
+      const tot   = Number(it.total || preco * qty);
+      itensHtml +=
+        '<tr>' +
+          '<td style="padding:3px 2px;font-size:11px;word-break:break-word;">' + nome + '</td>' +
+          '<td style="padding:3px 2px;text-align:center;font-size:11px;white-space:nowrap;">' +
+            qty + ' x ' + fmtV(preco) +
+          '</td>' +
+          '<td style="padding:3px 2px;text-align:right;font-size:12px;font-weight:700;white-space:nowrap;">' + fmtV(tot) + '</td>' +
+        '</tr>';
     });
 
-    doc.setDrawColor(200, 200, 200);
-    doc.line(L, y, L + RW, y);
-    y += 6;
+    // Desconto
+    const descontoHtml = desc > 0
+      ? '<tr>' +
+            '<td colspan="2" style="padding:2px;font-size:11px;">Subtotal</td>' +
+            '<td style="padding:2px;text-align:right;font-size:11px;">' + fmtV(sub) + '</td>' +
+          '</tr>' +
+          '<tr>' +
+            '<td colspan="2" style="padding:2px;font-size:11px;color:#1a7a4a;">Desconto</td>' +
+            '<td style="padding:2px;text-align:right;font-size:11px;color:#1a7a4a;">- ' + fmtV(desc) + '</td>' +
+          '</tr>'
+      : '';
 
-    if (desc > 0) {
-      doc.setFontSize(10);
-      doc.text('Subtotal:', L + 120, y);
-      doc.text('R$' + sub.toFixed(2).replace('.', ','), L + 175, y, { align: 'right' });
-      y += 6;
-      doc.setTextColor(0, 150, 80);
-      doc.text('Desconto:', L + 120, y);
-      doc.text('- R$' + desc.toFixed(2).replace('.', ','), L + 175, y, { align: 'right' });
-      y += 6;
-      doc.setTextColor(0, 0, 0);
-    }
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(13);
-    doc.setTextColor(91, 164, 245);
-    doc.text('TOTAL:', L + 120, y);
-    doc.text('R$' + total.toFixed(2).replace('.', ','), L + 175, y, { align: 'right' });
-    y += 14;
+    const html =
+      '<div style="max-width:300px;margin:0 auto;font-family:Arial,sans-serif;">' +
+        '<div style="text-align:center;margin-bottom:8px;">' +
+          (logoHtml ? '<div>' + logoHtml + '</div>' : '') +
+          '<div style="font-size:18px;font-weight:900;letter-spacing:1px;">' + nomeLoja + '</div>' +
+          sloEl + endEl + telEl +
+        '</div>' +
+        linhaHr +
+        '<div style="text-align:center;margin-bottom:6px;">' +
+          '<div style="font-size:13px;font-weight:800;letter-spacing:1px;">ORÇAMENTO</div>' +
+          '<div style="font-size:11px;color:#555;">N\u00ba ' + num + '</div>' +
+          '<div style="font-size:11px;color:#555;">' + data + ' ' + hora + '\u00b7 V\u00e1lido: ' + validade + '</div>' +
+        '</div>' +
+        linhaHr +
+        '<div style="font-size:11px;margin-bottom:5px;"><strong>Cliente:</strong> ' + cli + '</div>' +
+        linhaHr +
+        '<table style="width:100%;border-collapse:collapse;">' +
+          '<thead>' +
+            '<tr style="border-bottom:1px solid #ccc;">' +
+              '<th style="text-align:left;font-size:10px;padding:2px;text-transform:uppercase;">Produto</th>' +
+              '<th style="text-align:center;font-size:10px;padding:2px;text-transform:uppercase;">Qtd x Unit</th>' +
+              '<th style="text-align:right;font-size:10px;padding:2px;text-transform:uppercase;">Total</th>' +
+            '</tr>' +
+          '</thead>' +
+          '<tbody>' + itensHtml + '</tbody>' +
+          '<tfoot>' +
+            '<tr><td colspan="3" style="padding:0;">' + linhaHr + '</td></tr>' +
+            descontoHtml +
+            '<tr style="border-top:2px solid #000;">' +
+              '<td colspan="2" style="padding:5px 2px;font-size:14px;font-weight:900;">TOTAL</td>' +
+              '<td style="padding:5px 2px;text-align:right;font-size:16px;font-weight:900;">' + fmtV(total) + '</td>' +
+            '</tr>' +
+          '</tfoot>' +
+        '</table>' +
+        linhaHr +
+        '<div style="text-align:center;font-size:10px;color:#666;margin-top:6px;">' +
+          'Este or\u00e7amento n\u00e3o tem valor fiscal.<br>Obrigado pela prefer\u00eancia! \ud83c\udfcd\ufe0f' +
+        '</div>' +
+      '</div>';
 
-    doc.setTextColor(120, 120, 120);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.text('Obrigado pela preferência!  |  ' + nomeLoja, 105, y, { align: 'center' });
-
-    const pdfBlob = doc.output('blob');
-    const blobUrl = URL.createObjectURL(pdfBlob);
-    const w = window.open(blobUrl, '_blank');
-    if (!w) { doc.save(num + '_orcamento.pdf'); toast('Salvo (pop-ups bloqueados).', 'y'); return; }
-    setTimeout(function(){ w.focus(); w.print(); }, 800);
-    toast('Orçamento aberto para impressão!');
+    abrirJanelaImpressao(html, 'Or\u00e7amento ' + num, true);
+    toast('Or\u00e7amento enviado para impress\u00e3o!');
   } catch(e) {
-    console.error('Erro PDF:', e);
-    gerarOrcamentoModal(cli, validade, desc, sub, total, num, data);
+    toast('Erro ao imprimir: ' + e.message, 'r');
+    console.error(e);
   }
 }
+
 
 function gerarOrcamentoModal(cli, validade, desc, sub, total, num, data) {
   const itensHtml = pdvCart.map(i =>
@@ -5424,6 +5397,12 @@ async function salvarPerfil() {
     // Aplica na sidebar
     aplicarPerfilNaSidebar({ nome_loja: nomeLoja, slogan });
 
+    // Atualiza cache global
+    _lojaConfig.nome_loja = nomeLoja;
+    _lojaConfig.slogan    = slogan;
+    _lojaConfig.endereco  = endereco;
+    _lojaConfig.telefone  = telefone;
+
     if (statusEl) { statusEl.textContent = '✓ Salvo com sucesso'; statusEl.style.color = 'var(--green)'; }
     setTimeout(function() { if (statusEl) statusEl.textContent = ''; }, 3000);
     toast('Perfil salvo! Aparece igual em qualquer navegador.');
@@ -5838,6 +5817,7 @@ async function relatorioModuloExcel(tipo) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let _sessaoUsuario = null;
 let _lojaToken     = 'padrao'; // token da loja do usuário logado
+let _lojaConfig    = { nome_loja: 'MotoStock', slogan: '', endereco: '', telefone: '', logo_url: '' };
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -6449,45 +6429,9 @@ function filtrarNF(btn, tipo) {
 
 // ━━━━ Impressão Térmica de Orçamento PDV
 function pdvImprimirTermica() {
-  if (!pdvCart.length) { toast('Carrinho vazio.', 'y'); return; }
-  const cli      = (document.getElementById('pdv-cliente') ? document.getElementById('pdv-cliente').value.trim() : '') || 'Cliente';
-  const validade = (document.getElementById('pdv-orc-validade') ? document.getElementById('pdv-orc-validade').value.trim() : '') || '3 dias';
-  const desc     = parseFloat((document.getElementById('pdv-desconto') ? document.getElementById('pdv-desconto').value : 0)) || 0;
-  const sub      = pdvCart.reduce(function(s,i){ return s+i.preco*i.qty; }, 0);
-  const total    = Math.max(0, sub - desc);
-  const num      = 'ORC-' + String(Date.now()).slice(-5);
-  const data     = new Date().toLocaleDateString('pt-BR');
-  try {
-    const {jsPDF} = window.jspdf;
-    const doc = new jsPDF({orientation:'portrait',unit:'mm',format:[80,200]});
-    const L=4, W=72; let y=7;
-    const ln = function(){ doc.setDrawColor(180); doc.line(L,y,L+W,y); y+=3; };
-    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.text('MotoStock',40,y,{align:'center'}); y+=5;
-    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.text('Peças e Acessórios',40,y,{align:'center'}); y+=5; ln();
-    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('ORÇAMENTO '+num,40,y,{align:'center'}); y+=4;
-    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text('Data: '+data+'  Válido: '+validade,40,y,{align:'center'}); y+=4;
-    doc.text('Cliente: '+cli, L, y); y+=5; ln();
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.text('ITEM',L,y); doc.text('QTD',47,y); doc.text('TOTAL',62,y); y+=3; ln();
-    doc.setFont('helvetica','normal'); doc.setFontSize(7);
-    pdvCart.forEach(function(item) {
-      var nl = doc.splitTextToSize(item.nome, 40); doc.text(nl,L,y);
-      doc.text(String(item.qty),48,y); doc.text('R$'+(item.preco*item.qty).toFixed(2).replace('.',','),76,y,{align:'right'});
-      y+=nl.length*3.5+1;
-    });
-    ln();
-    if(desc>0){ doc.text('Subtotal:',L,y); doc.text('R$'+sub.toFixed(2).replace('.',','),76,y,{align:'right'}); y+=4;
-      doc.text('Desconto:',L,y); doc.text('-R$'+desc.toFixed(2).replace('.',','),76,y,{align:'right'}); y+=4; }
-    doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.text('TOTAL:',L,y); doc.text('R$'+total.toFixed(2).replace('.',','),76,y,{align:'right'}); y+=7;
-    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text('Obrigado pela preferência!',40,y,{align:'center'});
-    const pdfBlobT = doc.output('blob');
-    const blobUrlT = URL.createObjectURL(pdfBlobT);
-    const wt = window.open(blobUrlT, '_blank');
-    if (!wt) { doc.save(num+'_termica.pdf'); toast('Salvo (pop-ups bloqueados).', 'y'); return; }
-    setTimeout(function(){ wt.focus(); wt.print(); }, 800);
-    toast('Orçamento aberto para impressão!');
-  } catch(e){ toast('Erro PDF: '+e.message,'r'); }
+  gerarOrcamentoPDF();
 }
+
 
 // ── Controle de tabs do PDV (venda / orcamento / orclist) ────────────────────
 function pdvSwitchTab(mode) {
@@ -6717,18 +6661,27 @@ async function orcImprimir(id) {
     const j = await r.json();
     if (j.error) throw new Error(j.error.message);
     const o = j.data;
-    // Preenche cart temporariamente
-    const cartOrig = [...pdvCart];
-    pdvCart = (o.itens||[]).map(i => ({id:i.produto_id,nome:i.nome_produto,preco:Number(i.preco),qty:Number(i.quantidade)}));
-    if ($('pdv-cliente'))      $('pdv-cliente').value = o.cliente || '';
-    if ($('pdv-orc-validade')) $('pdv-orc-validade').value = o.validade || '3 dias';
-    if ($('pdv-desconto'))     $('pdv-desconto').value = o.desconto || 0;
-    gerarOrcamentoPDF();
-    // Restaura
-    setTimeout(() => { pdvCart = cartOrig; }, 500);
+
+    const cartItems = (o.itens || []).map(function(i) {
+      return { nome: i.nome_produto, preco: Number(i.preco), qty: Number(i.quantidade), total: Number(i.total) };
+    });
+    const sub  = cartItems.reduce(function(s,i){ return s + i.preco * i.qty; }, 0);
+    const desc = Number(o.desconto) || 0;
+    const num  = 'ORC-' + String(o.numero).padStart(4, '0');
+    const data = new Date(o.created_at).toLocaleDateString('pt-BR');
+    const hora = new Date(o.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    _imprimirOrcamentoTermica(
+      cartItems, o.cliente || 'Sem cliente', o.validade || '3 dias',
+      desc, sub, o.total, num, data, hora,
+      _lojaConfig.nome_loja || 'MotoStock',
+      _lojaConfig.slogan    || '',
+      _lojaConfig.endereco  || '',
+      _lojaConfig.telefone  || '',
+      _lojaConfig.logo_url  || ''
+    );
   } catch(e) { toast('Erro: ' + e.message, 'r'); }
 }
-
 async function orcExcluir(id) {
   if (!confirm('Excluir este orçamento? Esta ação não pode ser desfeita.')) return;
   try {
