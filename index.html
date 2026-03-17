@@ -3981,7 +3981,20 @@ function pdvMostrarSucesso(venda, itens, cli, formaPag, total, recebido, troco) 
 // PDF — RECIBO E ORÇAMENTO
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function gerarReciboPDF(venda, itens, cliente, formaPag, total, recebido, troco) {
+async function gerarReciboPDF(venda, itens, cliente, formaPag, total, recebido, troco) {
+  // Busca nome da loja e slogan das configurações
+  let nomeLoja = 'MOTOSTOCK';
+  let slogan   = 'Peças e Acessórios para Motos';
+  try {
+    const res  = await fetch(API_BASE + '/configuracoes?loja_token=' + (_lojaToken || 'padrao') + '&in=nome_loja,slogan');
+    const json = await res.json();
+    if (json.data) {
+      json.data.forEach(function(c) {
+        if (c.chave === 'nome_loja' && c.valor) nomeLoja = c.valor;
+        if (c.chave === 'slogan'    && c.valor) slogan   = c.valor;
+      });
+    }
+  } catch(e) {}
   const num   = String(venda.numero).padStart(4,'0');
   const data  = new Date().toLocaleDateString('pt-BR');
   const hora  = timeNow();
@@ -4009,8 +4022,8 @@ function gerarReciboPDF(venda, itens, cliente, formaPag, total, recebido, troco)
   const html = `
     <div style="max-width:300px;margin:0 auto;font-family:Arial,sans-serif;">
       <div style="text-align:center;margin-bottom:10px;">
-        <div style="font-size:20px;font-weight:900;letter-spacing:2px;">MOTOSTOCK</div>
-        <div style="font-size:10px;color:#666;">Peças e Acessórios para Motos</div>
+        <div style="font-size:20px;font-weight:900;letter-spacing:2px;">${nomeLoja}</div>
+        <div style="font-size:10px;color:#666;">${slogan}</div>
       </div>
       ${linhaHr}
       <div style="text-align:center;margin-bottom:8px;">
