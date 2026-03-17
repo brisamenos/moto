@@ -1657,27 +1657,35 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
     </div>
 
     <!-- KPIs -->
-    <div class="kpi-grid">
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
       <div class="kpi-card" style="--kpi-color: var(--accent)">
         <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
-          <span class="kpi-trend up">+12.4%</span>
+          <span class="kpi-trend up" id="kpi-fat-trend">+0%</span>
         </div>
         <div class="kpi-value" id="kpi-fat">R$ 0,00</div>
-        <div class="kpi-label">Vendas do mes</div>
+        <div class="kpi-label">Vendas do mês</div>
       </div>
       <div class="kpi-card" style="--kpi-color: var(--green)">
         <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg></div>
-          <span class="kpi-trend up">+8.1%</span>
+          <span class="kpi-trend up" id="kpi-pedidos-trend">hoje: 0</span>
         </div>
         <div class="kpi-value" id="kpi-pedidos">0</div>
-        <div class="kpi-label">Pedidos realizados</div>
+        <div class="kpi-label">Pedidos no mês</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--purple)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+          <span class="kpi-trend up" id="kpi-margem-trend">0%</span>
+        </div>
+        <div class="kpi-value" id="kpi-margem">R$ 0,00</div>
+        <div class="kpi-label">Margem bruta / mês</div>
       </div>
       <div class="kpi-card" style="--kpi-color: var(--blue)">
         <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg></div>
-          <span class="kpi-trend down">-3.2%</span>
+          <span class="kpi-trend down" id="kpi-rupt-badge">0 rupturas</span>
         </div>
         <div class="kpi-value" id="kpi-estoque">0</div>
         <div class="kpi-label">Itens em estoque</div>
@@ -1685,10 +1693,34 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       <div class="kpi-card" style="--kpi-color: var(--red)">
         <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"/></svg></div>
-          <span class="kpi-trend down">+2</span>
+          <span class="kpi-trend down" id="kpi-rupt-trend">+0</span>
         </div>
         <div class="kpi-value" id="kpi-rupt">0</div>
         <div class="kpi-label">Produtos em ruptura</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--green)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+          <span class="kpi-trend up" id="kpi-caixa-trend">hoje</span>
+        </div>
+        <div class="kpi-value" id="kpi-caixa-saldo">R$ 0,00</div>
+        <div class="kpi-label">Saldo caixa hoje</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--accent)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <span class="kpi-trend up" id="kpi-cli-trend">total</span>
+        </div>
+        <div class="kpi-value" id="kpi-clientes">0</div>
+        <div class="kpi-label">Clientes cadastrados</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--purple)">
+        <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+          <span class="kpi-trend up" id="kpi-orc-trend">abertos</span>
+        </div>
+        <div class="kpi-value" id="kpi-orcamentos">0</div>
+        <div class="kpi-label">Orçamentos em aberto</div>
       </div>
     </div>
 
@@ -1707,21 +1739,10 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
           </div>
         </div>
         <div class="card-body">
-          <div class="chart-area">
-            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:55%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:62%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:48%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:70%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:58%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:80%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar secondary" style="height:65%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar" style="height:74%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar" style="height:88%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar" style="height:92%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar" style="height:79%"></div></div>
-            <div class="chart-bar-group"><div class="chart-bar" style="height:100%"></div></div>
+          <div class="chart-area" id="dash-chart-area" style="position:relative;align-items:flex-end;">
+            <div style="text-align:center;width:100%;color:var(--text-muted);padding:20px;"><span class="loader-ring"></span></div>
           </div>
-          <div class="chart-labels">
+          <div class="chart-labels" id="dash-chart-labels">
             <span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span>
             <span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span>
             <span>Set</span><span>Out</span><span>Nov</span><span>Dez</span>
@@ -1779,6 +1800,40 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 
     <!-- Activity + Recent Sales -->
     <div class="grid-2">
+      <!-- Mini cards row: caixa + estoque valor -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- Caixa Hoje -->
+        <div class="card">
+          <div class="card-header" style="padding-bottom:0;">
+            <div><div class="card-title">Caixa — Hoje</div><div class="card-subtitle" id="dash-caixa-sub">Movimentações do dia</div></div>
+            <button class="btn-outline" onclick="showPage('caixa')" style="font-size:11px;padding:5px 12px;">Ver Caixa</button>
+          </div>
+          <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding-top:12px;">
+            <div style="background:var(--green-soft);border:1px solid rgba(62,207,142,0.18);border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Entradas</div>
+              <div id="dash-caixa-ent" style="font-weight:800;color:var(--green);font-size:18px;">R$ 0,00</div>
+            </div>
+            <div style="background:var(--red-soft);border:1px solid rgba(240,93,93,0.18);border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Saídas</div>
+              <div id="dash-caixa-sai" style="font-weight:800;color:var(--red);font-size:18px;">R$ 0,00</div>
+            </div>
+            <div style="background:var(--accent-soft);border:1px solid var(--border-accent);border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Saldo</div>
+              <div id="dash-caixa-sal" style="font-weight:800;color:var(--accent);font-size:18px;">R$ 0,00</div>
+            </div>
+          </div>
+        </div>
+        <!-- Orçamentos + Estoque -->
+        <div class="card">
+          <div class="card-header" style="padding-bottom:0;">
+            <div><div class="card-title">Orçamentos em Aberto</div><div class="card-subtitle" id="dash-orc-sub">Aguardando aprovação</div></div>
+            <button class="btn-outline" onclick="showPage('pdv');setTimeout(()=>pdvSwitchTab('orclist'),300);" style="font-size:11px;padding:5px 12px;">Ver Todos</button>
+          </div>
+          <div class="card-body" id="dash-orc-list" style="padding-top:12px;">
+            <div style="text-align:center;color:var(--text-muted);padding:16px;">Nenhum orçamento em aberto</div>
+          </div>
+        </div>
+      </div>
       <div class="card">
         <div class="card-header">
           <div>
@@ -1876,6 +1931,11 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         <button id="pdv-tab-orc" onclick="pdvSwitchTab('orcamento')" style="padding:10px 24px; background:none; color:var(--text-secondary); border:none; font-family:'Inter', sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px;">
           <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
           Orçamento
+        </button>
+        <button id="pdv-tab-orclist" onclick="pdvSwitchTab('orclist')" style="padding:10px 18px; background:none; color:var(--text-secondary); border:none; font-family:'Inter', sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+          Salvos
+          <span id="badge-orc-salvos" style="display:none;background:var(--accent);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;">0</span>
         </button>
       </div>
     </div>
@@ -2011,6 +2071,21 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         </div>
 
       </div><!-- /pdv-cart -->    </div>
+
+    <!-- PAINEL: Lista de Orçamentos Salvos -->
+    <div id="pdv-orc-list-panel" style="display:none;padding:4px 0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <h3 style="font-size:18px;font-weight:700;margin:0;">Orçamentos em Aberto</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin:4px 0 0;">Clique em <strong>Editar</strong> para carregar no carrinho, ou <strong>Converter</strong> para finalizar a venda.</p>
+        </div>
+        <button class="btn-accent" onclick="pdvSwitchTab('orcamento')">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#fff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Novo Orçamento
+        </button>
+      </div>
+      <div id="pdv-orc-list-content" style="display:contents;"></div>
+    </div>
   </div>
 
 
@@ -2297,9 +2372,9 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
           <div class="card-title">Movimentacoes do Dia</div>
           <div class="card-subtitle" id="caixa-mov-sub">Nenhum lancamento hoje</div>
         </div>
-        <button class="btn-accent" onclick="openModal('lancamento')">
+        <button class="btn-accent" onclick="openLancamentoModal()">
           <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          Novo Lancamento
+          Novo Lançamento
         </button>
       </div>
       <div class="table-wrap">
@@ -2308,6 +2383,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
             <tr>
               <th>Hora</th>
               <th>Tipo</th>
+              <th>Categoria</th>
               <th>Descricao</th>
               <th>Forma</th>
               <th>Valor</th>
@@ -2316,7 +2392,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
           </thead>
           <tbody id="caixa-tbody">
             <tr>
-              <td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted);">Nenhum lançamento hoje.</td>
+              <td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">Nenhum lançamento hoje.</td>
             </tr>
           </tbody>
         </table>
@@ -2478,7 +2554,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Nome</th><th>Telefone</th><th>CPF/CNPJ</th><th>Cidade</th><th>Compras</th><th>Total Gasto</th><th>Ações</th></tr>
+            <tr><th>Nome</th><th>Telefone</th><th>CPF/CNPJ</th><th>Cidade</th><th>Compras</th><th>Orçamentos</th><th>Último Serviço</th><th>Total Gasto</th><th>Ações</th></tr>
           </thead>
           <tbody id="clientes-tbody">
             <tr><td colspan="7" style="text-align:center;padding:36px;color:var(--text-muted)"><span class="loader-ring"></span></td></tr>
@@ -2654,13 +2730,68 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 
 <div class="modal-overlay" id="modal-lancamento">
   <div class="modal">
-    <div class="modal-header"><div class="modal-title">Lancamento de Caixa</div><div class="modal-close" onclick="closeModal('lancamento')">✕</div></div>
-    <div class="modal-body">
-      <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select id="lanc-tipo"><option value="entrada">Entrada</option><option value="saida">Saida</option></select></div><div class="form-group"><label class="form-label">Forma de Pagamento</label><select id="lanc-forma"><option>Dinheiro</option><option>PIX</option><option>Cartao</option><option>Transferencia</option></select></div></div>
-      <div class="form-row full"><div class="form-group"><label class="form-label">Descricao</label><input class="input-field" id="lanc-descricao" type="text" placeholder="Descricao do lancamento..."></div></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Valor (R$)</label><input class="input-field" id="lanc-valor" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Data</label><input class="input-field" id="lanc-data" type="date"></div></div>
+    <div class="modal-header">
+      <div class="modal-title" id="lanc-modal-title">Novo Lançamento de Caixa</div>
+      <div class="modal-close" onclick="closeModal('lancamento')">✕</div>
     </div>
-    <div class="modal-footer"><button class="btn-outline" onclick="closeModal('lancamento')">Cancelar</button><button class="btn-accent" onclick="saveLancamento()">Registrar</button></div>
+    <div class="modal-body">
+      <!-- Tipo com visual grande -->
+      <div class="form-row" style="gap:8px;margin-bottom:4px;">
+        <button id="lanc-btn-entrada" onclick="lancSetTipo('entrada')"
+          style="flex:1;padding:12px;border-radius:8px;border:2px solid var(--green);background:var(--green-soft);color:var(--green);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Entrada
+        </button>
+        <button id="lanc-btn-saida" onclick="lancSetTipo('saida')"
+          style="flex:1;padding:12px;border-radius:8px;border:2px solid var(--border);background:transparent;color:var(--text-secondary);font-weight:600;font-size:13px;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor"><path d="M19 13H5v-2h14v2z"/></svg> Saída
+        </button>
+      </div>
+      <input type="hidden" id="lanc-tipo" value="entrada">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Categoria</label>
+          <select id="lanc-categoria" class="input-field">
+            <option value="Vendas">🛒 Vendas</option>
+            <option value="Serviços">🔧 Serviços</option>
+            <option value="Aluguel">🏠 Aluguel</option>
+            <option value="Empréstimo">💳 Empréstimo / Aporte</option>
+            <option value="Outros" selected>📦 Outros</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Forma de Pagamento</label>
+          <select id="lanc-forma" class="input-field">
+            <option value="dinheiro">💵 Dinheiro</option>
+            <option value="pix">📲 PIX</option>
+            <option value="cartao">💳 Cartão</option>
+            <option value="transferencia">🏦 Transferência</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Descrição <span style="color:var(--red)">*</span></label>
+          <input class="input-field" id="lanc-descricao" type="text" placeholder="Ex: Recebi aluguel da garagem, Compra de estoque...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Valor (R$) <span style="color:var(--red)">*</span></label>
+          <input class="input-field" id="lanc-valor" type="text" placeholder="0,00" style="font-size:18px;font-weight:700;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data</label>
+          <input class="input-field" id="lanc-data" type="date">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('lancamento')">Cancelar</button>
+      <button class="btn-accent" onclick="saveLancamento()" id="lanc-save-btn">
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#fff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        Registrar Lançamento
+      </button>
+    </div>
   </div>
 </div>
 
@@ -2896,6 +3027,35 @@ ALTER TABLE agendamentos DISABLE ROW LEVEL SECURITY;</textarea>
   </div>
 </div>
 
+<!-- Modal: Converter Orçamento em Venda -->
+<div class="modal-overlay" id="modal-converter-orc">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-header">
+      <div class="modal-title">✅ Converter em Venda</div>
+      <div class="modal-close" onclick="closeModal('converter-orc')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div id="orc-conv-info" style="background:var(--bg-surface);border:1px solid var(--border-accent);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13.5px;"></div>
+      <div class="form-group">
+        <label class="form-label">Forma de Pagamento</label>
+        <select id="orc-conv-forma" class="input-field" style="font-size:15px;padding:10px 14px;">
+          <option value="dinheiro">💵 Dinheiro</option>
+          <option value="pix">📲 PIX</option>
+          <option value="cartao">💳 Cartão</option>
+          <option value="transferencia">🏦 Transferência</option>
+        </select>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">O estoque será debitado automaticamente e o lançamento será registrado no caixa.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('converter-orc')">Cancelar</button>
+      <button class="btn-accent" id="orc-conv-btn" style="background:var(--green);">
+        ✅ Confirmar Conversão
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast">
   <div class="dot"></div>
@@ -2958,6 +3118,8 @@ function criarCliente() {
     clientes:          '/clientes',
     notas_fiscais:     '/notas_fiscais',
     agendamentos:      '/agendamentos',
+    orcamentos:        '/orcamentos',
+    orcamento_itens:   '/orcamentos',
       usuarios:          '/auth',
   };
 
@@ -3377,7 +3539,7 @@ function showPage(id) {
   const t = TITLES[id];
   if (t) { set('topbar-title', t[0]); set('topbar-sub', t[1]); }
   if (id === 'dashboard')  loadDashboard();
-  if (id === 'pdv')        { loadProdutos(); setTimeout(function(){ var ts=document.getElementById('pdv-troco-section'); if(ts)ts.style.display=''; pdvUpdateQuickVals(); }, 200); }
+  if (id === 'pdv')        { loadProdutos(); atualizarBadgeOrcSalvos(); setTimeout(function(){ var ts=document.getElementById('pdv-troco-section'); if(ts)ts.style.display=''; pdvUpdateQuickVals(); }, 200); }
   if (id === 'estoque')    loadProdutos();
   if (id === 'caixa')      loadCaixa();
   if (id === 'financeiro') loadFinanceiro();
@@ -3436,59 +3598,130 @@ async function loadConfig() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 async function loadDashboard() {
   try {
-    const td = today();
-    const mesIni = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-    const [r1, r2, r3, r4] = await Promise.all([
-      sb.from('vendas').select('total,numero,cliente,forma_pagamento,status,created_at').eq('loja_token', _lojaToken).gte('created_at', td + 'T00:00:00'),
-      sb.from('produtos').select('estoque,preco_venda,nome,estoque_minimo').eq('loja_token', _lojaToken),
-      sb.from('vendas').select('total').eq('loja_token', _lojaToken).gte('created_at', mesIni),
-      sb.from('caixa_sessoes').select('*').eq('loja_token', _lojaToken).order('updated_at', { ascending: false }).limit(1),
-    ]);
-    const vHoje  = r1.data || [];
-    const prods  = r2.data || [];
-    const vMes   = r3.data || [];
+    const res  = await fetch(API_BASE + '/dashboard/stats?loja_token=' + (_lojaToken || 'padrao'));
+    const json = await res.json();
+    if (!json.data) throw new Error(json.error?.message || 'Erro stats');
+    const d = json.data;
 
-    const fat      = vMes.reduce((s, v) => s + Number(v.total), 0);
-    const pedidos  = vHoje.length;
-    const estTot   = prods.reduce((s, p) => s + Number(p.estoque), 0);
-    const rupturas = prods.filter(p => Number(p.estoque) <= 0).length;
+    // ── KPIs ────────────────────────────────────────────────────
+    set('kpi-fat',          fmt(d.vendas_mes.total));
+    set('kpi-pedidos',      d.vendas_mes.qtd);
+    set('kpi-estoque',      (d.estoque.total || 0).toLocaleString('pt-BR'));
+    set('kpi-rupt',         d.estoque.rupturas || 0);
+    set('kpi-margem',       fmt(d.margem_mes));
+    set('kpi-caixa-saldo',  fmt(d.caixa_hoje.saldo));
+    set('kpi-clientes',     d.clientes.total || 0);
+    set('kpi-orcamentos',   d.orcamentos.abertos || 0);
 
-    set('kpi-fat',     fmt(fat));
-    set('kpi-pedidos', pedidos);
-    set('kpi-estoque', estTot.toLocaleString('pt-BR'));
-    set('kpi-rupt',    rupturas);
-    set('dash-vendas-sub', 'Hoje — ' + pedidos + ' venda' + (pedidos !== 1 ? 's' : ''));
+    // Badges e sub-labels
+    const fatPct = d.vendas_mes.total > 0 ? '' : 'R$ 0';
+    const el_fat_trend = $('kpi-fat-trend');
+    if (el_fat_trend) el_fat_trend.textContent = 'Ticket: ' + fmt(d.ticket_medio);
+    const el_ped_trend = $('kpi-pedidos-trend');
+    if (el_ped_trend) el_ped_trend.textContent = 'hoje: ' + d.vendas_hoje.qtd;
+    const el_margem_trend = $('kpi-margem-trend');
+    if (el_margem_trend) {
+      const pct = d.vendas_mes.total > 0 ? ((d.margem_mes / d.vendas_mes.total) * 100).toFixed(1) + '%' : '0%';
+      el_margem_trend.textContent = pct;
+    }
+    const el_rupt_badge = $('kpi-rupt-badge');
+    if (el_rupt_badge) el_rupt_badge.textContent = d.estoque.rupturas + ' ruptura' + (d.estoque.rupturas !== 1 ? 's' : '');
+    const el_orc_trend = $('kpi-orc-trend');
+    if (el_orc_trend) el_orc_trend.textContent = fmt(d.orcamentos.valor);
+    const el_cli_trend = $('kpi-cli-trend');
+    if (el_cli_trend) el_cli_trend.textContent = 'total';
+    const el_caixa_trend = $('kpi-caixa-trend');
+    if (el_caixa_trend) el_caixa_trend.textContent = 'hoje';
 
     const br = $('badge-rupturas');
-    if (br) { br.textContent = rupturas; br.style.display = rupturas > 0 ? '' : 'none'; }
+    if (br) { br.textContent = d.estoque.rupturas; br.style.display = d.estoque.rupturas > 0 ? '' : 'none'; }
+    set('dash-vendas-sub', 'Hoje — ' + d.vendas_hoje.qtd + ' venda' + (d.vendas_hoje.qtd !== 1 ? 's' : ''));
 
-    // Top produtos por estoque
-    const topEl = $('top-produtos');
-    if (topEl) {
-      const sorted = [...prods].sort((a, b) => Number(b.estoque) - Number(a.estoque)).slice(0, 5);
-      const colors = ['var(--accent)', 'var(--green)', 'var(--purple)', 'var(--blue)', 'var(--red)'];
-      topEl.innerHTML = sorted.length
-        ? sorted.map((p, i) =>
-            '<div class="mini-stat">' +
-            '<div class="mini-stat-left"><div class="mini-stat-dot" style="background:' + colors[i] + '"></div>' +
-            '<div class="mini-stat-name">' + p.nome + '</div></div>' +
-            '<div class="mini-stat-value">' + p.estoque + ' un</div>' +
-          '</div>').join('')
-        : '<div style="text-align:center;padding:20px;color:var(--text-muted)">Sem dados</div>';
+    // ── Caixa hoje ────────────────────────────────────────────────
+    set('dash-caixa-ent', fmt(d.caixa_hoje.entradas));
+    set('dash-caixa-sai', fmt(d.caixa_hoje.saidas));
+    set('dash-caixa-sal', fmt(d.caixa_hoje.saldo));
+    if ($('dash-caixa-sub')) $('dash-caixa-sub').textContent = 'Entradas: ' + fmt(d.caixa_hoje.entradas) + '  |  Saídas: ' + fmt(d.caixa_hoje.saidas);
+
+    // ── Orçamentos abertos ────────────────────────────────────────
+    const orcListEl = $('dash-orc-list');
+    if (orcListEl) {
+      if (d.orcamentos.abertos === 0) {
+        orcListEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:16px;">Nenhum orçamento em aberto</div>';
+      } else {
+        // Busca lista dos orçamentos
+        try {
+          const ro = await fetch(API_BASE + '/orcamentos?loja_token=' + _lojaToken + '&status=aberto');
+          const jo = await ro.json();
+          const orcs = (jo.data || []).slice(0, 5);
+          orcListEl.innerHTML = orcs.map(o =>
+            '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">' +
+            '<div><div style="font-size:12.5px;font-weight:600;">ORC-' + String(o.numero).padStart(4,'0') + ' — ' + (o.cliente || 'Sem cliente') + '</div>' +
+            '<div style="font-size:11px;color:var(--text-muted);">' + new Date(o.created_at).toLocaleDateString('pt-BR') + ' · Validade: ' + (o.validade || '3 dias') + '</div></div>' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+            '<span style="font-weight:800;color:var(--accent);">' + fmt(o.total) + '</span>' +
+            '<button onclick="orcCarregar(\'' + o.id + '\')" style="background:var(--accent-soft);border:1px solid var(--border-accent);border-radius:5px;padding:3px 8px;font-size:11px;color:var(--accent);cursor:pointer;font-weight:600;">Abrir</button>' +
+            '</div></div>'
+          ).join('') + (d.orcamentos.abertos > 5 ? '<div style="text-align:center;font-size:11px;color:var(--text-muted);padding-top:8px;">+' + (d.orcamentos.abertos - 5) + ' orçamentos</div>' : '');
+        } catch(e2) {}
+      }
+      if ($('dash-orc-sub')) $('dash-orc-sub').textContent = d.orcamentos.abertos + ' orçamento' + (d.orcamentos.abertos !== 1 ? 's' : '') + ' · ' + fmt(d.orcamentos.valor);
     }
 
-    // Últimas vendas
+    // ── Gráfico 12 meses ─────────────────────────────────────────
+    const chartEl  = $('dash-chart-area');
+    const labelsEl = $('dash-chart-labels');
+    if (chartEl && d.vendas_12m && d.vendas_12m.length) {
+      const maxV = Math.max(...d.vendas_12m.map(m => m.total), 1);
+      const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+      const mesAtual = new Date().getMonth();
+      chartEl.innerHTML = d.vendas_12m.map((m, idx) => {
+        const pct = Math.max(4, Math.round((m.total / maxV) * 100));
+        const isLast = idx === d.vendas_12m.length - 1;
+        const mNum = parseInt(m.mes.split('-')[1]) - 1;
+        const label = meses[mNum] || m.mes;
+        return '<div class="chart-bar-group" title="' + label + ': ' + fmt(m.total) + '">' +
+          '<div class="chart-bar ' + (isLast ? '' : 'secondary') + '" style="height:' + pct + '%"></div>' +
+          '</div>';
+      }).join('');
+      if (labelsEl) labelsEl.innerHTML = d.vendas_12m.map(m => {
+        const mNum = parseInt(m.mes.split('-')[1]) - 1;
+        return '<span>' + meses[mNum] + '</span>';
+      }).join('');
+    } else if (chartEl) {
+      chartEl.innerHTML = '<div style="text-align:center;width:100%;color:var(--text-muted);padding:20px;font-size:13px;">Nenhuma venda registrada ainda</div>';
+    }
+
+    // ── Top Produtos por venda ────────────────────────────────────
+    const topEl = $('top-produtos');
+    if (topEl) {
+      if (d.top_produtos && d.top_produtos.length) {
+        const colors = ['var(--accent)', 'var(--green)', 'var(--purple)', 'var(--blue)', 'var(--red)'];
+        topEl.innerHTML = d.top_produtos.map((p, i) =>
+          '<div class="mini-stat">' +
+          '<div class="mini-stat-left"><div class="mini-stat-dot" style="background:' + colors[i] + '"></div>' +
+          '<div class="mini-stat-name">' + p.nome + '</div></div>' +
+          '<div class="mini-stat-value">' + p.qtd + ' un</div>' +
+          '</div>'
+        ).join('');
+      } else {
+        topEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">Sem vendas este mês</div>';
+      }
+    }
+
+    // ── Últimas vendas ────────────────────────────────────────────
     const tbody = $('dash-vendas-tbody');
     if (tbody) {
-      const recent = [...vHoje].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
+      const recent = (d.ultimas_vendas || []).slice(0, 8);
       if (recent.length) {
         tbody.innerHTML = recent.map(v => {
           const num = String(v.numero || '----').padStart(4, '0');
           const st  = v.status === 'pago'
             ? '<span class="status-badge green">Pago</span>'
             : '<span class="status-badge amber">Pendente</span>';
+          const dataHora = new Date(v.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
           return '<tr>' +
-            '<td class="mono">#' + num + '</td>' +
+            '<td class="mono">#' + num + '<br><span style="font-size:10px;color:var(--text-muted)">' + dataHora + '</span></td>' +
             '<td>' + (v.cliente || 'Consumidor') + '</td>' +
             '<td class="mono" style="color:var(--accent);font-weight:700">' + fmt(v.total) + '</td>' +
             '<td>' + (v.forma_pagamento || '-').toUpperCase() + '</td>' +
@@ -3496,9 +3729,10 @@ async function loadDashboard() {
           '</tr>';
         }).join('');
       } else {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-muted)">Nenhuma venda hoje.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-muted)">Nenhuma venda ainda.</td></tr>';
       }
     }
+
   } catch (e) {
     toast('Erro dashboard: ' + e.message, 'r');
     console.error(e);
@@ -3734,7 +3968,9 @@ async function confirmDelete() {
 // PDV — CARRINHO UNIFICADO
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let pdvCart = [];
-let pdvMode = 'venda'; // 'venda' ou 'orcamento'
+let pdvMode = 'venda'; // 'venda' | 'orcamento' | 'orclist'
+let _pdvClienteId = null;
+let _orcamentoEditandoId = null;
 
 // Adicionar produto pelo tile do PDV (usa dados do allProdutos)
 function pdvAddItemFromProduct(p) {
@@ -3818,8 +4054,11 @@ function pdvUpdateTotals() {
 
 function pdvClearCart() {
   pdvCart = [];
+  _orcamentoEditandoId = null;
+  _pdvClienteId = null;
   if ($("pdv-desconto")) $("pdv-desconto").value = 0;
   if ($("pdv-cliente"))  $("pdv-cliente").value  = "";
+  if ($("pdv-orc-validade")) $("pdv-orc-validade").value = "3 dias";
   if ($("pdv-recebido")) $("pdv-recebido").value  = "";
   var tc = document.getElementById("pdv-troco-val"); if(tc) tc.textContent = "R$ 0,00";
   var qv = document.getElementById("pdv-quick-vals"); if(qv) qv.innerHTML = "";
@@ -3836,9 +4075,8 @@ function selectPayment(elem) {
 }
 
 // ━━━━ FINALIZAR VENDA PDV
-async function pdvFinalize() {
+async function _pdvFinalizeVenda() {
   if (!pdvCart.length) { toast('Adicione produtos primeiro.', 'y'); return; }
-  if (pdvMode === 'orcamento') { gerarOrcamentoPDF(); return; }
 
   const formaEl  = document.querySelector('.payment-method.active[data-forma]');
   const formaPag = formaEl ? formaEl.getAttribute('data-forma') : 'dinheiro';
@@ -3916,6 +4154,7 @@ async function pdvFinalize() {
     await sb.from('caixa_lancamentos').insert({
       tipo: 'entrada',
       descricao: descCaixa,
+      categoria: 'Vendas',
       forma_pagamento: formaPag,
       valor: total,
       data: today(),
@@ -3982,16 +4221,22 @@ function pdvMostrarSucesso(venda, itens, cli, formaPag, total, recebido, troco) 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function gerarReciboPDF(venda, itens, cliente, formaPag, total, recebido, troco) {
-  // Busca nome da loja e slogan das configurações
+  // Busca dados da loja nas configurações
   let nomeLoja = 'MOTOSTOCK';
   let slogan   = 'Peças e Acessórios para Motos';
+  let endereco = '';
+  let telefone = '';
+  let logoUrl  = '';
   try {
-    const res  = await fetch(API_BASE + '/configuracoes?loja_token=' + (_lojaToken || 'padrao') + '&in=nome_loja,slogan');
+    const res  = await fetch(API_BASE + '/configuracoes?loja_token=' + (_lojaToken || 'padrao') + '&in=nome_loja,slogan,logo_url,endereco,telefone');
     const json = await res.json();
     if (json.data) {
       json.data.forEach(function(c) {
         if (c.chave === 'nome_loja' && c.valor) nomeLoja = c.valor;
         if (c.chave === 'slogan'    && c.valor) slogan   = c.valor;
+        if (c.chave === 'logo_url'  && c.valor) logoUrl  = c.valor;
+        if (c.chave === 'endereco'  && c.valor) endereco = c.valor;
+        if (c.chave === 'telefone'  && c.valor) telefone = c.valor;
       });
     }
   } catch(e) {}
@@ -4019,11 +4264,20 @@ async function gerarReciboPDF(venda, itens, cliente, formaPag, total, recebido, 
     '<tr><td colspan="2" style="padding:3px 2px;font-size:12px;font-weight:700;">Troco</td><td style="padding:3px 2px;text-align:right;font-size:13px;font-weight:700;color:#1a7a4a;">' + fmtR(troco||0) + '</td></tr>'
     : '';
 
+  const logoHtml = logoUrl
+    ? '<img src="' + logoUrl + '" style="max-height:50px;max-width:120px;object-fit:contain;margin-bottom:6px;" onerror="this.style.display=\'none\'">'
+    : '';
+  const enderecoHtml = endereco ? '<div style="font-size:10px;color:#555;margin-top:2px;">📍 ' + endereco + '</div>' : '';
+  const telefoneHtml = telefone ? '<div style="font-size:10px;color:#555;">📞 ' + telefone + '</div>' : '';
+
   const html = `
     <div style="max-width:300px;margin:0 auto;font-family:Arial,sans-serif;">
       <div style="text-align:center;margin-bottom:10px;">
+        ${logoHtml}
         <div style="font-size:20px;font-weight:900;letter-spacing:2px;">${nomeLoja}</div>
         <div style="font-size:10px;color:#666;">${slogan}</div>
+        ${enderecoHtml}
+        ${telefoneHtml}
       </div>
       ${linhaHr}
       <div style="text-align:center;margin-bottom:8px;">
@@ -4046,7 +4300,6 @@ async function gerarReciboPDF(venda, itens, cliente, formaPag, total, recebido, 
         </thead>
         <tbody>${itensHtml}</tbody>
         <tfoot>
-          ${linhaHr.replace('<hr','<tr><td colspan="3"><hr').replace('/>','/>') /* inline hr workaround */}
           <tr style="border-top:2px solid #000;">
             <td colspan="2" style="padding:5px 2px;font-size:14px;font-weight:900;">TOTAL</td>
             <td style="padding:5px 2px;text-align:right;font-size:16px;font-weight:900;">${fmtR(total)}</td>
@@ -4108,24 +4361,45 @@ function gerarOrcamentoPDF() {
   const num      = 'ORC-' + String(Date.now()).slice(-5);
   const data     = new Date().toLocaleDateString('pt-BR');
 
+  // Busca dados da loja
+  fetch(API_BASE + '/configuracoes?loja_token=' + (_lojaToken||'padrao') + '&in=nome_loja,slogan,logo_url,endereco,telefone')
+    .then(r => r.json()).then(json => {
+      let nomeLoja = 'MotoStock', sloganL = 'Peças e Acessórios para Motos';
+      let enderecoL = '', telefoneL = '', logoUrlL = '';
+      if (json.data) json.data.forEach(c => {
+        if (c.chave === 'nome_loja') nomeLoja = c.valor;
+        if (c.chave === 'slogan')    sloganL  = c.valor;
+        if (c.chave === 'logo_url')  logoUrlL = c.valor;
+        if (c.chave === 'endereco')  enderecoL = c.valor;
+        if (c.chave === 'telefone')  telefoneL = c.valor;
+      });
+      _gerarOrcamentoPDFComDados(cli, validade, desc, sub, total, num, data, nomeLoja, sloganL, enderecoL, telefoneL, logoUrlL);
+    }).catch(() => {
+      _gerarOrcamentoPDFComDados(cli, validade, desc, sub, total, num, data, 'MotoStock', 'Peças e Acessórios para Motos', '', '', '');
+    });
+}
+
+function _gerarOrcamentoPDFComDados(cli, validade, desc, sub, total, num, data, nomeLoja, sloganL, enderecoL, telefoneL, logoUrlL) {
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const L = 15, RW = 180;
     let y = 20;
 
-    // Header
-    doc.setFillColor(240, 165, 0);
-    doc.rect(0, 0, 210, 18, 'F');
+    // Header com cor accent
+    doc.setFillColor(91, 164, 245);
+    doc.rect(0, 0, 210, 22, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
-    doc.text('MotoStock', L, 12);
+    doc.text(nomeLoja, L, 13);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text('Peças e Acessórios para Motos', 210 - L, 12, { align: 'right' });
+    doc.text(sloganL, 210 - L, 10, { align: 'right' });
+    if (enderecoL) doc.text('📍 ' + enderecoL, 210 - L, 15, { align: 'right' });
+    if (telefoneL) doc.text('📞 ' + telefoneL, 210 - L, 20, { align: 'right' });
 
-    y = 30;
+    y = 34;
     doc.setTextColor(0, 0, 0);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
@@ -4174,12 +4448,10 @@ function gerarOrcamentoPDF() {
       y += (nomeLines.length > 1 ? 9 + (nomeLines.length - 1) * 4 : 9);
     });
 
-    // Linha separadora
     doc.setDrawColor(200, 200, 200);
     doc.line(L, y, L + RW, y);
     y += 6;
 
-    // Totais
     if (desc > 0) {
       doc.setFontSize(10);
       doc.text('Subtotal:', L + 120, y);
@@ -4193,18 +4465,16 @@ function gerarOrcamentoPDF() {
     }
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(13);
-    doc.setTextColor(200, 130, 0);
+    doc.setTextColor(91, 164, 245);
     doc.text('TOTAL:', L + 120, y);
     doc.text('R$' + total.toFixed(2).replace('.', ','), L + 175, y, { align: 'right' });
     y += 14;
 
-    // Rodapé
     doc.setTextColor(120, 120, 120);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.text('Obrigado pela preferência!  |  MotoStock — Gestão de Peças', 105, y, { align: 'center' });
+    doc.text('Obrigado pela preferência!  |  ' + nomeLoja, 105, y, { align: 'center' });
 
-    // Converter jsPDF para blob URL e imprimir
     const pdfBlob = doc.output('blob');
     const blobUrl = URL.createObjectURL(pdfBlob);
     const w = window.open(blobUrl, '_blank');
@@ -4213,7 +4483,6 @@ function gerarOrcamentoPDF() {
     toast('Orçamento aberto para impressão!');
   } catch(e) {
     console.error('Erro PDF:', e);
-    // Fallback modal
     gerarOrcamentoModal(cli, validade, desc, sub, total, num, data);
   }
 }
@@ -4400,9 +4669,11 @@ async function loadCaixa() {
           const badge  = l.tipo === 'entrada'
             ? '<span class="status-badge green">Entrada</span>'
             : '<span class="status-badge red">Saída</span>';
+          const cat = l.categoria || 'Geral';
           html += '<tr>' +
             '<td class="mono">' + (l.hora || '--:--') + '</td>' +
             '<td>' + badge + '</td>' +
+            '<td><span style="background:var(--bg-surface);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:11px;color:var(--text-secondary);">' + cat + '</span></td>' +
             '<td>' + (l.descricao || '-') + '</td>' +
             '<td>' + (l.forma_pagamento || '-').toUpperCase() + '</td>' +
             '<td class="mono" style="font-weight:700;color:' + cor + '">' + sinal + fmt(l.valor) + '</td>' +
@@ -4549,12 +4820,13 @@ function updateCaixaStatusUI() {
 async function saveLancamento() {
   const tipo  = $('lanc-tipo')      ? $('lanc-tipo').value                    : 'entrada';
   const forma = $('lanc-forma')     ? $('lanc-forma').value.toLowerCase()     : 'dinheiro';
+  const cat   = $('lanc-categoria') ? $('lanc-categoria').value               : 'Outros';
   const desc  = $('lanc-descricao') ? $('lanc-descricao').value.trim()        : '';
   const val   = parseFloat(($('lanc-valor') ? $('lanc-valor').value : '0').replace(',', '.')) || 0;
   const data  = $('lanc-data')      ? $('lanc-data').value                    : today();
   if (!desc)    { toast('Informe a descrição.', 'y');  return; }
   if (val <= 0) { toast('Informe um valor válido.', 'y'); return; }
-  const r = await sb.from('caixa_lancamentos').insert({ tipo, descricao: desc, forma_pagamento: forma, valor: val, data, hora: timeNow() });
+  const r = await sb.from('caixa_lancamentos').insert({ tipo, descricao: desc, categoria: cat, forma_pagamento: forma, valor: val, data, hora: timeNow() });
   if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
   if ($('lanc-descricao')) $('lanc-descricao').value = '';
   if ($('lanc-valor'))     $('lanc-valor').value = '';
@@ -4563,6 +4835,7 @@ async function saveLancamento() {
   loadCaixa();
   loadDashboard();
 }
+
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // FINANCEIRO
@@ -5640,6 +5913,7 @@ function entrarNoSistema(usuario) {
   loadDashboard();
   loadProdutos();
   loadNF();
+  atualizarBadgeOrcSalvos();
 }
 
 function fazerLogout() {
@@ -5886,17 +6160,23 @@ function renderClientes(list) {
   const tb = document.getElementById('clientes-tbody');
   if (!tb) return;
   if (!list.length) {
-    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--text-muted)">Nenhum cliente cadastrado.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:36px;color:var(--text-muted)">Nenhum cliente cadastrado.</td></tr>';
     return;
   }
   let rows = '';
   list.forEach(function(c) {
+    const ultimoServ = c.ultimo_servico_at
+      ? new Date(c.ultimo_servico_at).toLocaleDateString('pt-BR') : '—';
     rows += '<tr>' +
       '<td style="color:var(--text-primary);font-weight:600">' + c.nome + '</td>' +
       '<td>' + (c.telefone || '—') + '</td>' +
       '<td class="mono">' + (c.cpf_cnpj || '—') + '</td>' +
       '<td>' + (c.cidade || '—') + '</td>' +
-      '<td class="mono">' + (c.total_compras || 0) + '</td>' +
+      '<td class="mono" style="text-align:center;font-weight:700">' + (c.total_compras || 0) + '</td>' +
+      '<td class="mono" style="text-align:center;">' +
+        '<span style="font-weight:700;color:var(--accent)">' + (c.total_orcamentos || 0) + '</span>' +
+      '</td>' +
+      '<td style="font-size:12px;color:var(--text-secondary)">' + ultimoServ + '</td>' +
       '<td class="mono" style="color:var(--accent);font-weight:700">' + fmt(c.total_gasto || 0) + '</td>' +
       '<td><div style="display:flex;gap:4px">' +
         '<button class="icon-btn" data-cli-edit="' + c.id + '" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
@@ -6015,6 +6295,7 @@ function pdvSearchCliente(q) {
 function selecionarClientePDV(id, nome) {
   const inp = document.getElementById('pdv-cliente');
   if (inp) { inp.value = nome; inp.dataset.clienteId = id; }
+  _pdvClienteId = id || null;
   const res = document.getElementById('pdv-cliente-results');
   if (res) res.style.display = 'none';
 }
@@ -6208,31 +6489,325 @@ function pdvImprimirTermica() {
   } catch(e){ toast('Erro PDF: '+e.message,'r'); }
 }
 
-// Redef pdvSwitchTab to control thermal btn
+// ── Controle de tabs do PDV (venda / orcamento / orclist) ────────────────────
 function pdvSwitchTab(mode) {
   pdvMode = mode;
-  var btnV=document.getElementById('pdv-tab-venda'), btnO=document.getElementById('pdv-tab-orc');
-  var title=document.getElementById('pdv-cart-title'), extra=document.getElementById('pdv-orc-extra');
-  var pay=document.getElementById('pdv-payment-section'), actBtn=document.getElementById('pdv-action-btn');
-  var termBtn=document.getElementById('pdv-termica-btn');
-  var pageTitle=document.getElementById('pdv-page-title');
-  if (mode==='venda') {
-    if(btnV){btnV.style.background='var(--gradient-accent)';btnV.style.color='#09090b';} if(btnO){btnO.style.background='none';btnO.style.color='var(--text-secondary)';}
-    if(title)title.textContent='Carrinho de Venda';
-    if(extra)extra.style.display='none';
-    if(pay)pay.style.display='';
-    if(actBtn){actBtn.textContent=''; actBtn.innerHTML='<svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;display:inline;margin-right:6px;vertical-align:middle"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Finalizar Venda';}
-    if(termBtn)termBtn.style.display='none';
-    if(pageTitle)pageTitle.textContent='Ponto de Venda';
-  } else {
-    if(btnO){btnO.style.background='var(--gradient-accent)';btnO.style.color='#09090b';} if(btnV){btnV.style.background='none';btnV.style.color='var(--text-secondary)';}
-    if(title)title.textContent='Itens do Orçamento';
-    if(extra)extra.style.display='';
-    if(pay)pay.style.display='none';
-    if(actBtn){actBtn.innerHTML='<svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;display:inline;margin-right:6px;vertical-align:middle"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>Gerar Orçamento PDF';}
-    if(termBtn)termBtn.style.display='';
-    if(pageTitle)pageTitle.textContent='Criar Orçamento';
+  var btnV    = document.getElementById('pdv-tab-venda');
+  var btnO    = document.getElementById('pdv-tab-orc');
+  var btnOL   = document.getElementById('pdv-tab-orclist');
+  var title   = document.getElementById('pdv-cart-title');
+  var extra   = document.getElementById('pdv-orc-extra');
+  var pay     = document.getElementById('pdv-payment-section');
+  var actBtn  = document.getElementById('pdv-action-btn');
+  var termBtn = document.getElementById('pdv-termica-btn');
+  var pageTitle = document.getElementById('pdv-page-title');
+  var gridEl  = document.querySelector('.pdv-grid');
+  var listEl  = document.getElementById('pdv-orc-list-panel');
+
+  // Reset all tab styles
+  [btnV, btnO, btnOL].forEach(b => { if(b){ b.style.background='none'; b.style.color='var(--text-secondary)'; } });
+
+  if (mode === 'orclist') {
+    if(btnOL){ btnOL.style.background='var(--gradient-accent)'; btnOL.style.color='#ffffff'; }
+    if(gridEl) gridEl.style.display = 'none';
+    if(listEl) listEl.style.display = '';
+    if(pageTitle) pageTitle.textContent = 'Orçamentos Salvos';
+    loadOrcamentosList();
+    return;
   }
+
+  // Show grid, hide list panel
+  if(gridEl) gridEl.style.display = '';
+  if(listEl) listEl.style.display = 'none';
+
+  if (mode === 'venda') {
+    if(btnV){ btnV.style.background='var(--gradient-accent)'; btnV.style.color='#ffffff'; }
+    if(title) title.textContent = 'Carrinho de Venda';
+    if(extra) extra.style.display = 'none';
+    if(pay)   pay.style.display = '';
+    if(actBtn){ actBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;display:inline;margin-right:6px;vertical-align:middle"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Finalizar Venda'; }
+    if(termBtn) termBtn.style.display = 'none';
+    if(pageTitle) pageTitle.textContent = 'Ponto de Venda';
+  } else {
+    if(btnO){ btnO.style.background='var(--gradient-accent)'; btnO.style.color='#ffffff'; }
+    if(title) title.textContent = 'Itens do Orçamento';
+    if(extra) extra.style.display = '';
+    if(pay)   pay.style.display = 'none';
+    if(actBtn){ actBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;display:inline;margin-right:6px;vertical-align:middle"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Salvar Orçamento'; }
+    if(termBtn) termBtn.style.display = '';
+    if(pageTitle) pageTitle.textContent = 'Criar Orçamento';
+  }
+}
+
+// Salva orçamento no banco
+async function orcSalvar() {
+  if (!pdvCart.length) { toast('Adicione produtos ao orçamento.', 'y'); return; }
+  const cli      = $('pdv-cliente')     ? $('pdv-cliente').value.trim()      : '';
+  const cliId    = _pdvClienteId || null;
+  const validade = $('pdv-orc-validade') ? $('pdv-orc-validade').value.trim() : '3 dias';
+  const desc     = parseFloat(($('pdv-desconto') ? $('pdv-desconto').value : '0')) || 0;
+  const sub      = pdvCart.reduce((s, i) => s + i.preco * i.qty, 0);
+  const total    = Math.max(0, sub - desc);
+
+  const payload = {
+    cliente: cli || 'Sem cliente',
+    cliente_id: cliId,
+    validade: validade || '3 dias',
+    desconto: desc,
+    subtotal: sub,
+    total,
+    loja_token: _lojaToken,
+    itens: pdvCart.map(i => ({
+      produto_id:   i.id || null,
+      nome_produto: i.nome,
+      preco:        i.preco,
+      quantidade:   i.qty,
+      total:        i.preco * i.qty
+    }))
+  };
+
+  try {
+    const r = await fetch(API_BASE + '/orcamentos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    toast('Orçamento ORC-' + String(j.data.numero).padStart(4,'0') + ' salvo!', 'g');
+    pdvClearCart();
+    atualizarBadgeOrcSalvos();
+    loadDashboard();
+  } catch(e) {
+    toast('Erro ao salvar: ' + e.message, 'r');
+  }
+}
+
+// Atualiza badge de orçamentos salvos
+async function atualizarBadgeOrcSalvos() {
+  try {
+    const r = await fetch(API_BASE + '/orcamentos?loja_token=' + _lojaToken + '&status=aberto');
+    const j = await r.json();
+    const qtd = (j.data || []).length;
+    const badge = $('badge-orc-salvos');
+    if (badge) { badge.textContent = qtd; badge.style.display = qtd > 0 ? '' : 'none'; }
+  } catch(e) {}
+}
+
+// Carrega lista de orçamentos salvos
+async function loadOrcamentosList() {
+  const panel = $('pdv-orc-list-panel');
+  if (!panel) return;
+  const content = $('pdv-orc-list-content') || panel;
+  content.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-muted);"><span class="loader-ring"></span></div>';
+
+  try {
+    const r = await fetch(API_BASE + '/orcamentos?loja_token=' + _lojaToken + '&status=aberto');
+    const j = await r.json();
+    const orcs = j.data || [];
+
+    if (!orcs.length) {
+      content.innerHTML = '<div style="text-align:center;padding:64px 32px;color:var(--text-muted);">' +
+        '<div style="font-size:48px;margin-bottom:12px;opacity:0.3">📋</div>' +
+        '<div style="font-size:15px;font-weight:600;margin-bottom:6px;">Nenhum orçamento em aberto</div>' +
+        '<div style="font-size:13px;opacity:0.7;">Crie um orçamento na aba "Orçamento" e clique em "Salvar Orçamento"</div></div>';
+      return;
+    }
+
+    content.innerHTML = '<div style="padding:0;">' +
+      '<div style="display:grid;gap:12px;padding:4px 0;">' +
+      orcs.map(o => {
+        const num  = String(o.numero).padStart(4,'0');
+        const data = new Date(o.created_at).toLocaleDateString('pt-BR');
+        const hora = new Date(o.created_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+        return '<div class="card" style="margin:0;padding:16px;cursor:default;">' +
+          '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">' +
+          '<div style="flex:1;">' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">' +
+              '<span style="font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:700;color:var(--accent);">ORC-' + num + '</span>' +
+              '<span style="background:var(--green-soft);border:1px solid rgba(62,207,142,0.2);color:var(--green);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;">ABERTO</span>' +
+            '</div>' +
+            '<div style="font-size:14px;font-weight:600;margin-bottom:2px;">' + (o.cliente || 'Sem cliente') + '</div>' +
+            '<div style="font-size:11px;color:var(--text-muted);">' + data + ' ' + hora + ' · Validade: ' + (o.validade || '3 dias') + '</div>' +
+          '</div>' +
+          '<div style="text-align:right;flex-shrink:0;">' +
+            '<div style="font-size:20px;font-weight:900;color:var(--accent);margin-bottom:8px;">' + fmt(o.total) + '</div>' +
+            '<div style="display:flex;gap:6px;justify-content:flex-end;">' +
+              '<button onclick="orcCarregar(\'' + o.id + '\')" style="background:var(--accent-soft);border:1px solid var(--border-accent);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;">✏️ Editar</button>' +
+              '<button onclick="orcConverter(\'' + o.id + '\',\'' + o.cliente + '\',' + o.total + ')" style="background:var(--green-soft);border:1px solid rgba(62,207,142,0.3);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--green);cursor:pointer;">✅ Converter</button>' +
+              '<button onclick="orcImprimir(\'' + o.id + '\')" style="background:var(--bg-surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-secondary);" title="Imprimir">🖨️</button>' +
+              '<button onclick="orcExcluir(\'' + o.id + '\')" style="background:var(--red-soft);border:1px solid rgba(240,93,93,0.2);border-radius:6px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--red);" title="Excluir">🗑️</button>' +
+            '</div>' +
+          '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div></div>';
+  } catch(e) {
+    content.innerHTML = '<div style="text-align:center;padding:48px;color:var(--red);">Erro ao carregar orçamentos: ' + e.message + '</div>';
+  }
+}
+
+// Carrega orçamento de volta ao carrinho para editar
+async function orcCarregar(id) {
+  try {
+    const r = await fetch(API_BASE + '/orcamentos/' + id);
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    const o = j.data;
+
+    pdvCart = (o.itens || []).map(i => ({
+      id:    i.produto_id || null,
+      cod:   i.produto_id || '',
+      nome:  i.nome_produto,
+      preco: Number(i.preco),
+      qty:   Number(i.quantidade),
+      _orcamento_item_id: i.id
+    }));
+    _pdvClienteId = o.cliente_id || null;
+    _orcamentoEditandoId = id;
+
+    pdvSwitchTab('orcamento');
+    if ($('pdv-cliente'))      $('pdv-cliente').value      = o.cliente || '';
+    if ($('pdv-orc-validade')) $('pdv-orc-validade').value = o.validade || '3 dias';
+    if ($('pdv-desconto'))     $('pdv-desconto').value     = o.desconto || 0;
+    pdvRenderCart();
+    pdvUpdateTotals();
+    toast('Orçamento ORC-' + String(o.numero).padStart(4,'0') + ' carregado para edição.');
+  } catch(e) {
+    toast('Erro ao carregar: ' + e.message, 'r');
+  }
+}
+
+// Converte orçamento em venda com seletor de forma de pagamento
+function orcConverter(id, cliente, total) {
+  openModal('converter-orc');
+  const el = $('orc-conv-info');
+  if (el) el.innerHTML = '<strong>' + (cliente || 'Sem cliente') + '</strong> — <span style="color:var(--accent);font-weight:700;">' + fmt(total) + '</span>';
+  const btn = $('orc-conv-btn');
+  if (btn) btn.onclick = function() { _orcConverterConfirmar(id); };
+}
+
+async function _orcConverterConfirmar(id) {
+  const forma = $('orc-conv-forma') ? $('orc-conv-forma').value : 'dinheiro';
+  const btn   = $('orc-conv-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Convertendo...'; }
+  try {
+    const r = await fetch(API_BASE + '/orcamentos/' + id + '/converter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ forma_pagamento: forma })
+    });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    closeModal('converter-orc');
+    toast('Orçamento convertido em Venda #' + String(j.data.venda.numero).padStart(4,'0') + '!', 'g');
+    atualizarBadgeOrcSalvos();
+    loadDashboard();
+    loadOrcamentosList();
+  } catch(e) {
+    toast('Erro ao converter: ' + e.message, 'r');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '✅ Confirmar Conversão'; }
+  }
+}
+
+async function orcImprimir(id) {
+  try {
+    const r = await fetch(API_BASE + '/orcamentos/' + id);
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    const o = j.data;
+    // Preenche cart temporariamente
+    const cartOrig = [...pdvCart];
+    pdvCart = (o.itens||[]).map(i => ({id:i.produto_id,nome:i.nome_produto,preco:Number(i.preco),qty:Number(i.quantidade)}));
+    if ($('pdv-cliente'))      $('pdv-cliente').value = o.cliente || '';
+    if ($('pdv-orc-validade')) $('pdv-orc-validade').value = o.validade || '3 dias';
+    if ($('pdv-desconto'))     $('pdv-desconto').value = o.desconto || 0;
+    gerarOrcamentoPDF();
+    // Restaura
+    setTimeout(() => { pdvCart = cartOrig; }, 500);
+  } catch(e) { toast('Erro: ' + e.message, 'r'); }
+}
+
+async function orcExcluir(id) {
+  if (!confirm('Excluir este orçamento? Esta ação não pode ser desfeita.')) return;
+  try {
+    const r = await fetch(API_BASE + '/orcamentos/' + id, { method: 'DELETE' });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    toast('Orçamento excluído.');
+    atualizarBadgeOrcSalvos();
+    loadOrcamentosList();
+    loadDashboard();
+  } catch(e) { toast('Erro: ' + e.message, 'r'); }
+}
+
+// Sobrescreve pdvFinalize para salvar orçamento quando no modo orçamento
+const _pdvFinalizeOrig = window.pdvFinalize;
+async function pdvFinalize() {
+  if (pdvMode === 'orcamento') {
+    // Salva ou atualiza orçamento
+    if (_orcamentoEditandoId) {
+      await _orcamentoAtualizarExistente();
+    } else {
+      await orcSalvar();
+    }
+    return;
+  }
+  // Modo venda — executa fluxo original
+  await _pdvFinalizeVenda();
+}
+
+async function _orcamentoAtualizarExistente() {
+  if (!pdvCart.length) { toast('Adicione produtos.', 'y'); return; }
+  const cli      = $('pdv-cliente')     ? $('pdv-cliente').value.trim() : '';
+  const cliId    = _pdvClienteId || null;
+  const validade = $('pdv-orc-validade') ? $('pdv-orc-validade').value.trim() : '3 dias';
+  const desc     = parseFloat(($('pdv-desconto') ? $('pdv-desconto').value : '0')) || 0;
+  const sub      = pdvCart.reduce((s, i) => s + i.preco * i.qty, 0);
+  const total    = Math.max(0, sub - desc);
+  const payload  = {
+    cliente: cli || 'Sem cliente', cliente_id: cliId, validade: validade || '3 dias',
+    desconto: desc, subtotal: sub, total, status: 'aberto', loja_token: _lojaToken,
+    itens: pdvCart.map(i => ({ produto_id: i.id||null, nome_produto: i.nome, preco: i.preco, quantidade: i.qty, total: i.preco*i.qty }))
+  };
+  try {
+    const r = await fetch(API_BASE + '/orcamentos/' + _orcamentoEditandoId, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    toast('Orçamento atualizado!', 'g');
+    _orcamentoEditandoId = null;
+    pdvClearCart();
+    atualizarBadgeOrcSalvos();
+    loadDashboard();
+  } catch(e) { toast('Erro ao atualizar: ' + e.message, 'r'); }
+}
+
+// Helper de tipo lançamento no modal
+function lancSetTipo(tipo) {
+  const el = $('lanc-tipo');
+  if (el) el.value = tipo;
+  const btnE = $('lanc-btn-entrada'), btnS = $('lanc-btn-saida');
+  const catSel = $('lanc-categoria');
+  if (tipo === 'entrada') {
+    if(btnE){ btnE.style.border='2px solid var(--green)';btnE.style.background='var(--green-soft)';btnE.style.color='var(--green)'; }
+    if(btnS){ btnS.style.border='2px solid var(--border)';btnS.style.background='transparent';btnS.style.color='var(--text-secondary)'; }
+    if(catSel){ catSel.innerHTML='<option value="Vendas">🛒 Vendas</option><option value="Serviços">🔧 Serviços</option><option value="Aluguel">🏠 Aluguel</option><option value="Empréstimo">💳 Empréstimo / Aporte</option><option value="Outros" selected>📦 Outros</option>'; }
+  } else {
+    if(btnS){ btnS.style.border='2px solid var(--red)';btnS.style.background='var(--red-soft)';btnS.style.color='var(--red)'; }
+    if(btnE){ btnE.style.border='2px solid var(--border)';btnE.style.background='transparent';btnE.style.color='var(--text-secondary)'; }
+    if(catSel){ catSel.innerHTML='<option value="Fornecedor">🏭 Fornecedor</option><option value="Retirada">💰 Retirada / Pró-labore</option><option value="Despesa Fixa">📌 Despesa Fixa</option><option value="Despesa Variável">📉 Despesa Variável</option><option value="Funcionários">👷 Funcionários</option><option value="Outros" selected>📦 Outros</option>'; }
+  }
+}
+
+// Inicializa modal de lançamento com data atual
+function openLancamentoModal() {
+  const d = $('lanc-data');
+  if (d) d.value = today();
+  lancSetTipo('entrada');
+  openModal('lancamento');
 }
 
 // Calcula troco ao receber pagamento em dinheiro
