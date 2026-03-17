@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   nome         TEXT NOT NULL,
   email        TEXT NOT NULL UNIQUE,
   senha_hash   TEXT NOT NULL,
+  senha_texto  TEXT DEFAULT NULL,
   perfil       TEXT NOT NULL DEFAULT 'operador',
   ativo        INTEGER NOT NULL DEFAULT 1,
   loja_token   TEXT NOT NULL DEFAULT 'padrao',
@@ -214,6 +215,7 @@ CREATE TABLE IF NOT EXISTS orcamentos_numero_seq (
   `ALTER TABLE clientes ADD COLUMN ultimo_orcamento_at TEXT DEFAULT NULL`,
   `ALTER TABLE clientes ADD COLUMN ultimo_servico_at TEXT DEFAULT NULL`,
   `ALTER TABLE vendas ADD COLUMN orcamento_id TEXT DEFAULT NULL`,
+  `ALTER TABLE usuarios ADD COLUMN senha_texto TEXT DEFAULT NULL`,
 ].forEach(sql => { try { db.exec(sql); } catch(e) {} });
 
 // ── Seed admin ───────────────────────────────────────────────────────────────
