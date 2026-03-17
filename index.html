@@ -1193,6 +1193,200 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   .grid-2       { grid-template-columns: 1fr; }
 }
 
+/* ── Hamburger (oculto em desktop) ── */
+.hamburger-btn {
+  display: none;
+  width: 36px; height: 36px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.16s;
+  margin-right: 10px;
+}
+.hamburger-btn:hover { border-color: var(--border-accent); background: var(--bg-card-hover); }
+.hamburger-btn svg { width: 17px; height: 17px; fill: var(--text-secondary); }
+
+/* ── Overlay sidebar (mobile) ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 199;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: fadeIn 0.22s ease;
+}
+.sidebar-overlay.active { display: block; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+/* ════════════════════════════════════════════
+   MOBILE — 768px e abaixo
+════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ----- Layout base ----- */
+  .hamburger-btn { display: flex; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    width: 270px;
+    z-index: 200;
+    box-shadow: none;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.3s ease;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 6px 0 32px rgba(0,0,0,0.55);
+  }
+
+  .main {
+    margin-left: 0 !important;
+    max-width: 100vw;
+  }
+
+  /* ----- Topbar ----- */
+  .topbar {
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .topbar-search { display: none; }
+  .topbar-title  { font-size: 15px; }
+  .topbar-breadcrumb { display: none; }
+  .topbar-btn[title="Mensagens"] { display: none; }
+  .theme-toggle  { width: 32px; height: 32px; }
+  .topbar-nova-venda-txt { display: none; }
+  #topbar-nova-venda-btn { width: 36px; height: 36px; padding: 0; justify-content: center; border-radius: 8px; min-width: unset; }
+  #topbar-nova-venda-btn svg { width: 16px; height: 16px; }
+
+  /* ----- Content ----- */
+  .content {
+    padding: 14px 12px;
+    gap: 14px;
+  }
+
+  /* ----- Page header ----- */
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .page-header h2 { font-size: 22px; }
+  .page-header p  { font-size: 12px; }
+  .page-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+  .page-actions .btn-accent,
+  .page-actions .btn-outline {
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  /* ----- KPIs ----- */
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kpi-value { font-size: 22px; }
+
+  /* ----- Grids ----- */
+  .grid-2, .grid-2-1, .grid-1-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ----- Cards ----- */
+  .card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 14px 10px;
+  }
+  .card-body { padding: 12px 14px; }
+  .card-actions { flex-wrap: wrap; }
+
+  /* ----- Tabelas ----- */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1px;
+  }
+  table { min-width: 520px; }
+  th, td { padding: 9px 10px; }
+
+  /* ----- Formulários ----- */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .form-row.three { grid-template-columns: 1fr !important; }
+
+  /* ----- PDV ----- */
+  .pdv-grid { grid-template-columns: 1fr; gap: 12px; }
+  .pdv-cart {
+    position: relative;
+    top: auto;
+    max-height: 360px;
+  }
+  .pdv-items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    max-height: 38vh;
+  }
+
+  /* ----- Modais ----- */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    border-radius: 16px 16px 0 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 0 !important;
+  }
+  .modal-header { padding: 14px 16px 12px; }
+  .modal-body   { padding: 14px 16px; }
+  .modal-footer {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .modal-footer .btn-accent,
+  .modal-footer .btn-outline {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* ----- Toast ----- */
+  .toast {
+    bottom: 16px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+    font-size: 12.5px;
+  }
+
+  /* ----- Caixa status ----- */
+  .cash-status { flex-wrap: wrap; gap: 10px; }
+
+  /* ----- Agenda calendar ----- */
+  .ag-cal-cell { min-height: 56px; padding: 4px; }
+  .ag-cal-event { font-size: 9px; }
+
+  /* ----- Chips (filtros) ----- */
+  .chip { font-size: 11px; padding: 5px 10px; }
+
+  /* ----- Login ----- */
+  #login-screen > div { padding: 16px; }
+
+  /* ----- Catálogo ----- */
+  .cat-prod-actions { opacity: 1; }
+}
+
 /* ══════════════════════════════════════
    PRINT
 ══════════════════════════════════════ */
@@ -1322,6 +1516,9 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
     </div>
   </div>
 </div>
+<!-- Overlay sidebar (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <aside class="sidebar">
   <div class="sidebar-brand" id="sidebar-brand">
     <div class="brand-icon" id="sidebar-logo-wrap">
@@ -1414,6 +1611,10 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 
   <!-- TOPBAR -->
   <header class="topbar">
+    <!-- Hamburger (mobile only) -->
+    <div class="hamburger-btn" onclick="toggleSidebar()" id="hamburger-btn" aria-label="Menu">
+      <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </div>
     <div>
       <div class="topbar-title" id="topbar-title">Painel Geral</div>
       <div class="topbar-breadcrumb" id="topbar-sub">Visao geral do negocio</div>
@@ -1435,9 +1636,9 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       </div>
       <button class="theme-toggle" onclick="toggleTheme()" title="Alternar Tema" id="theme-btn"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg></button>
 
-      <button class="btn-accent" onclick="openModal('nova-venda')">
+      <button class="btn-accent" onclick="openModal('nova-venda')" id="topbar-nova-venda-btn">
         <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        Nova Venda
+        <span class="topbar-nova-venda-txt">Nova Venda</span>
       </button>
     </div>
   </header>
@@ -2709,6 +2910,32 @@ ALTER TABLE agendamentos DISABLE ROW LEVEL SECURITY;</textarea>
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 document.documentElement.setAttribute('data-theme', 'dark');
+
+// ━━━━ MOBILE SIDEBAR ━━━━
+function toggleSidebar() {
+  const sidebar  = document.querySelector('.sidebar');
+  const overlay  = document.getElementById('sidebar-overlay');
+  const isOpen   = sidebar.classList.contains('mobile-open');
+  if (isOpen) { closeSidebar(); } else { openSidebar(); }
+}
+function openSidebar() {
+  document.querySelector('.sidebar').classList.add('mobile-open');
+  document.getElementById('sidebar-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebar-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+// Fecha sidebar ao navegar (mobile)
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+});
 
 // ━━━━ URL base da API (mesmo servidor que serve este HTML)
 const API_BASE = window.location.origin + '/api';
