@@ -32,7 +32,62 @@ app.use('/api/orcamentos',     route('orcamentos'));
 app.use('/api/os',             route('ordens_servico'));
 app.use('/api/relatorios',     route('relatorios'));
 app.use('/api/fornecedores',   route('fornecedores'));
+app.use('/api/notificacoes',   route('notificacoes'));
 app.use('/api',                route('extras'));
+
+// ── Cron interno — disparo automático de resumos Telegram ─────────────────
+// Roda a cada 5 minutos e verifica se alguma loja tem resumo agendado
+setInterval(async function cronNotificacoes() {
+  try {
+    const { db } = require('./db');
+    const { montarResumoDiario, enviarTelegram } = require('./notificacoes');
+    const { v4: uuidv4 } = require('uuid');
+
+    function cfgGet(loja, chave) {
+      const r = db.prepare('SELECT valor FROM configuracoes WHERE loja_token=? AND chave=?').get(loja, chave);
+      return r ? r.valor : null;
+    }
+
+    const lojas = db.prepare(`SELECT DISTINCT loja_token FROM usuarios WHERE ativo=1`).all();
+    for (const { loja_token: loja } of lojas) {
+      const ativo   = cfgGet(loja, 'telegram_ativo');
+      const token   = cfgGet(loja, 'telegram_bot_token');
+      const chat    = cfgGet(loja, 'telegram_chat_id');
+      const horario = cfgGet(loja, 'resumo_horario') || '20:00';
+      if (ativo !== 'true' || !token || !chat) continue;
+
+      const agora = new Date();
+      const [hh, mm] = horario.split(':').map(Number);
+      const alvo  = new Date(); alvo.setHours(hh, mm, 0, 0);
+      if (Math.abs(agora - alvo) / 60000 > 5) continue;
+
+      const ultimoEnvio = cfgGet(loja, 'telegram_ultimo_resumo');
+      if (ultimoEnvio && ultimoEnvio.split('T')[0] === agora.toISOString().split('T')[0]) continue;
+
+      const msg = montarResumoDiario(loja);
+      const r   = await enviarTelegram(token, chat, msg);
+      if (r.ok) {
+        const now = new Date().toISOString();
+        db.prepare(`INSERT INTO configuracoes (id,chave,valor,loja_token,updated_at) VALUES (?,?,?,?,?)
+          ON CONFLICT(chave,loja_token) DO UPDATE SET valor=?,updated_at=?`)
+          .run(uuidv4(), 'telegram_ultimo_resumo', now, loja, now, now, now);
+        console.log(`[cron] Resumo Telegram enviado → loja: ${loja}`);
+      }
+
+      // Alerta de estoque crítico
+      const alertaEst = cfgGet(loja, 'alerta_estoque_ativo');
+      if (alertaEst === 'true') {
+        const zerados = db.prepare(`SELECT nome FROM produtos WHERE loja_token=? AND estoque=0 LIMIT 5`).all(loja);
+        if (zerados.length > 0) {
+          const msgZ = `⛔ <b>ESTOQUE ZERADO</b>\n` + zerados.map(p => `• ${p.nome}`).join('\n');
+          await enviarTelegram(token, chat, msgZ);
+        }
+      }
+    }
+  } catch(e) {
+    console.error('[cron] Erro:', e.message);
+  }
+}, 5 * 60 * 1000); // a cada 5 minutos
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', version: '2.3', engine: 'SQLite' });
