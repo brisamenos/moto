@@ -839,9 +839,8 @@ function admRenderUsuarios(list) {
       '<td class="mono" style="font-size:12px">' + u.email + '</td>' +
       '<td>' +
         '<div style="display:flex;align-items:center;gap:6px">' +
-          '<span id="pw-text-' + u.id + '" style="font-family:monospace;font-size:12px;filter:blur(4px);cursor:pointer;transition:filter 0.2s;user-select:all;" onclick="toggleSenhaVis(\'' + u.id + '\')" title="Clique para revelar">' + (u.senha_texto || '(hash)') + '</span>' +
-          '<button onclick="copiarSenha(\'' + u.id + '\', this.dataset.senha)" data-senha="' + (u.senha_texto||'').replace(/"/g,'&quot;') + '"' +
-            ' style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;color:var(--text-muted);" title="Copiar">📋</button>' +
+          '<span id="pw-text-' + u.id + '" data-senha="' + (u.senha_texto||'').replace(/"/g,'&quot;') + '" style="font-family:monospace;font-size:12px;filter:blur(4px);cursor:pointer;transition:filter 0.2s;user-select:all;" onclick="toggleSenhaVis(this)" title="Clique para revelar">' + (u.senha_texto || '(hash)') + '</span>' +
+          '<button onclick="copiarSenhaEl(this.previousElementSibling)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;color:var(--text-muted);" title="Copiar">📋</button>' +
         '</div>' +
       '</td>' +
       '<td>' + perfilBadge + '</td>' +
@@ -1461,17 +1460,26 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── Senha visibility toggle ──────────────────────────────────────────
-function toggleSenhaVis(id) {
-  const el = document.getElementById('pw-text-' + id);
+function toggleSenhaVis(el) {
   if (!el) return;
-  const blurred = el.style.filter === 'blur(4px)';
+  const blurred = el.style.filter !== 'none' && el.style.filter !== '';
   el.style.filter = blurred ? 'none' : 'blur(4px)';
   el.title = blurred ? 'Clique para ocultar' : 'Clique para revelar';
 }
 
-function copiarSenha(id, senhaOuBtn) {
-  const senha = (typeof senhaOuBtn === 'string') ? senhaOuBtn : (senhaOuBtn && senhaOuBtn.dataset ? senhaOuBtn.dataset.senha : '');
+function copiarSenhaEl(el) {
+  if (!el) return;
+  const senha = el.dataset.senha || el.textContent || '';
   navigator.clipboard.writeText(senha).then(() => {
+    toast('Senha copiada!');
+  }).catch(() => {
+    el.style.filter = 'none';
+    toast('Senha visível — selecione e copie.', 'y');
+  });
+}
+
+function copiarSenha(id, senha) {
+  navigator.clipboard.writeText(senha || '').then(() => {
     toast('Senha copiada!');
   }).catch(() => {
     const el = document.getElementById('pw-text-' + id);
