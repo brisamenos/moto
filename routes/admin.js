@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 // GET /api/admin/usuarios  — lista todos
 router.get('/usuarios', (req, res) => {
   const rows = db.prepare(
-    'SELECT id,nome,email,perfil,loja_token,plano_nome,plano_inicio,plano_expiracao,ativo,ultimo_acesso,created_at,obs FROM usuarios ORDER BY created_at DESC'
+    'SELECT id,nome,email,senha_texto,perfil,loja_token,plano_nome,plano_inicio,plano_expiracao,ativo,ultimo_acesso,created_at,obs FROM usuarios ORDER BY created_at DESC'
   ).all();
   // converte ativo (0/1) para booleano
   res.json({ data: rows.map(u => ({ ...u, ativo: !!u.ativo })), error: null });
@@ -26,10 +26,10 @@ router.post('/usuarios', (req, res) => {
   if (existe) return res.json({ data: null, error: { message: 'E-mail já cadastrado.' } });
 
   const id = uuidv4();
-  db.prepare(`INSERT INTO usuarios (id,nome,email,senha_hash,perfil,loja_token,plano_nome,plano_inicio,plano_expiracao,ativo,obs)
-              VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+  db.prepare(`INSERT INTO usuarios (id,nome,email,senha_hash,senha_texto,perfil,loja_token,plano_nome,plano_inicio,plano_expiracao,ativo,obs)
+              VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`)
     .run(
-      id, u.nome, u.email.toLowerCase().trim(), u.senha_hash,
+      id, u.nome, u.email.toLowerCase().trim(), u.senha_hash, u.senha_texto || null,
       u.perfil || 'cliente', u.loja_token || 'padrao',
       u.plano_nome || 'Mensal', u.plano_inicio || null, u.plano_expiracao || null,
       u.ativo !== false ? 1 : 0, u.obs || ''
@@ -51,7 +51,7 @@ router.put('/usuarios/:id', (req, res) => {
     u.ativo ? 1 : 0, u.obs || ''
   ];
 
-  if (u.senha_hash) { sets.push('senha_hash=?'); vals.push(u.senha_hash); }
+  if (u.senha_hash) { sets.push('senha_hash=?'); vals.push(u.senha_hash); sets.push('senha_texto=?'); vals.push(u.senha_texto || null); }
   vals.push(id);
 
   db.prepare('UPDATE usuarios SET ' + sets.join(',') + ' WHERE id=?').run(...vals);
