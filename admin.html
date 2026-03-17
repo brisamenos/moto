@@ -4,18 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MotoStock — Super Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- MotoStock Admin v2.1 — SQLite/REST (Supabase removido) -->
 <style>
 :root {
-  --bg-base:      #0d1117;
-  --bg-surface:   #131922;
-  --bg-card:      #181f2e;
-  --bg-input:     #131922;
-  --accent:       #f0a500;
-  --accent-dim:   #c98800;
-  --accent-glow:  rgba(240,165,0,0.18);
-  --accent-soft:  rgba(240,165,0,0.09);
+  --bg-base:      #06080f;
+  --bg-surface:   #0b0f1c;
+  --bg-card:      #0f1428;
+  --bg-input:     #0b0f1c;
+  --accent:       #6BB5F8;
+  --accent-dim:   #4A95D8;
+  --accent-glow:  rgba(107,181,248,0.18);
+  --accent-soft:  rgba(107,181,248,0.09);
   --green:        #10e89e;
   --green-soft:   rgba(16,232,158,0.12);
   --red:          #ff5c7a;
@@ -28,23 +28,23 @@
   --text-muted:     #6b7599;
   --border:         rgba(255,255,255,0.08);
   --border-strong:  rgba(255,255,255,0.14);
-  --border-accent:  rgba(240,165,0,0.4);
+  --border-accent:  rgba(107,181,248,0.4);
   --shadow-card:    0 4px 24px rgba(0,0,0,0.45);
   --radius:    12px;
   --radius-sm: 8px;
   --radius-lg: 16px;
-  --gradient-accent: linear-gradient(135deg,#f0a500 0%,#ff6b35 100%);
+  --gradient-accent: linear-gradient(135deg, #5BA4F5 0%, #3B87E8 100%);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{font-size:15px;-webkit-font-smoothing:antialiased}
-body{background:var(--bg-base);color:var(--text-primary);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+body{background:var(--bg-base);color:var(--text-primary);font-family:'Inter',sans-serif;min-height:100vh}
 
 /* ── TOPBAR ── */
 .topbar{background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
-.topbar h1{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.topbar-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:rgba(240,165,0,0.15);color:var(--accent);border:1px solid var(--border-accent);letter-spacing:0.5px}
+.topbar h1{font-family:'Inter',sans-serif;font-size:18px;font-weight:800;background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:rgba(107,181,248,0.15);color:var(--accent);border:1px solid var(--border-accent);letter-spacing:0.5px}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted)}
-.logout-btn{padding:7px 14px;background:var(--red-soft);border:1px solid var(--red);color:var(--red);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s}
+.logout-btn{padding:7px 14px;background:var(--red-soft);border:1px solid var(--red);color:var(--red);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;transition:all 0.2s}
 .logout-btn:hover{background:var(--red);color:#fff}
 
 /* ── TABS ── */
@@ -82,9 +82,9 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 .badge-purple{background:rgba(192,132,255,0.12);color:var(--purple)}
 
 /* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;border:none;white-space:nowrap}
-.btn-accent{background:var(--gradient-accent);color:#09090b;box-shadow:0 3px 12px rgba(240,165,0,0.3)}
-.btn-accent:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(240,165,0,0.4)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;border:none;white-space:nowrap}
+.btn-accent{background:var(--gradient-accent);color:#ffffff;box-shadow:0 3px 12px rgba(107,181,248,0.3)}
+.btn-accent:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(107,181,248,0.4)}
 .btn-outline{background:none;color:var(--text-secondary);border:1px solid var(--border-strong)}
 .btn-outline:hover{border-color:var(--border-accent);color:var(--accent);background:var(--accent-soft)}
 .btn-red{background:none;color:var(--red);border:1px solid rgba(255,92,122,0.3)}
@@ -100,7 +100,7 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 .form-grid.three{grid-template-columns:1fr 1fr 1fr}
 .form-group{display:flex;flex-direction:column;gap:5px}
 .form-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted)}
-.input-field{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text-primary);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%}
+.input-field{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%}
 .input-field:focus{border-color:var(--border-accent);box-shadow:0 0 0 3px var(--accent-soft)}
 select.input-field{cursor:pointer}
 
@@ -121,13 +121,13 @@ select.input-field{cursor:pointer}
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .kpi{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
 .kpi-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px}
-.kpi-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text-primary);line-height:1}
+.kpi-value{font-family:'Inter',sans-serif;font-size:26px;font-weight:800;color:var(--text-primary);line-height:1}
 .kpi-sub{font-size:11px;color:var(--text-muted);margin-top:4px}
 
 /* ── SEARCH ── */
 .search-bar{display:flex;align-items:center;gap:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;width:260px;transition:border-color 0.2s}
 .search-bar:focus-within{border-color:var(--border-accent)}
-.search-bar input{background:none;border:none;outline:none;color:var(--text-primary);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;width:100%}
+.search-bar input{background:none;border:none;outline:none;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:13px;width:100%}
 .search-bar input::placeholder{color:var(--text-muted)}
 .search-bar svg{width:14px;height:14px;fill:var(--text-muted);flex-shrink:0}
 
@@ -146,10 +146,10 @@ select.input-field{cursor:pointer}
 <div id="admin-login">
   <div class="login-card">
     <div style="text-align:center;margin-bottom:24px;">
-      <div style="width:52px;height:52px;background:var(--gradient-accent);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 20px rgba(240,165,0,0.4);">
-        <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#09090b"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4c1.4 0 2.8 1.1 2.8 2.5S13.4 10 12 10c-1.4 0-2.8-1.1-2.8-2.5S10.6 5 12 5zm0 9c-2.3 0-4.3-1.2-5.5-2.9.5-1.9 4.3-2.6 5.5-2.6 1.2 0 5 .7 5.5 2.6-1.2 1.7-3.2 2.9-5.5 2.9z"/></svg>
+      <div style="width:52px;height:52px;background:var(--gradient-accent);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 20px rgba(107,181,248,0.4);">
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#ffffff"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4c1.4 0 2.8 1.1 2.8 2.5S13.4 10 12 10c-1.4 0-2.8-1.1-2.8-2.5S10.6 5 12 5zm0 9c-2.3 0-4.3-1.2-5.5-2.9.5-1.9 4.3-2.6 5.5-2.6 1.2 0 5 .7 5.5 2.6-1.2 1.7-3.2 2.9-5.5 2.9z"/></svg>
       </div>
-      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text-primary)">Super Admin</div>
+      <div style="font-family:'Inter',sans-serif;font-size:20px;font-weight:800;color:var(--text-primary)">Super Admin</div>
       <div style="font-size:12px;color:var(--text-muted);margin-top:4px">MotoStock — Painel de Controle</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:12px">
@@ -174,7 +174,7 @@ select.input-field{cursor:pointer}
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:10px;">
     <div style="width:28px;height:28px;background:var(--gradient-accent);border-radius:7px;display:flex;align-items:center;justify-content:center;">
-      <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#09090b"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+      <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#ffffff"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
     </div>
     <h1>MotoStock Admin</h1>
     <span class="topbar-badge">SUPER ADMIN</span>
@@ -360,7 +360,7 @@ select.input-field{cursor:pointer}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
         <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
           <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Próximo envio em</div>
-          <div id="auto-proximo" style="font-size:22px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif;">—</div>
+          <div id="auto-proximo" style="font-size:22px;font-weight:800;color:var(--accent);font-family:'Inter',sans-serif;">—</div>
         </div>
         <div style="padding:14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);">
           <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Último envio</div>
