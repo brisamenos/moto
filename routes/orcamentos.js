@@ -1,7 +1,7 @@
 // routes/orcamentos.js
 const express = require('express');
 const router  = express.Router();
-const { db, proximoNumeroOrcamento, proximoNumeroVenda } = require('./db');
+const { db, proximoNumeroOrcamento, proximoNumeroVenda } = require('../db');
 const { v4: uuidv4 } = require('uuid');
 
 // GET /api/orcamentos?loja_token=xxx&status=aberto
