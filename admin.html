@@ -155,8 +155,8 @@ select.input-field{cursor:pointer}
     </div>
     <div style="display:flex;flex-direction:column;gap:12px">
       <div class="form-group">
-        <label class="form-label">Usuário</label>
-        <input class="input-field" id="adm-email" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')document.getElementById('adm-senha').focus()">
+        <label class="form-label">E-mail</label>
+        <input class="input-field" id="adm-email" type="text" placeholder="admin@motostock.com" onkeydown="if(event.key==='Enter')document.getElementById('adm-senha').focus()">
       </div>
       <div class="form-group">
         <label class="form-label">Senha</label>
@@ -603,27 +603,50 @@ async function sha256(str) {
 }
 
 // ── LOGIN ──
-const ADM_USER = 'admin';
-const ADM_PASS = '123456';
-
 async function admLogin() {
-  const email = document.getElementById('adm-email').value.trim();
+  const email = document.getElementById('adm-email').value.trim().toLowerCase();
   const senha = document.getElementById('adm-senha').value;
   const erro  = document.getElementById('adm-login-erro');
   const btn   = document.getElementById('adm-login-btn');
   erro.style.display = 'none';
 
-  if (email !== ADM_USER || senha !== ADM_PASS) {
-    erro.textContent = 'Usuário ou senha incorretos.';
+  if (!email || !senha) {
+    erro.textContent = 'Preencha e-mail e senha.';
     erro.style.display = 'block';
     return;
   }
 
-  localStorage.setItem('ms_adm', '1');
-  document.getElementById('admin-login').style.display = 'none';
-  document.getElementById('admin-app').style.display = 'block';
-  document.getElementById('adm-user-nome').textContent = 'Super Admin';
-  admCarregarTudo();
+  btn.textContent = 'Entrando...'; btn.disabled = true;
+
+  try {
+    const senha_hash = await sha256(senha);
+    const { data, error } = await apiFetch('POST', '/auth/login', { email, senha_hash });
+
+    if (error || !data) {
+      erro.textContent = error?.message || 'E-mail ou senha incorretos.';
+      erro.style.display = 'block';
+      btn.textContent = 'Entrar como Admin'; btn.disabled = false;
+      return;
+    }
+
+    if (data.perfil !== 'admin' && data.perfil !== 'superadmin') {
+      erro.textContent = 'Acesso negado. Apenas administradores podem entrar aqui.';
+      erro.style.display = 'block';
+      btn.textContent = 'Entrar como Admin'; btn.disabled = false;
+      return;
+    }
+
+    localStorage.setItem('ms_adm', '1');
+    localStorage.setItem('ms_adm_email', email);
+    document.getElementById('admin-login').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    document.getElementById('adm-user-nome').textContent = data.nome || 'Admin';
+    admCarregarTudo();
+  } catch(e) {
+    erro.textContent = 'Erro de conexão com o servidor.';
+    erro.style.display = 'block';
+    btn.textContent = 'Entrar como Admin'; btn.disabled = false;
+  }
 }
 
 function admLogout() { localStorage.removeItem('ms_adm'); location.reload(); }
