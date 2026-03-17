@@ -5766,7 +5766,7 @@ function aplicarPerfilNaSidebar(cfg) {
 
 async function carregarDadosEmpresa() {
   try {
-    const { data } = await sb.from('configuracoes').select('chave,valor').eq('loja_token', _lojaToken);
+    const { data } = await apiFetch('/configuracoes?loja_token=' + (_lojaToken || 'padrao'));
     const cfg = {};
     (data || []).forEach(function(r) { cfg[r.chave] = r.valor; });
 
@@ -5807,6 +5807,9 @@ async function carregarDadosEmpresa() {
         plano_inicio:    _sessaoUsuario.plano_inicio
       });
     }
+
+    // Carrega configurações do Telegram
+    carregarConfigTelegram();
 
   } catch(e) { /* silencioso */ }
 }
@@ -6204,59 +6207,6 @@ async function relatorioModuloExcel(tipo) {
     toast('Excel (CSV) baixado com sucesso!');
   } catch(e) { toast('Erro ao gerar Excel: ' + e.message, 'r'); }
 }
-  toast('Gerando ' + (nomes[tipo] || tipo) + '...', 'y');
-  try {
-    if (tipo === 'vendas') {
-      const r = await sb.from('vendas').select('*').order('created_at', { ascending: false }).limit(100);
-      const vendas = r.data || [];
-      const linhas = [{ tipo: 'titulo', texto: '🛒 RELATÓRIO DE VENDAS' }];
-      vendas.forEach(function(v) {
-        const dt = v.created_at ? new Date(v.created_at).toLocaleDateString('pt-BR') : '—';
-        linhas.push({ tipo: 'linha', esq: dt + ' — ' + (v.cliente_nome || 'Consumidor') + ' — ' + (v.forma_pagamento || 'dinheiro').toUpperCase(), dir: fmt(v.total) });
-      });
-      const total = vendas.reduce(function(s, v) { return s + Number(v.total); }, 0);
-      linhas.push({ tipo: 'divisor' });
-      linhas.push({ tipo: 'linha', esq: 'TOTAL GERAL', dir: fmt(total) });
-      exportarPDFGenerico(nomes[tipo], linhas);
-    } else if (tipo === 'abc' || tipo === 'margem') {
-      const r = await sb.from('produtos').select('*').order('nome');
-      const prods = r.data || [];
-      const linhas = [{ tipo: 'titulo', texto: tipo === 'abc' ? '📦 CURVA ABC DE ESTOQUE' : '📈 MARGEM POR PRODUTO' }];
-      prods.forEach(function(p) {
-        const margem = p.preco && p.custo ? (((Number(p.preco) - Number(p.custo)) / Number(p.preco)) * 100).toFixed(1) + '%' : '—';
-        const val = tipo === 'abc' ? 'Estoque: ' + (p.estoque || 0) : 'Margem: ' + margem;
-        linhas.push({ tipo: 'linha', esq: p.nome + ' (' + (p.categoria || '—') + ')', dir: val });
-      });
-      exportarPDFGenerico(nomes[tipo], linhas);
-    } else if (tipo === 'dre' || tipo === 'caixa') {
-      const r = await sb.from('caixa_movimentos').select('*').order('created_at', { ascending: false }).limit(100);
-      const movs = r.data || [];
-      const entradas = movs.filter(function(m) { return m.tipo === 'entrada'; }).reduce(function(s, m) { return s + Number(m.valor); }, 0);
-      const saidas = movs.filter(function(m) { return m.tipo === 'saida'; }).reduce(function(s, m) { return s + Number(m.valor); }, 0);
-      const linhas = [
-        { tipo: 'titulo', texto: tipo === 'dre' ? '📊 DRE GERENCIAL' : '💼 FECHAMENTO DE CAIXA' },
-        { tipo: 'linha', esq: 'Total de Entradas:', dir: fmt(entradas) },
-        { tipo: 'linha', esq: 'Total de Saídas:', dir: fmt(saidas) },
-        { tipo: 'linha', esq: 'Resultado Líquido:', dir: fmt(entradas - saidas) },
-        { tipo: 'divisor' },
-        { tipo: 'titulo', texto: 'MOVIMENTAÇÕES' },
-      ];
-      movs.forEach(function(m) {
-        const dt = m.created_at ? new Date(m.created_at).toLocaleDateString('pt-BR') : '—';
-        linhas.push({ tipo: 'linha', esq: dt + ' — ' + (m.descricao || m.tipo), dir: (m.tipo === 'entrada' ? '+' : '-') + ' ' + fmt(m.valor) });
-      });
-      exportarPDFGenerico(nomes[tipo], linhas);
-    } else if (tipo === 'inadimplencia') {
-      const r = await sb.from('caixa_movimentos').select('*').eq('tipo','saida').order('created_at', { ascending: false }).limit(50);
-      const movs = r.data || [];
-      const linhas = [{ tipo: 'titulo', texto: '⚠️ RELATÓRIO DE INADIMPLÊNCIA' }];
-      if (!movs.length) { linhas.push({ tipo: 'linha', esq: 'Sem registros de contas a receber.' }); }
-      else { movs.forEach(function(m) { const dt = m.created_at ? new Date(m.created_at).toLocaleDateString('pt-BR') : '—'; linhas.push({ tipo: 'linha', esq: dt + ' — ' + (m.descricao || '—'), dir: fmt(m.valor) }); }); }
-      exportarPDFGenerico(nomes[tipo], linhas);
-    }
-  } catch(e) { toast('Erro: ' + e.message, 'r'); }
-}
-
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // SISTEMA DE LOGIN
@@ -7800,44 +7750,19 @@ function fecharScannerBarcode() {
 }
 
 // ════════════════════════════════════════════════════════════
-// NOTIFICAÇÕES — centro de alertas em tempo real
+// NOTIFICAÇÕES — central de alertas em tempo real
 // ════════════════════════════════════════════════════════════
 
 let _notificacoes = [];
 
 async function carregarNotificacoes() {
   const loja = _lojaToken || 'padrao';
-  _notificacoes = [];
   try {
-    // 1. Produtos com estoque mínimo atingido ou zerado
-    const { data: prods } = await apiFetch('/produtos?loja_token=' + loja);
-    (prods || []).forEach(function(p) {
-      if (p.estoque === 0) {
-        _notificacoes.push({ tipo: 'danger', icone: '📦', titulo: 'Estoque zerado', texto: p.nome + ' (SKU: ' + p.sku + ')', acao: function(){ showPage('estoque'); }, ts: Date.now() });
-      } else if (p.estoque <= p.estoque_minimo) {
-        _notificacoes.push({ tipo: 'warning', icone: '⚠️', titulo: 'Estoque crítico', texto: p.nome + ' — ' + p.estoque + ' un restantes', acao: function(){ showPage('estoque'); }, ts: Date.now() });
-      }
-    });
-    // 2. OS em atraso (previsao vencida)
-    const { data: osList } = await apiFetch('/os?loja_token=' + loja);
-    const hoje = new Date().toISOString().split('T')[0];
-    (osList || []).filter(function(o) {
-      return o.previsao_entrega && o.previsao_entrega < hoje && !['concluida','entregue'].includes(o.status);
-    }).forEach(function(o) {
-      _notificacoes.push({ tipo: 'danger', icone: '🔧', titulo: 'OS em atraso', texto: 'OS #' + o.numero + ' — ' + o.placa + ' (' + o.cliente_nome + ')', acao: function(){ showPage('os'); }, ts: Date.now() });
-    });
-    // 3. Orçamentos a vencer hoje/amanhã (pelo campo validade)
-    const { data: orcs } = await apiFetch('/orcamentos?loja_token=' + loja + '&status=aberto');
-    (orcs || []).forEach(function(o) {
-      const criado = new Date(o.created_at);
-      const dias   = parseInt((o.validade || '3 dias').split(' ')[0]) || 3;
-      const venc   = new Date(criado.getTime() + dias * 86400000);
-      const diff   = Math.ceil((venc - new Date()) / 86400000);
-      if (diff <= 1 && diff >= 0) {
-        _notificacoes.push({ tipo: 'warning', icone: '📋', titulo: 'Orçamento vencendo', texto: 'Orc. #' + o.numero + ' — ' + (o.cliente || 'Consumidor') + ' vence em ' + diff + ' dia(s)', acao: function(){ showPage('pdv'); }, ts: Date.now() });
-      }
-    });
-  } catch(e) {}
+    const { data } = await apiFetch('/notificacoes/alertas?loja_token=' + loja);
+    _notificacoes = data || [];
+  } catch(e) {
+    _notificacoes = [];
+  }
   renderNotificacoes();
 }
 
@@ -7850,19 +7775,23 @@ function renderNotificacoes() {
   if (dot)   dot.style.display = qtd > 0 ? '' : 'none';
   if (!lista) return;
   if (!qtd) {
-    lista.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px;">Nenhuma notificacao no momento</div>';
+    lista.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px;">✅ Nenhuma notificação no momento</div>';
     return;
   }
   const cores = { danger: 'var(--red)', warning: 'var(--purple)', info: 'var(--blue)' };
   lista.innerHTML = _notificacoes.map(function(n, i) {
-    return '<div onclick="_notificacoes['+i+'].acao&&_notificacoes['+i+'].acao();toggleNotifPanel()" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:10px;align-items:flex-start;" onmouseover="this.style.background=\'var(--bg-card-hover)\'" onmouseout="this.style.background=\'\'">' +
+    return '<div onclick="navegarNotif(\'' + (n.pagina||'dashboard') + '\');toggleNotifPanel()" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:10px;align-items:flex-start;" onmouseover="this.style.background=\'var(--bg-card-hover)\'" onmouseout="this.style.background=\'\'">' +
       '<div style="font-size:18px;flex-shrink:0;line-height:1.3;">' + n.icone + '</div>' +
       '<div style="flex:1;min-width:0;">' +
         '<div style="font-size:12px;font-weight:600;color:' + (cores[n.tipo]||'var(--text-primary)') + ';">' + n.titulo + '</div>' +
-        '<div style="font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + n.texto + '</div>' +
+        '<div style="font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + n.texto + '">' + n.texto + '</div>' +
       '</div>' +
     '</div>';
   }).join('');
+}
+
+function navegarNotif(pagina) {
+  if (pagina) showPage(pagina);
 }
 
 function toggleNotifPanel() {
@@ -7882,7 +7811,6 @@ function limparNotificacoes() {
   if (dot)   dot.style.display   = 'none';
 }
 
-// Fecha ao clicar fora
 document.addEventListener('click', function(e) {
   const btn   = document.getElementById('notif-btn');
   const panel = document.getElementById('notif-panel');
@@ -7891,8 +7819,139 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Carrega notificações após login (hook no loadDashboard)
-const _origLoadDashboard = typeof loadDashboard === 'function' ? loadDashboard : null;
+// ════════════════════════════════════════════════════════════
+// CONFIGURAÇÕES TELEGRAM — funções da interface
+// ════════════════════════════════════════════════════════════
+
+let _tgAtivo = false;
+
+async function carregarConfigTelegram() {
+  const loja = _lojaToken || 'padrao';
+  try {
+    const { data } = await apiFetch('/notificacoes/config?loja_token=' + loja);
+    if (!data) return;
+
+    const g = function(id) { return document.getElementById(id); };
+    if (g('cfg-tg-token'))    g('cfg-tg-token').value    = data.telegram_bot_token || '';
+    if (g('cfg-tg-chatid'))   g('cfg-tg-chatid').value   = data.telegram_chat_id   || '';
+    if (g('cfg-tg-horario'))  g('cfg-tg-horario').value  = data.resumo_horario     || '20:00';
+    if (g('cfg-alerta-estoque'))  g('cfg-alerta-estoque').checked  = data.alerta_estoque_ativo  === 'true';
+    if (g('cfg-alerta-orcamento'))g('cfg-alerta-orcamento').checked= data.alerta_orcamento_ativo=== 'true';
+    if (g('cfg-alerta-plano'))    g('cfg-alerta-plano').checked    = data.alerta_plano_ativo    === 'true';
+
+    _tgAtivo = data.telegram_ativo === 'true';
+    atualizarToggleTelegram();
+
+    if (data.telegram_ultimo_resumo) {
+      const el = g('cfg-tg-ultimo');
+      if (el) el.textContent = '✅ Último envio: ' + new Date(data.telegram_ultimo_resumo).toLocaleString('pt-BR');
+    }
+
+    const badge = g('cfg-notif-status-badge');
+    if (badge) badge.style.display = _tgAtivo ? '' : 'none';
+  } catch(e) {}
+}
+
+function atualizarToggleTelegram() {
+  const track = document.getElementById('cfg-tg-toggle-track');
+  const thumb = document.getElementById('cfg-tg-toggle-thumb');
+  const label = document.getElementById('cfg-tg-ativo-label');
+  const badge = document.getElementById('cfg-notif-status-badge');
+  if (track) track.style.background = _tgAtivo ? 'var(--green)' : 'var(--border-strong)';
+  if (thumb) thumb.style.transform  = _tgAtivo ? 'translateX(20px)' : 'translateX(0)';
+  if (label) { label.textContent = _tgAtivo ? 'Ativado — resumo diário automático' : 'Desativado'; label.style.color = _tgAtivo ? 'var(--green)' : 'var(--text-muted)'; }
+  if (badge) badge.style.display = _tgAtivo ? '' : 'none';
+}
+
+function toggleTelegramAtivo() {
+  _tgAtivo = !_tgAtivo;
+  atualizarToggleTelegram();
+}
+
+async function salvarConfigTelegram() {
+  const loja = _lojaToken || 'padrao';
+  const g    = function(id) { return document.getElementById(id); };
+  const payload = {
+    loja_token:              loja,
+    telegram_bot_token:      g('cfg-tg-token')?.value.trim()   || '',
+    telegram_chat_id:        g('cfg-tg-chatid')?.value.trim()  || '',
+    resumo_horario:          g('cfg-tg-horario')?.value        || '20:00',
+    telegram_ativo:          String(_tgAtivo),
+    alerta_estoque_ativo:    String(g('cfg-alerta-estoque')?.checked  || false),
+    alerta_orcamento_ativo:  String(g('cfg-alerta-orcamento')?.checked|| false),
+    alerta_plano_ativo:      String(g('cfg-alerta-plano')?.checked    || false),
+  };
+  try {
+    const { data, error } = await apiFetch('/notificacoes/config', 'POST', payload);
+    if (error) throw new Error(error.message);
+    toast('Configurações de notificação salvas!', 'g');
+  } catch(e) {
+    toast('Erro ao salvar: ' + e.message, 'r');
+  }
+}
+
+async function testarTelegram() {
+  const token  = document.getElementById('cfg-tg-token')?.value.trim();
+  const chatId = document.getElementById('cfg-tg-chatid')?.value.trim();
+  if (!token || !chatId) { toast('Preencha o Bot Token e o Chat ID.', 'y'); return; }
+  toast('Enviando mensagem de teste...', 'y');
+  try {
+    const { data, error } = await apiFetch('/notificacoes/telegram/teste', 'POST', {
+      bot_token: token, chat_id: chatId, loja_token: _lojaToken || 'padrao'
+    });
+    if (error) throw new Error(error.message);
+    toast('✅ Mensagem enviada! Verifique o Telegram.', 'g');
+  } catch(e) {
+    toast('Erro: ' + e.message, 'r');
+  }
+}
+
+async function enviarResumoDiarioAgora() {
+  const loja  = _lojaToken || 'padrao';
+  const token = document.getElementById('cfg-tg-token')?.value.trim();
+  const chat  = document.getElementById('cfg-tg-chatid')?.value.trim();
+  if (!token || !chat) { toast('Salve as configurações do Telegram primeiro.', 'y'); return; }
+  // Salva antes de enviar
+  await salvarConfigTelegram();
+  toast('Enviando resumo...', 'y');
+  try {
+    const { data, error } = await apiFetch('/notificacoes/telegram/resumo', 'POST', {
+      loja_token: loja, bot_token: token, chat_id: chat
+    });
+    if (error) throw new Error(error.message);
+    const el = document.getElementById('cfg-tg-ultimo');
+    if (el) el.textContent = '✅ Último envio: ' + new Date().toLocaleString('pt-BR');
+    toast('✅ Resumo enviado com sucesso!', 'g');
+  } catch(e) {
+    toast('Erro: ' + e.message, 'r');
+  }
+}
+
+async function carregarPreviewTelegram() {
+  const loja = _lojaToken || 'padrao';
+  const el   = document.getElementById('cfg-tg-preview');
+  if (!el) return;
+  el.textContent = 'Carregando...';
+  try {
+    // Gera preview pedindo um resumo sem enviar
+    const { data } = await apiFetch('/dashboard/stats?loja_token=' + loja);
+    if (!data) { el.textContent = 'Erro ao carregar dados.'; return; }
+    const d    = data;
+    const hoje = new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'2-digit', year:'numeric' });
+    const nome = (_lojaConfig && _lojaConfig.nome_loja) || 'MotoStock';
+    el.textContent =
+      `🏍️ ${nome} — Resumo Diário\n📅 ${hoje}\n\n` +
+      `💰 Vendas de Hoje\n  • ${d.vendas_hoje.qtd} vendas — R$ ${Number(d.vendas_hoje.total).toFixed(2).replace('.',',')}\n\n` +
+      `📊 Acumulado do Mês\n  • ${d.vendas_mes.qtd} vendas — R$ ${Number(d.vendas_mes.total).toFixed(2).replace('.',',')}\n\n` +
+      `💳 Caixa Hoje\n  • Entradas: R$ ${Number(d.caixa_hoje.entradas).toFixed(2).replace('.',',')}\n  • Saídas: R$ ${Number(d.caixa_hoje.saidas).toFixed(2).replace('.',',')}\n  • Saldo: R$ ${Number(d.caixa_hoje.saldo).toFixed(2).replace('.',',')}\n\n` +
+      (d.estoque.rupturas > 0 ? `📦 Estoque — Alertas\n  ⚠️ ${d.estoque.rupturas} produto(s) crítico(s)\n\n` : '') +
+      `─────────────────────\nMotoStock — enviado automaticamente`;
+  } catch(e) {
+    el.textContent = 'Erro: ' + e.message;
+  }
+}
+
+
 
 // ════════════════════════════════════════════════════════════
 // DASHBOARD — widgets arrastáveis e personalizáveis
@@ -8818,6 +8877,107 @@ async function loadRelatoriosDetalhados() {
       <div id="cfg-plano-aviso" style="display:none;margin-top:14px;padding:12px 16px;border-radius:var(--radius-sm);border-left:3px solid var(--red);background:var(--red-soft);">
         <div style="font-size:13px;font-weight:700;color:var(--red);" id="cfg-plano-aviso-txt"></div>
       </div>
+    </div>
+  </div>
+
+  <!-- ── NOTIFICAÇÕES & TELEGRAM ── -->
+  <div class="card" style="margin-bottom:0;" id="cfg-telegram-card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">🔔 Notificações & Telegram</div>
+        <div class="card-subtitle">Configure alertas automáticos e resumo diário via Telegram</div>
+      </div>
+      <div id="cfg-notif-status-badge" style="display:none;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-soft);color:var(--green);">● Ativo</div>
+    </div>
+    <div class="card-body">
+
+      <!-- Como obter bot token -->
+      <div style="background:var(--blue-soft);border:1px solid var(--blue);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--text-secondary);line-height:1.7;">
+        <strong style="color:var(--blue);">Como configurar:</strong>
+        <ol style="margin:6px 0 0 16px;padding:0;">
+          <li>Abra o Telegram e busque por <strong>@BotFather</strong></li>
+          <li>Digite <code>/newbot</code>, escolha um nome e copie o <strong>Token</strong></li>
+          <li>Inicie uma conversa com seu bot, depois acesse:<br><code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code> e copie o <strong>chat_id</strong></li>
+          <li>Cole os dados abaixo e clique em <strong>Testar Conexão</strong></li>
+        </ol>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Bot Token</label>
+          <input class="input-field" id="cfg-tg-token" type="text" placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz...">
+        </div>
+        <div class="form-group" style="flex:0 0 180px;">
+          <label class="form-label">Chat ID</label>
+          <input class="input-field" id="cfg-tg-chatid" type="text" placeholder="-100123456789">
+        </div>
+      </div>
+
+      <!-- Horário do resumo diário -->
+      <div class="form-row" style="align-items:flex-end;">
+        <div class="form-group" style="flex:0 0 150px;">
+          <label class="form-label">Horário do resumo diário</label>
+          <input class="input-field" id="cfg-tg-horario" type="time" value="20:00">
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Ativar envio automático</label>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;">
+            <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+              <input type="checkbox" id="cfg-tg-ativo" style="opacity:0;width:0;height:0;">
+              <span id="cfg-tg-toggle-track" onclick="toggleTelegramAtivo()" style="position:absolute;cursor:pointer;inset:0;background:var(--border-strong);border-radius:12px;transition:.3s;"></span>
+              <span id="cfg-tg-toggle-thumb" style="position:absolute;content:'';height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;pointer-events:none;"></span>
+            </label>
+            <span id="cfg-tg-ativo-label" style="font-size:12px;color:var(--text-muted);">Desativado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toggles de alertas individuais -->
+      <div style="margin:4px 0 16px;">
+        <label class="form-label" style="margin-bottom:8px;">Alertas individuais</label>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;font-size:13px;">
+            <input type="checkbox" id="cfg-alerta-estoque" style="accent-color:var(--accent);width:16px;height:16px;">
+            <span>📦 Estoque zerado/crítico</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;font-size:13px;">
+            <input type="checkbox" id="cfg-alerta-orcamento" style="accent-color:var(--accent);width:16px;height:16px;">
+            <span>📋 Orçamentos vencendo</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;font-size:13px;">
+            <input type="checkbox" id="cfg-alerta-plano" style="accent-color:var(--accent);width:16px;height:16px;">
+            <span>🎫 Plano expirando</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Preview da mensagem -->
+      <div style="margin-bottom:14px;">
+        <label class="form-label" style="margin-bottom:6px;">Preview do resumo diário</label>
+        <div id="cfg-tg-preview" style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:12px;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;white-space:pre-wrap;min-height:60px;max-height:200px;overflow-y:auto;line-height:1.6;">Clique em "Carregar Preview" para ver como ficará a mensagem...</div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-outline" onclick="carregarPreviewTelegram()" style="font-size:12px;padding:7px 14px;">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+          Carregar Preview
+        </button>
+        <button class="btn-outline" onclick="testarTelegram()" style="font-size:12px;padding:7px 14px;">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          Testar Conexão
+        </button>
+        <button class="btn-outline" onclick="enviarResumoDiarioAgora()" style="font-size:12px;padding:7px 14px;color:var(--green);border-color:var(--green);">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          Enviar Resumo Agora
+        </button>
+        <button class="btn-accent" onclick="salvarConfigTelegram()" style="font-size:12px;padding:7px 16px;">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Salvar Configurações
+        </button>
+      </div>
+
+      <!-- Último envio -->
+      <div id="cfg-tg-ultimo" style="margin-top:10px;font-size:11px;color:var(--text-muted);"></div>
     </div>
   </div>
 
