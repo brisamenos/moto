@@ -3377,6 +3377,35 @@ document.addEventListener('DOMContentLoaded', () => {
 // ━━━━ URL base da API (mesmo servidor que serve este HTML)
 const API_BASE = window.location.origin + '/api';
 
+// ── apiFetch global — usada por todas as novas funções ──────────────────────
+// Suporta dois padrões:
+//   apiFetch('/endpoint')                    → GET
+//   apiFetch('/endpoint', 'POST', {body})    → POST/PUT/PATCH/DELETE
+async function apiFetch(pathOrMethod, pathOrBody, body) {
+  let method = 'GET', path, reqBody;
+  // Detecta qual assinatura foi usada
+  if (pathOrMethod.startsWith('/')) {
+    // apiFetch('/path') ou apiFetch('/path', 'POST', body)
+    path    = pathOrMethod;
+    method  = (typeof pathOrBody === 'string' && ['POST','PUT','PATCH','DELETE','GET'].includes(pathOrBody.toUpperCase()))
+              ? pathOrBody.toUpperCase() : 'GET';
+    reqBody = body;
+  } else {
+    // apiFetch('POST', '/path', body) — assinatura legada interna
+    method  = pathOrMethod.toUpperCase();
+    path    = pathOrBody;
+    reqBody = body;
+  }
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (reqBody !== undefined) opts.body = JSON.stringify(reqBody);
+    const res  = await fetch(API_BASE + path, opts);
+    return await res.json();
+  } catch(e) {
+    return { data: null, error: { message: e.message } };
+  }
+}
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // CAMADA DE COMPATIBILIDADE — substitui sb.from(...)
 // Imita a API do Supabase usando fetch() para a nossa
