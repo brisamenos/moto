@@ -1194,18 +1194,6 @@ async function admExportarClientesCSV() {
 // ━━━━ BACKUP ZIP ━━━━
 let _bkTipo = 'geral';
 
-function bkSwitchTipo(tipo) {
-  _bkTipo = tipo;
-  const isInd = tipo === 'individual';
-  document.getElementById('bk-loja-wrap').style.display = isInd ? 'block' : 'none';
-  document.getElementById('bk-tab-geral').style.background      = isInd ? 'none' : 'var(--gradient-accent)';
-  document.getElementById('bk-tab-geral').style.color           = isInd ? 'var(--text-muted)' : '#fff';
-  document.getElementById('bk-tab-geral').style.border          = isInd ? '1px solid var(--border)' : 'none';
-  document.getElementById('bk-tab-individual').style.background = isInd ? 'var(--gradient-accent)' : 'none';
-  document.getElementById('bk-tab-individual').style.color      = isInd ? '#fff' : 'var(--text-muted)';
-  document.getElementById('bk-tab-individual').style.border     = isInd ? 'none' : '1px solid var(--border)';
-}
-
 // ── Helpers de data/hora ─────────────────────────────────────────────────────
 function bkDataHora() {
   const d = new Date();
@@ -1476,26 +1464,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleSenhaVis(id) {
   const el = document.getElementById('pw-text-' + id);
   if (!el) return;
-  const blurred = el.style.filter === 'blur(4px)' || el.style.filter === 'blur(4px)';
-  el.style.filter = blurred ? 'none' : 'blur(4px)';
-  el.title = blurred ? 'Clique para ocultar' : 'Clique para revelar';
-}
-
-function copiarSenha(id, senha) {
-  navigator.clipboard.writeText(senha).then(() => {
-    toast('Senha copiada!');
-  }).catch(() => {
-    const el = document.getElementById('pw-text-' + id);
-    if (el) { el.style.filter = 'none'; toast('Senha visível — selecione e copie.', 'y'); }
-  });
-}
-
-
-// ── Senha visibility toggle ──────────────────────────────────────────
-function toggleSenhaVis(id) {
-  const el = document.getElementById('pw-text-' + id);
-  if (!el) return;
-  const blurred = el.style.filter === 'blur(4px)' || el.style.filter === 'blur(4px)';
+  const blurred = el.style.filter === 'blur(4px)';
   el.style.filter = blurred ? 'none' : 'blur(4px)';
   el.title = blurred ? 'Clique para ocultar' : 'Clique para revelar';
 }
