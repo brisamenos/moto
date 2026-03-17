@@ -6,34 +6,34 @@
 <title>MotoStock — Gestão de Peças</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 /* ═══════════════════════════════════════════════════════════════
    MOTOSTOCK v2.1 — REFINED DARK SYSTEM
    Paleta: Slate profundo · Cobre polido · Esmeralda · Rubis
-   Tipografia: DM Sans + DM Mono + Cormorant Garamond (display)
+   Tipografia: Inter + JetBrains Mono
 ═══════════════════════════════════════════════════════════════ */
 
 
 /* ── DARK THEME ── */
 :root {
   /* Bases */
-  --bg-base:       #0a0d14;
-  --bg-surface:    #0f1320;
-  --bg-card:       #141926;
-  --bg-card-hover: #1a2030;
-  --bg-sidebar:    #080b14;
-  --bg-input:      #0f1320;
+  --bg-base:       #06080f;
+  --bg-surface:    #0b0f1c;
+  --bg-card:       #0f1428;
+  --bg-card-hover: #141a2e;
+  --bg-sidebar:    #04060e;
+  --bg-input:      #0b0f1c;
   --bg-glass:      rgba(20,25,38,0.72);
 
   /* Accent cobre */
-  --accent:        #c8924a;
-  --accent-dim:    #a8733a;
-  --accent-bright: #e8b06a;
-  --accent-glow:   rgba(200,146,74,0.20);
-  --accent-soft:   rgba(200,146,74,0.10);
-  --accent-rgb:    200,146,74;
+  --accent:        #6BB5F8;
+  --accent-dim:    #4A95D8;
+  --accent-bright: #92CCFC;
+  --accent-glow:   rgba(107,181,248,0.20);
+  --accent-soft:   rgba(107,181,248,0.10);
+  --accent-rgb:    107,181,248;
 
   /* Esmeralda */
   --green:         #3ecf8e;
@@ -59,17 +59,17 @@
   /* Bordas */
   --border:         rgba(255,255,255,0.065);
   --border-strong:  rgba(255,255,255,0.11);
-  --border-accent:  rgba(200,146,74,0.38);
+  --border-accent:  rgba(107,181,248,0.38);
 
   /* Sombras */
   --shadow-card:    0 1px 3px rgba(0,0,0,0.4), 0 8px 28px rgba(0,0,0,0.28);
-  --shadow-accent:  0 0 40px rgba(200,146,74,0.12);
+  --shadow-accent:  0 0 40px rgba(107,181,248,0.12);
   --shadow-hover:   0 4px 6px rgba(0,0,0,0.3), 0 20px 60px rgba(0,0,0,0.4);
-  --shadow-glow:    0 0 0 1px rgba(200,146,74,0.22), 0 8px 32px rgba(200,146,74,0.14);
+  --shadow-glow:    0 0 0 1px rgba(107,181,248,0.22), 0 8px 32px rgba(107,181,248,0.14);
 
   /* Gradientes */
-  --gradient-accent: linear-gradient(135deg, #c8924a 0%, #e8833a 100%);
-  --gradient-dark:   linear-gradient(180deg, #141926 0%, #0f1320 100%);
+  --gradient-accent: linear-gradient(135deg, #5BA4F5 0%, #3B87E8 100%);
+  --gradient-dark:   linear-gradient(180deg, #0f1428 0%, #0b0f1c 100%);
   --gradient-glass:  linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
 
   /* Dimensões */
@@ -86,16 +86,16 @@
   --bg-surface:    #f8f9fd;
   --bg-card:       #ffffff;
   --bg-card-hover: #f4f5fb;
-  --bg-sidebar:    #080b14;
+  --bg-sidebar:    #04060e;
   --bg-input:      #f0f2f8;
   --bg-glass:      rgba(255,255,255,0.85);
 
-  --accent:        #b07840;
-  --accent-dim:    #8d5e30;
-  --accent-bright: #c89050;
-  --accent-glow:   rgba(176,120,64,0.16);
-  --accent-soft:   rgba(176,120,64,0.09);
-  --accent-rgb:    176,120,64;
+  --accent:        #5BA4F5;
+  --accent-dim:    #3B87E8;
+  --accent-bright: #92CCFC;
+  --accent-glow:   rgba(107,181,248,0.16);
+  --accent-soft:   rgba(107,181,248,0.09);
+  --accent-rgb:    107,181,248;
 
   --green:         #0d9268;
   --green-soft:    rgba(13,146,104,0.10);
@@ -112,12 +112,12 @@
 
   --border:         rgba(0,0,0,0.07);
   --border-strong:  rgba(0,0,0,0.13);
-  --border-accent:  rgba(176,120,64,0.38);
+  --border-accent:  rgba(107,181,248,0.38);
 
   --shadow-card:    0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
-  --shadow-accent:  0 0 24px rgba(176,120,64,0.10);
+  --shadow-accent:  0 0 24px rgba(107,181,248,0.10);
   --shadow-hover:   0 4px 6px rgba(0,0,0,0.06), 0 16px 40px rgba(0,0,0,0.10);
-  --shadow-glow:    0 0 0 1px rgba(176,120,64,0.22), 0 6px 20px rgba(176,120,64,0.10);
+  --shadow-glow:    0 0 0 1px rgba(107,181,248,0.22), 0 6px 20px rgba(107,181,248,0.10);
 
   --gradient-dark: linear-gradient(180deg, #ffffff 0%, #f8f9fd 100%);
 }
@@ -135,7 +135,7 @@ html {
 body {
   background: var(--bg-base);
   color: var(--text-primary);
-  font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
   min-height: 100vh;
   display: flex;
@@ -178,21 +178,21 @@ body::before {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200,146,74,0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(107,181,248,0.6), transparent);
 }
 
 /* Sidebar sempre dark */
 .sidebar, .sidebar * {
-  --bg-sidebar:     #04060f;
+  --bg-sidebar:     #04060e;
   --text-primary:   #dde2f4;
   --text-secondary: #636c88;
   --text-muted:     #2e3450;
   --border:         rgba(255,255,255,0.045);
   --bg-card:        rgba(255,255,255,0.03);
   --bg-card-hover:  rgba(255,255,255,0.055);
-  --accent-soft:    rgba(200,146,74,0.08);
-  --border-accent:  rgba(200,146,74,0.30);
-  --accent:         #c8924a;
+  --accent-soft:    rgba(107,181,248,0.08);
+  --border-accent:  rgba(107,181,248,0.30);
+  --accent:         #6BB5F8;
 }
 
 .sidebar-scroll {
@@ -203,7 +203,7 @@ body::before {
 }
 .sidebar-scroll::-webkit-scrollbar { width: 2px; }
 .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(200,146,74,0.2); border-radius: 2px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(107,181,248,0.2); border-radius: 2px; }
 
 .sidebar-brand {
   padding: 16px 18px 14px;
@@ -220,14 +220,14 @@ body::before {
   border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 3px 12px rgba(200,146,74,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  box-shadow: 0 3px 12px rgba(107,181,248,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
   overflow: hidden;
 }
-.brand-icon svg { width: 17px; height: 17px; fill: #0a0d14; }
+.brand-icon svg { width: 17px; height: 17px; fill: #ffffff; }
 .brand-icon img { width: 34px; height: 34px; object-fit: cover; border-radius: 9px; }
 
 .brand-text h1 {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -240,7 +240,7 @@ body::before {
   letter-spacing: 2px;
   text-transform: uppercase;
   font-weight: 500;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .sidebar-section { padding: 16px 12px 2px; }
@@ -252,7 +252,7 @@ body::before {
   padding: 0 10px;
   margin-bottom: 4px;
   font-weight: 600;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .nav-item {
@@ -278,8 +278,8 @@ body::before {
 }
 
 .nav-item.active {
-  background: rgba(200,146,74,0.10);
-  color: #c8924a;
+  background: rgba(107,181,248,0.10);
+  color: #6BB5F8;
 }
 
 .nav-item.active::before {
@@ -287,11 +287,11 @@ body::before {
   position: absolute;
   left: 0; top: 20%; bottom: 20%;
   width: 2px;
-  background: #c8924a;
+  background: #6BB5F8;
   border-radius: 0 2px 2px 0;
 }
 
-.nav-item.active .nav-icon svg { fill: #c8924a; }
+.nav-item.active .nav-icon svg { fill: #6BB5F8; }
 
 .nav-icon {
   width: 28px; height: 28px;
@@ -309,10 +309,10 @@ body::before {
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 99px;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
-.nav-badge.green  { background: rgba(62,207,142,0.75); color: #0a0d14; }
-.nav-badge.accent { background: rgba(200,146,74,0.9);  color: #0a0d14; }
+.nav-badge.green  { background: rgba(62,207,142,0.75); color: #ffffff; }
+.nav-badge.accent { background: rgba(107,181,248,0.9);  color: #ffffff; }
 
 .sidebar-divider { height: 1px; background: rgba(255,255,255,0.04); margin: 8px 12px; }
 
@@ -333,14 +333,14 @@ body::before {
   border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 700;
-  color: #0a0d14;
+  color: #ffffff;
   flex-shrink: 0;
-  font-family: 'DM Mono', monospace;
-  box-shadow: 0 2px 8px rgba(200,146,74,0.25);
+  font-family: 'JetBrains Mono', monospace;
+  box-shadow: 0 2px 8px rgba(107,181,248,0.25);
 }
 
 .user-info h4 { font-size: 12.5px; font-weight: 600; color: #c0c8e0; }
-.user-info span { font-size: 10px; color: #3a4060; font-family: 'DM Mono', monospace; }
+.user-info span { font-size: 10px; color: #3a4060; font-family: 'JetBrains Mono', monospace; }
 
 /* ══════════════════════════════════════
    MAIN
@@ -382,7 +382,7 @@ body::before {
 }
 
 .topbar-title {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.1px;
@@ -393,7 +393,7 @@ body::before {
   font-size: 11px;
   color: var(--text-muted);
   margin-top: 2px;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.2px;
 }
 .topbar-spacer { flex: 1; }
@@ -410,13 +410,13 @@ body::before {
   transition: all 0.2s;
 }
 .topbar-search:focus-within {
-  border-color: rgba(200,146,74,0.4);
-  box-shadow: 0 0 0 3px rgba(200,146,74,0.08);
+  border-color: rgba(107,181,248,0.4);
+  box-shadow: 0 0 0 3px rgba(107,181,248,0.08);
 }
 .topbar-search input {
   background: none; border: none; outline: none;
   color: var(--text-primary);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 13px; width: 100%;
 }
 .topbar-search input::placeholder { color: var(--text-muted); }
@@ -472,24 +472,24 @@ body::before {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 16px;
   background: var(--gradient-accent);
-  color: #0a0d14;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 13px; font-weight: 600;
   cursor: pointer;
   transition: all 0.18s;
   white-space: nowrap;
-  box-shadow: 0 2px 10px rgba(200,146,74,0.30), inset 0 1px 0 rgba(255,255,255,0.18);
+  box-shadow: 0 2px 10px rgba(107,181,248,0.35), inset 0 1px 0 rgba(255,255,255,0.22);
   letter-spacing: 0.1px;
 }
 .btn-accent:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(200,146,74,0.40), inset 0 1px 0 rgba(255,255,255,0.18);
-  filter: brightness(1.06);
+  box-shadow: 0 6px 22px rgba(107,181,248,0.45), inset 0 1px 0 rgba(255,255,255,0.22);
+  filter: brightness(1.08);
 }
 .btn-accent:active { transform: translateY(0); filter: brightness(0.96); }
-.btn-accent svg { width: 14px; height: 14px; fill: #0a0d14; }
+.btn-accent svg { width: 14px; height: 14px; fill: #ffffff; }
 
 .btn-outline {
   display: inline-flex; align-items: center; gap: 6px;
@@ -498,7 +498,7 @@ body::before {
   color: var(--text-secondary);
   border: 1px solid var(--border-strong);
   border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 13px; font-weight: 500;
   cursor: pointer;
   transition: all 0.16s;
@@ -538,7 +538,7 @@ body::before {
   gap: 16px;
 }
 .page-header h2 {
-  font-family: 'Cormorant Garamond', 'DM Sans', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 32px;
   font-weight: 700;
   letter-spacing: -0.3px;
@@ -554,7 +554,7 @@ body::before {
   margin-top: 6px;
   max-width: 540px;
   line-height: 1.65;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.1px;
 }
 .page-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
@@ -620,7 +620,7 @@ body::before {
 }
 .kpi-icon svg { width: 15px; height: 15px; fill: var(--kpi-color, var(--accent)); }
 .kpi-trend {
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px; font-weight: 500;
   padding: 2px 7px;
   border-radius: 99px;
@@ -629,7 +629,7 @@ body::before {
 .kpi-trend.down { background: rgba(240,93,93,0.12);   color: var(--red); }
 
 .kpi-value {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 30px; font-weight: 700;
   color: var(--text-primary);
   line-height: 1;
@@ -639,7 +639,7 @@ body::before {
 .kpi-label {
   font-size: 11px;
   color: var(--text-muted);
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -671,7 +671,7 @@ body::before {
 .card-subtitle {
   font-size: 11px; color: var(--text-muted);
   margin-top: 2px;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 .card-body { padding: 18px 20px; }
 .card-actions { display: flex; gap: 6px; }
@@ -690,7 +690,7 @@ th {
   color: var(--text-muted);
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 td {
   padding: 11px 14px;
@@ -700,7 +700,7 @@ td {
 }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(255,255,255,0.018); }
-.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
 
 /* ── STATUS BADGES ── */
 .status-badge {
@@ -708,7 +708,7 @@ tr:hover td { background: rgba(255,255,255,0.018); }
   padding: 3px 9px;
   border-radius: 99px;
   font-size: 10.5px; font-weight: 600;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.3px;
 }
 .status-badge.green  { background: var(--green-soft);  color: var(--green);  }
@@ -728,7 +728,7 @@ tr:hover td { background: rgba(255,255,255,0.018); }
   background: none;
   color: var(--text-muted);
   transition: all 0.15s;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 .chip:hover { border-color: var(--border-accent); color: var(--accent); background: var(--accent-soft); }
 .chip.active { background: var(--accent-soft); border-color: var(--border-accent); color: var(--accent); font-weight: 600; }
@@ -754,13 +754,13 @@ tr:hover td { background: rgba(255,255,255,0.018); }
   min-height: 4px;
   opacity: 0.85;
 }
-.chart-bar.secondary { background: rgba(200,146,74,0.22); }
+.chart-bar.secondary { background: rgba(107,181,248,0.22); }
 .chart-bar:hover { filter: brightness(1.2); opacity: 1; }
 .chart-labels {
   display: flex; justify-content: space-between;
   padding: 8px 4px 0;
   font-size: 10px; color: var(--text-muted);
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 /* ── MINI STATS ── */
@@ -774,7 +774,7 @@ tr:hover td { background: rgba(255,255,255,0.018); }
 .mini-stat-left { display: flex; align-items: center; gap: 10px; }
 .mini-stat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .mini-stat-name { font-size: 13px; color: var(--text-secondary); }
-.mini-stat-value { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-primary); font-weight: 500; }
+.mini-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-primary); font-weight: 500; }
 
 /* ── ACTIVITY ── */
 .activity-item { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
@@ -786,7 +786,7 @@ tr:hover td { background: rgba(255,255,255,0.018); }
 }
 .activity-icon svg { width: 15px; height: 15px; fill: currentColor; }
 .activity-text { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
-.activity-time { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+.activity-time { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
 
 /* ══════════════════════════════════════
    FORMULÁRIOS / INPUTS
@@ -797,15 +797,15 @@ tr:hover td { background: rgba(255,255,255,0.018); }
   border-radius: 8px;
   padding: 9px 12px;
   color: var(--text-primary);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   outline: none;
   transition: border-color 0.18s, box-shadow 0.18s;
   width: 100%;
 }
 .input-field:focus, select:focus {
-  border-color: rgba(200,146,74,0.45);
-  box-shadow: 0 0 0 3px rgba(200,146,74,0.08);
+  border-color: rgba(107,181,248,0.45);
+  box-shadow: 0 0 0 3px rgba(107,181,248,0.08);
 }
 select { cursor: pointer; }
 select option { background: var(--bg-card); color: var(--text-primary); }
@@ -821,7 +821,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-muted);
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 /* ══════════════════════════════════════
@@ -849,7 +849,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200,146,74,0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(107,181,248,0.5), transparent);
 }
 
 @keyframes modalIn {
@@ -938,10 +938,10 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   display: flex; flex-direction: column;
 }
 .product-tile:hover { background: var(--bg-card-hover); }
-.product-tile-code  { font-size: 9.5px; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-bottom: 5px; }
+.product-tile-code  { font-size: 9.5px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 5px; }
 .product-tile-name  { font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; line-height: 1.35; flex: 1; }
-.product-tile-price { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--accent); }
-.product-tile-stock { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: 'DM Mono', monospace; }
+.product-tile-price { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--accent); }
+.product-tile-stock { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
 
 /* Cart */
 .pdv-cart {
@@ -964,9 +964,9 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 }
 .cart-item-info { flex: 1; min-width: 0; }
 .cart-item-name  { font-size: 12.5px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cart-item-price { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-top: 1px; }
+.cart-item-price { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 1px; }
 .cart-item-qty   { display: flex; align-items: center; gap: 6px; }
-.cart-item-total { font-family: 'DM Mono', monospace; font-size: 12.5px; font-weight: 600; color: var(--text-primary); min-width: 56px; text-align: right; }
+.cart-item-total { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 600; color: var(--text-primary); min-width: 56px; text-align: right; }
 
 .qty-btn {
   width: 22px; height: 22px;
@@ -978,7 +978,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   transition: all 0.14s; color: var(--text-secondary); user-select: none;
 }
 .qty-btn:hover { background: var(--accent-soft); border-color: var(--border-accent); color: var(--accent); }
-.qty-num { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; color: var(--text-primary); min-width: 16px; text-align: center; }
+.qty-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--text-primary); min-width: 16px; text-align: center; }
 
 .pdv-cart-empty {
   text-align: center; padding: 40px 20px;
@@ -986,8 +986,8 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 }
 .pdv-cart-footer { padding: 14px 16px; border-top: 1px solid var(--border); }
 .pdv-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-.pdv-total-label { font-size: 12px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-.pdv-total-value { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 600; color: var(--accent); }
+.pdv-total-label { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+.pdv-total-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; color: var(--accent); }
 .pdv-payment-section { display: flex; flex-direction: column; gap: 8px; }
 
 /* ══════════════════════════════════════
@@ -1025,12 +1025,12 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 }
 .cash-status-icon svg { width: 19px; height: 19px; fill: currentColor; }
 .cash-status-text h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-.cash-status-text p  { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+.cash-status-text p  { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
 
 .fin-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; transition: all 0.22s; }
 .fin-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
-.fin-card-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 8px; font-family: 'DM Mono', monospace; }
-.fin-card-value { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.1; }
+.fin-card-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+.fin-card-value { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.1; }
 
 /* ══════════════════════════════════════
    SCROLL CUSTOM — toda a página
@@ -1072,8 +1072,8 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(200,146,74,0.4); }
-  50%      { box-shadow: 0 0 0 5px rgba(200,146,74,0); }
+  0%,100% { box-shadow: 0 0 0 0 rgba(107,181,248,0.4); }
+  50%      { box-shadow: 0 0 0 5px rgba(107,181,248,0); }
 }
 
 /* ══════════════════════════════════════
@@ -1092,34 +1092,34 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
 .cat-prod-img-placeholder { font-size: 36px; opacity: 0.2; }
-.cat-promo-badge { position: absolute; top: 8px; right: 8px; background: var(--red); color: #fff; font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; font-family: 'DM Mono', monospace; }
+.cat-promo-badge { position: absolute; top: 8px; right: 8px; background: var(--red); color: #fff; font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
 .cat-prod-actions { position: absolute; top: 6px; left: 6px; display: flex; gap: 4px; opacity: 0; transition: opacity 0.16s; }
 .cat-prod-card:hover .cat-prod-actions { opacity: 1; }
 .cat-toggle-btn.active svg { fill: var(--green) !important; }
 .cat-toggle-btn svg { fill: var(--text-muted) !important; }
 .cat-prod-body { padding: 12px 14px 14px; }
-.cat-prod-cat-tag { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+.cat-prod-cat-tag { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
 .cat-prod-name  { font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.35; }
-.cat-prod-price { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; color: var(--accent); }
-.cat-prod-stock-info { font-size: 10.5px; color: var(--text-muted); margin-top: 3px; font-family: 'DM Mono', monospace; }
+.cat-prod-price { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 600; color: var(--accent); }
+.cat-prod-stock-info { font-size: 10.5px; color: var(--text-muted); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
 
 .cat-client-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.22s; }
 .cat-client-card:hover { border-color: var(--border-accent); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
 .cat-client-img  { height: 120px; background: var(--bg-surface); display: flex; align-items: center; justify-content: center; }
 .cat-client-body { padding: 12px 14px; }
-.cat-client-tag  { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+.cat-client-tag  { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
 .cat-client-name { font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.35; }
-.cat-client-price { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; color: var(--accent); }
+.cat-client-price { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 600; color: var(--accent); }
 .cat-client-old  { font-size: 11px; color: var(--text-muted); text-decoration: line-through; }
-.cat-client-promo { display:inline-block; background: var(--red); color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.5px; margin: 4px 0 6px; font-family: 'DM Mono', monospace; }
+.cat-client-promo { display:inline-block; background: var(--red); color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.5px; margin: 4px 0 6px; font-family: 'JetBrains Mono', monospace; }
 .cat-client-btn {
   width: 100%; padding: 8px; margin-top: 8px;
   background: var(--accent-soft); border: 1px solid var(--border-accent);
   border-radius: 7px; color: var(--accent);
-  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
   cursor: pointer; transition: all 0.15s;
 }
-.cat-client-btn:hover { background: var(--accent); color: #0a0d14; }
+.cat-client-btn:hover { background: var(--accent); color: #ffffff; }
 
 /* ══════════════════════════════════════
    CHANNEL CARDS (Catálogo)
@@ -1133,9 +1133,9 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 .channel-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--ch-color, var(--accent)) 40%, transparent); box-shadow: var(--shadow-hover); }
 .channel-icon { width: 42px; height: 42px; border-radius: 10px; background: color-mix(in srgb, var(--ch-color, var(--accent)) 12%, transparent); border: 1px solid color-mix(in srgb, var(--ch-color, var(--accent)) 25%, transparent); display: flex; align-items: center; justify-content: center; }
 .channel-icon svg { width: 20px; height: 20px; fill: var(--ch-color, var(--accent)); }
-.channel-name { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-primary); }
-.channel-stat { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--ch-color, var(--accent)); line-height: 1; }
-.channel-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; font-family: 'DM Mono', monospace; }
+.channel-name { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.channel-stat { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700; color: var(--ch-color, var(--accent)); line-height: 1; }
+.channel-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
 
 /* ══════════════════════════════════════
    AGENDA / CALENDÁRIO
@@ -1143,20 +1143,20 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 .ag-cal-cell { min-height: 88px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6px; cursor: pointer; transition: background 0.14s; position: relative; }
 .ag-cal-cell:hover { background: var(--bg-card-hover); }
 .ag-cal-cell.today { background: var(--accent-soft); }
-.ag-cal-cell.today .ag-cal-day { color: #0a0d14; font-weight: 700; background: var(--accent); border-radius: 50%; width: 21px; height: 21px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+.ag-cal-cell.today .ag-cal-day { color: #ffffff; font-weight: 700; background: var(--accent); border-radius: 50%; width: 21px; height: 21px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
 .ag-cal-cell.other-month { opacity: 0.28; }
 .ag-cal-cell:nth-child(7n) { border-right: none; }
-.ag-cal-day { font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px; width: 21px; height: 21px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; }
-.ag-cal-event { font-size: 10px; font-weight: 600; padding: 2px 5px; border-radius: 3px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; transition: filter 0.14s; font-family: 'DM Mono', monospace; }
+.ag-cal-day { font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px; width: 21px; height: 21px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; }
+.ag-cal-event { font-size: 10px; font-weight: 600; padding: 2px 5px; border-radius: 3px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; transition: filter 0.14s; font-family: 'JetBrains Mono', monospace; }
 .ag-cal-event:hover { filter: brightness(1.2); }
 .ag-cal-event.agendado   { background: rgba(91,156,246,0.15); color: var(--blue);   border-left: 1.5px solid var(--blue); }
 .ag-cal-event.confirmado { background: rgba(62,207,142,0.15); color: var(--green);  border-left: 1.5px solid var(--green); }
-.ag-cal-event.concluido  { background: rgba(200,146,74,0.15); color: var(--accent); border-left: 1.5px solid var(--accent); }
+.ag-cal-event.concluido  { background: rgba(107,181,248,0.15); color: var(--accent); border-left: 1.5px solid var(--accent); }
 .ag-cal-event.cancelado  { background: rgba(240,93,93,0.12);  color: var(--red);    border-left: 1.5px solid var(--red); text-decoration: line-through; }
-.ag-more-badge { font-size: 9.5px; color: var(--text-muted); font-weight: 600; cursor: pointer; padding: 1px 3px; font-family: 'DM Mono', monospace; }
+.ag-more-badge { font-size: 9.5px; color: var(--text-muted); font-weight: 600; cursor: pointer; padding: 1px 3px; font-family: 'JetBrains Mono', monospace; }
 .ag-status-agendado   { background: rgba(91,156,246,0.13);  color: var(--blue);   }
 .ag-status-confirmado { background: rgba(62,207,142,0.13);  color: var(--green);  }
-.ag-status-concluido  { background: rgba(200,146,74,0.13);  color: var(--accent); }
+.ag-status-concluido  { background: rgba(107,181,248,0.13);  color: var(--accent); }
 .ag-status-cancelado  { background: rgba(240,93,93,0.13);   color: var(--red);    }
 .ag-msg-type { transition: all 0.14s; }
 .ag-msg-type:hover { border-color: var(--border-accent) !important; color: var(--accent) !important; background: var(--accent-soft) !important; }
@@ -1179,7 +1179,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 .report-module p  { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; }
 
 /* ── Stock bar ── */
-.stock-bar-wrap span { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); min-width: 26px; text-align: right; font-family: 'DM Mono', monospace; }
+.stock-bar-wrap span { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); min-width: 26px; text-align: right; font-family: 'JetBrains Mono', monospace; }
 
 /* ══════════════════════════════════════
    RESPONSIVE
@@ -1220,7 +1220,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 }
 .ag-cal-cell:hover { background: var(--bg-card-hover); }
 .ag-cal-cell.today { background: var(--accent-soft); }
-.ag-cal-cell.today .ag-cal-day { color: var(--accent); font-weight: 800; background: var(--accent); color: #09090b; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.ag-cal-cell.today .ag-cal-day { color: var(--accent); font-weight: 800; background: var(--accent); color: #ffffff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 .ag-cal-cell.other-month { opacity: 0.35; }
 .ag-cal-cell:nth-child(7n) { border-right: none; }
 .ag-cal-day { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
@@ -1239,14 +1239,14 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 .ag-cal-event:hover { filter: brightness(1.15); }
 .ag-cal-event.agendado   { background: rgba(77,159,255,0.18); color: var(--blue); border-left: 2px solid var(--blue); }
 .ag-cal-event.confirmado { background: rgba(16,232,158,0.18); color: var(--green); border-left: 2px solid var(--green); }
-.ag-cal-event.concluido  { background: rgba(240,165,0,0.15); color: var(--accent); border-left: 2px solid var(--accent); }
+.ag-cal-event.concluido  { background: rgba(107,181,248,0.15); color: var(--accent); border-left: 2px solid var(--accent); }
 .ag-cal-event.cancelado  { background: rgba(255,92,122,0.15); color: var(--red); border-left: 2px solid var(--red); text-decoration: line-through; }
 .ag-more-badge { font-size: 10px; color: var(--text-muted); font-weight: 600; cursor: pointer; padding: 1px 4px; }
 
 /* Status badges in table */
 .ag-status-agendado   { background: rgba(77,159,255,0.15);  color: var(--blue);  }
 .ag-status-confirmado { background: rgba(16,232,158,0.15);  color: var(--green); }
-.ag-status-concluido  { background: rgba(240,165,0,0.15);   color: var(--accent);}
+.ag-status-concluido  { background: rgba(107,181,248,0.15);   color: var(--accent);}
 .ag-status-cancelado  { background: rgba(255,92,122,0.15);  color: var(--red);   }
 
 .ag-msg-type { transition: all 0.15s; }
@@ -1266,17 +1266,17 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   position:fixed;inset:0;z-index:9999;
   background:var(--bg-base);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Plus Jakarta Sans',sans-serif;
+  font-family:'Inter', sans-serif;
 ">
   <div style="width:100%;max-width:420px;padding:24px;">
 
     <!-- Logo/Brand -->
     <div style="text-align:center;margin-bottom:32px;">
-      <div id="login-logo-wrap" style="width:60px;height:60px;background:var(--gradient-accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 24px rgba(240,165,0,0.4);overflow:hidden;">
+      <div id="login-logo-wrap" style="width:60px;height:60px;background:var(--gradient-accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 24px rgba(107,181,248,0.4);overflow:hidden;">
         <img id="login-logo-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
-        <svg id="login-logo-svg" viewBox="0 0 24 24" style="width:28px;height:28px;fill:#09090b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        <svg id="login-logo-svg" viewBox="0 0 24 24" style="width:28px;height:28px;fill:#ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
       </div>
-      <h1 id="login-nome-loja" style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text-primary);letter-spacing:0.5px;margin-bottom:4px;">MotoStock</h1>
+      <h1 id="login-nome-loja" style="font-family:'Inter',sans-serif;font-size:26px;font-weight:800;color:var(--text-primary);letter-spacing:0.5px;margin-bottom:4px;">MotoStock</h1>
       <p id="login-slogan" style="font-size:12px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Gestão Completa</p>
     </div>
 
@@ -1291,7 +1291,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         <div>
           <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:6px;">E-mail</label>
           <input id="login-email" type="email" placeholder="seu@email.com"
-            style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text-primary);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;box-sizing:border-box;"
+            style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text-primary);font-family:'Inter', sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;box-sizing:border-box;"
             onfocus="this.style.borderColor='var(--border-accent)'"
             onblur="this.style.borderColor='var(--border)'"
             onkeydown="if(event.key==='Enter')document.getElementById('login-senha').focus()">
@@ -1300,7 +1300,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
           <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:6px;">Senha</label>
           <div style="position:relative;">
             <input id="login-senha" type="password" placeholder="••••••••"
-              style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 42px 11px 14px;color:var(--text-primary);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;box-sizing:border-box;"
+              style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 42px 11px 14px;color:var(--text-primary);font-family:'Inter', sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;box-sizing:border-box;"
               onfocus="this.style.borderColor='var(--border-accent)'"
               onblur="this.style.borderColor='var(--border)'"
               onkeydown="if(event.key==='Enter')fazerLogin()">
@@ -1311,7 +1311,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         <div id="login-erro" style="display:none;padding:10px 14px;background:var(--red-soft);border-radius:var(--radius-sm);border-left:3px solid var(--red);font-size:12px;font-weight:600;color:var(--red);"></div>
 
         <button onclick="fazerLogin()" id="login-btn"
-          style="width:100%;padding:13px;background:var(--gradient-accent);color:#09090b;border:none;border-radius:var(--radius-sm);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(240,165,0,0.35);margin-top:4px;">
+          style="width:100%;padding:13px;background:var(--gradient-accent);color:#ffffff;border:none;border-radius:var(--radius-sm);font-family:'Inter', sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(107,181,248,0.35);margin-top:4px;">
           Entrar
         </button>
       </div>
@@ -1384,10 +1384,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg></span>
       Relatorios
     </a>
-    <a class="nav-item" onclick="showPage('catalogo')">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 4h2v5l-1-.75L9 9V4zm9 16H6V4h1v9l3-2.25L13 13V4h5v16z"/></svg></span>
-      Catalogo & Canais
-    </a>
+
   </div>
 
   </div><!-- /sidebar-scroll -->
@@ -1668,14 +1665,14 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
     <!-- TABS -->
     <div style="display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
       <div>
-        <h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="pdv-page-title">Ponto de Venda</h2>
+        <h2 style="font-family:'Inter',sans-serif;font-size:28px;font-weight:800;background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="pdv-page-title">Ponto de Venda</h2>
       </div>
       <div style="display:flex; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; flex-shrink:0;">
-        <button id="pdv-tab-venda" onclick="pdvSwitchTab('venda')" style="padding:10px 24px; background:var(--gradient-accent); color:#09090b; border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px;">
+        <button id="pdv-tab-venda" onclick="pdvSwitchTab('venda')" style="padding:10px 24px; background:var(--gradient-accent); color:#ffffff; border:none; font-family:'Inter', sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px;">
           <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.9 18 9 18h12v-2H9.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H19c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 23.43 5H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
           Venda
         </button>
-        <button id="pdv-tab-orc" onclick="pdvSwitchTab('orcamento')" style="padding:10px 24px; background:none; color:var(--text-secondary); border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px;">
+        <button id="pdv-tab-orc" onclick="pdvSwitchTab('orcamento')" style="padding:10px 24px; background:none; color:var(--text-secondary); border:none; font-family:'Inter', sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px;">
           <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
           Orçamento
         </button>
@@ -1712,7 +1709,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         <div class="cart-header">
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <h3 id="pdv-cart-title">Carrinho de Venda</h3>
-            <button onclick="pdvClearCart()" style="background:none;border:1px solid var(--red);border-radius:5px;padding:3px 9px;font-size:11px;color:var(--red);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;display:flex;align-items:center;gap:4px;">
+            <button onclick="pdvClearCart()" style="background:none;border:1px solid var(--red);border-radius:5px;padding:3px 9px;font-size:11px;color:var(--red);cursor:pointer;font-family:'Inter', sans-serif;font-weight:600;display:flex;align-items:center;gap:4px;">
               <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
               Limpar
             </button>
@@ -1825,11 +1822,11 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       </div>
       <div class="page-actions">
         <div style="display:flex;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
-          <button id="agenda-tab-cal" onclick="agendaSwitchView('calendario')" style="padding:8px 18px;background:var(--gradient-accent);color:#09090b;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;">📅 Calendário</button>
-          <button id="agenda-tab-list" onclick="agendaSwitchView('lista')" style="padding:8px 18px;background:none;color:var(--text-secondary);border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;">📋 Lista</button>
+          <button id="agenda-tab-cal" onclick="agendaSwitchView('calendario')" style="padding:8px 18px;background:var(--gradient-accent);color:#ffffff;border:none;font-family:'Inter', sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;">📅 Calendário</button>
+          <button id="agenda-tab-list" onclick="agendaSwitchView('lista')" style="padding:8px 18px;background:none;color:var(--text-secondary);border:none;font-family:'Inter', sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;">📋 Lista</button>
         </div>
         <button class="btn-accent" onclick="openModal('add-agendamento')">
-          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#ffffff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
           Novo Agendamento
         </button>
       </div>
@@ -2044,7 +2041,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         </div>
         <div style="display:flex; gap:8px; flex-shrink:0;">
           <button id="btn-abrir-caixa" class="btn-accent" onclick="abrirCaixa()" style="padding:10px 20px;">
-            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
             Abrir Caixa
           </button>
           <button id="btn-fechar-caixa" class="btn-outline" onclick="fecharCaixa()" style="display:none; border-color:var(--red); color:var(--red);">
@@ -2081,7 +2078,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       </div>
       <div class="fin-card">
         <div class="fin-card-left">
-          <div class="fin-card-icon" style="background:rgba(240,165,0,0.12); color:var(--accent)">
+          <div class="fin-card-icon" style="background:rgba(107,181,248,0.12); color:var(--accent)">
             <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
           </div>
           <div>
@@ -2100,7 +2097,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
           <div class="card-subtitle" id="caixa-mov-sub">Nenhum lancamento hoje</div>
         </div>
         <button class="btn-accent" onclick="openModal('lancamento')">
-          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
           Novo Lancamento
         </button>
       </div>
@@ -2220,7 +2217,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       </div>
       <div class="page-actions">
         <button class="btn-accent" onclick="openModal('emitir-nf')">
-          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
           Gerar Nota Fiscal
         </button>
       </div>
@@ -2261,7 +2258,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       </div>
       <div class="page-actions">
         <button class="btn-accent" onclick="openModal('add-cliente')">
-          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
           Novo Cliente
         </button>
       </div>
@@ -2355,222 +2352,6 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
     </div>
   </div>
 
-  <!-- ══════════ CATALOGO ══════════ -->
-  <div class="content" id="page-catalogo">
-    <div class="page-header">
-      <div>
-        <h2>Catalogo de Produtos</h2>
-        <p>Adicione produtos com fotos, precos e promocoes. Compartilhe o link para seus clientes verem os produtos disponiveis.</p>
-      </div>
-      <div class="page-actions">
-        <button class="btn-outline" onclick="copiarLinkCatalogo()" id="btn-link-catalogo">
-          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
-          Copiar Link do Cliente
-        </button>
-        <button class="btn-accent" onclick="openModal('add-catalogo-produto')">
-          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          Adicionar Produto
-        </button>
-      </div>
-    </div>
-
-    <!-- TABS: Admin view vs Preview of client view -->
-    <div style="display:flex; gap:0; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; align-self:flex-start; margin-bottom:4px;">
-      <button id="cat-tab-admin" onclick="catSwitchTab('admin')" style="padding:9px 22px; background:var(--gradient-accent); color:#09090b; border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer;">
-        ⚙ Gerenciar
-      </button>
-      <button id="cat-tab-preview" onclick="catSwitchTab('preview')" style="padding:9px 22px; background:none; color:var(--text-secondary); border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;">
-        👁 Preview do Cliente
-      </button>
-    </div>
-
-    <!-- ADMIN VIEW -->
-    <div id="cat-admin-view">
-      <!-- Filter / search bar -->
-      <div class="card" style="padding:0; overflow:visible;">
-        <div class="card-header" style="flex-wrap:wrap; gap:10px;">
-          <div style="display:flex; gap:8px; flex:1; min-width:200px;">
-            <input class="input-field" id="cat-search" type="text" placeholder="Buscar produto..." style="flex:1; padding:8px 14px;" oninput="filterCatalogo()">
-            <select id="cat-filter-cat" style="padding:8px 12px; font-size:13px;" onchange="filterCatalogo()">
-              <option value="">Todas as categorias</option>
-              <option>Filtros</option><option>Freios</option><option>Motor</option>
-              <option>Suspensao</option><option>Transmissao</option><option>Cabos</option><option>Eletrica</option><option>Acessorios</option>
-            </select>
-          </div>
-          <div style="display:flex; gap:6px; align-items:center;">
-            <span style="font-size:12px; color:var(--text-muted);">Mostrar:</span>
-            <button class="chip active" onclick="catFilterStatus(this,'todos')" data-status="todos">Todos</button>
-            <button class="chip" onclick="catFilterStatus(this,'ativo')" data-status="ativo">Ativos</button>
-            <button class="chip" onclick="catFilterStatus(this,'inativo')" data-status="inativo">Ocultos</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product grid (admin) -->
-      <div id="cat-admin-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px;">
-
-        <!-- Product card template - active with promo -->
-        <div class="cat-prod-card" data-cat="Filtros" data-status="ativo">
-          <div class="cat-prod-img-wrap">
-            <div class="cat-prod-img-placeholder">📷</div>
-            <span class="cat-promo-badge">-15%</span>
-            <div class="cat-prod-actions">
-              <button class="icon-btn" title="Editar" onclick="editCatProd(this)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="icon-btn" title="Foto" onclick="uploadFoto(this)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>
-              <button class="icon-btn cat-toggle-btn active" title="Ocultar do catalogo" onclick="toggleCatProd(this)"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>
-            </div>
-          </div>
-          <div class="cat-prod-body">
-            <div class="cat-prod-cat-tag">Filtros</div>
-            <div class="cat-prod-name">Filtro de Oleo CG 150/160</div>
-            <div style="display:flex; align-items:baseline; gap:8px; margin-top:6px;">
-              <span class="cat-prod-price">R$ 24,60</span>
-              <span class="cat-prod-price-old">R$ 28,90</span>
-            </div>
-            <div class="cat-prod-stock-info">Estoque: 47 un · Cod: FLT-001</div>
-          </div>
-        </div>
-
-        <!-- Product without promo -->
-        <div class="cat-prod-card" data-cat="Freios" data-status="ativo">
-          <div class="cat-prod-img-wrap">
-            <div class="cat-prod-img-placeholder">📷</div>
-            <div class="cat-prod-actions">
-              <button class="icon-btn" title="Editar" onclick="editCatProd(this)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="icon-btn" title="Foto" onclick="uploadFoto(this)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>
-              <button class="icon-btn cat-toggle-btn active" title="Ocultar do catalogo" onclick="toggleCatProd(this)"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>
-            </div>
-          </div>
-          <div class="cat-prod-body">
-            <div class="cat-prod-cat-tag">Freios</div>
-            <div class="cat-prod-name">Pastilha Freio Dianteiro Factor 150</div>
-            <div style="display:flex; align-items:baseline; gap:8px; margin-top:6px;">
-              <span class="cat-prod-price">R$ 45,00</span>
-            </div>
-            <div class="cat-prod-stock-info">Estoque: 22 un · Cod: FRE-014</div>
-          </div>
-        </div>
-
-        <!-- Hidden product -->
-        <div class="cat-prod-card" data-cat="Motor" data-status="inativo" style="opacity:0.5">
-          <div class="cat-prod-img-wrap">
-            <div class="cat-prod-img-placeholder" style="background:var(--bg-base)">🚫</div>
-            <span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:var(--text-muted);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;">Oculto</span>
-            <div class="cat-prod-actions">
-              <button class="icon-btn" title="Editar" onclick="editCatProd(this)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="icon-btn cat-toggle-btn" title="Mostrar no catalogo" onclick="toggleCatProd(this)"><svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg></button>
-            </div>
-          </div>
-          <div class="cat-prod-body">
-            <div class="cat-prod-cat-tag">Motor</div>
-            <div class="cat-prod-name">Jogo de Juntas Motor CG 150</div>
-            <div style="display:flex; align-items:baseline; gap:8px; margin-top:6px;">
-              <span class="cat-prod-price">R$ 54,90</span>
-            </div>
-            <div class="cat-prod-stock-info">Estoque: 0 un · Cod: JNT-016</div>
-          </div>
-        </div>
-
-        <!-- Add new card -->
-        <div onclick="openModal('add-catalogo-produto')" style="border:2px dashed var(--border); border-radius:var(--radius); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; min-height:260px; cursor:pointer; transition:all 0.2s; color:var(--text-muted);" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
-          <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:currentColor;opacity:0.5"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          <span style="font-size:13px; font-weight:600;">Adicionar Produto</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- CLIENT PREVIEW -->
-    <div id="cat-preview-view" style="display:none;">
-      <div style="background:var(--bg-card); border:1px solid var(--border-accent); border-radius:var(--radius); padding:14px 20px; display:flex; align-items:center; gap:12px; margin-bottom:4px;">
-        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--accent);flex-shrink:0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-        <span style="font-size:13px; color:var(--text-secondary);">Esta e a visao que <strong style="color:var(--text-primary)">o seu cliente ve</strong> ao acessar o link. Produtos ocultos nao aparecem aqui.</span>
-        <button class="btn-outline" style="margin-left:auto; flex-shrink:0;" onclick="copiarLinkCatalogo()">Copiar Link</button>
-      </div>
-
-      <!-- Client storefront preview -->
-      <div style="background:var(--bg-base); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;">
-        <!-- Store header -->
-        <div style="background:linear-gradient(135deg, #1a1f35 0%, #0d1117 100%); padding:32px 32px 24px; border-bottom:1px solid var(--border);">
-          <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
-            <div style="width:48px;height:48px; background:var(--gradient-accent); border-radius:12px; display:flex;align-items:center;justify-content:center; box-shadow:0 4px 16px rgba(240,165,0,0.4);">
-              <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#09090b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            </div>
-            <div>
-              <div style="font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:#f0f4ff;">MotoStock</div>
-              <div style="font-size:12px; color:#6b7599; margin-top:2px;">Pecas e Acessorios para Motos</div>
-            </div>
-          </div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="chip active" style="font-size:12px;">Todos</button>
-            <button class="chip" style="font-size:12px;">Filtros</button>
-            <button class="chip" style="font-size:12px;">Freios</button>
-            <button class="chip" style="font-size:12px;">Motor</button>
-            <button class="chip" style="font-size:12px;">Suspensao</button>
-          </div>
-        </div>
-
-        <!-- Client product grid -->
-        <div style="padding:24px; display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px;">
-
-          <div class="cat-client-card">
-            <div class="cat-client-img"><span style="font-size:28px;">🔧</span></div>
-            <div class="cat-client-body">
-              <div class="cat-client-tag">Filtros</div>
-              <div class="cat-client-name">Filtro de Oleo CG 150/160</div>
-              <div style="display:flex; align-items:baseline; gap:6px; margin-top:6px;">
-                <span class="cat-client-price">R$ 24,60</span>
-                <span class="cat-client-old">R$ 28,90</span>
-              </div>
-              <span class="cat-client-promo">PROMO</span>
-              <button class="cat-client-btn" onclick="toast('Entre em contato para encomendar!')">Consultar</button>
-            </div>
-          </div>
-
-          <div class="cat-client-card">
-            <div class="cat-client-img"><span style="font-size:28px;">🛞</span></div>
-            <div class="cat-client-body">
-              <div class="cat-client-tag">Freios</div>
-              <div class="cat-client-name">Pastilha Freio Dianteiro Factor 150</div>
-              <div style="margin-top:6px;"><span class="cat-client-price">R$ 45,00</span></div>
-              <button class="cat-client-btn" onclick="toast('Entre em contato para encomendar!')">Consultar</button>
-            </div>
-          </div>
-
-          <div class="cat-client-card">
-            <div class="cat-client-img"><span style="font-size:28px;">⚡</span></div>
-            <div class="cat-client-body">
-              <div class="cat-client-tag">Motor</div>
-              <div class="cat-client-name">Vela Iridium CR8EIX Bros 160</div>
-              <div style="margin-top:6px;"><span class="cat-client-price">R$ 18,50</span></div>
-              <button class="cat-client-btn" onclick="toast('Entre em contato para encomendar!')">Consultar</button>
-            </div>
-          </div>
-
-          <div class="cat-client-card">
-            <div class="cat-client-img"><span style="font-size:28px;">🔩</span></div>
-            <div class="cat-client-body">
-              <div class="cat-client-tag">Transmissao</div>
-              <div class="cat-client-name">Kit Relacao Titan 150 ESD</div>
-              <div style="margin-top:6px;"><span class="cat-client-price">R$ 89,00</span></div>
-              <button class="cat-client-btn" onclick="toast('Entre em contato para encomendar!')">Consultar</button>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Store footer -->
-        <div style="border-top:1px solid var(--border); padding:16px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <span style="font-size:12px; color:var(--text-muted);">📍 Entre em contato para encomendas e disponibilidade</span>
-          <div style="display:flex; gap:8px;">
-            <a href="#" style="background:var(--green); color:#fff; padding:8px 16px; border-radius:var(--radius-sm); font-size:12px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:6px; transition:opacity 0.2s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">
-              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.075-.3-.15-1.263-.465-2.403-1.485-.888-.795-1.484-1.77-1.66-2.07-.174-.3-.019-.465.13-.615.136-.135.301-.345.451-.523.146-.181.194-.301.297-.496.1-.21.049-.375-.025-.524-.075-.15-.672-1.62-.922-2.206-.24-.584-.487-.51-.672-.51-.172-.015-.371-.015-.571-.015-.2 0-.523.074-.797.359-.273.3-1.045 1.02-1.045 2.475s1.07 2.865 1.219 3.075c.149.195 2.105 3.195 5.1 4.485.714.3 1.27.48 1.704.629.714.227 1.365.195 1.88.121.574-.091 1.767-.721 2.016-1.426.255-.705.255-1.29.18-1.425-.074-.135-.27-.21-.57-.345z"/><path d="M20.52 3.449C12.831-3.984.106 1.407.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c8.646 4.221 18.682-1.967 18.686-11.486.003-5.079-2.487-9.53-4.501-7.413z"/></svg>
-              WhatsApp
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
 </main>
 
@@ -2651,70 +2432,6 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-add-catalogo-produto">
-  <div class="modal" style="max-width:600px">
-    <div class="modal-header">
-      <div class="modal-title">Adicionar ao Catalogo</div>
-      <div class="modal-close" onclick="closeModal('add-catalogo-produto')">✕</div>
-    </div>
-    <div class="modal-body">
-      <div class="form-row full">
-        <div class="form-group">
-          <label class="form-label">Nome do Produto</label>
-          <input class="input-field" id="cat-nome" type="text" placeholder="Ex: Filtro de Oleo Honda CG 150" style="width:100%">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Categoria</label>
-          <select id="cat-categoria" style="width:100%"><option>Filtros</option><option>Freios</option><option>Motor</option><option>Suspensao</option><option>Transmissao</option><option>Cabos</option><option>Eletrica</option><option>Acessorios</option></select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Codigo / SKU</label>
-          <input class="input-field" id="cat-sku" type="text" placeholder="FLT-001" style="width:100%">
-        </div>
-      </div>
-      <div class="form-row three">
-        <div class="form-group">
-          <label class="form-label">Preco Normal (R$)</label>
-          <input class="input-field" id="cat-preco" type="number" min="0" step="0.01" placeholder="0,00" style="width:100%">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Preco Promo (R$)</label>
-          <input class="input-field" id="cat-preco-promo" type="number" min="0" step="0.01" placeholder="Opcional" style="width:100%">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Mostrar Estoque</label>
-          <select id="cat-mostrar-estoque" style="width:100%"><option value="nao">Nao mostrar</option><option value="disponivel">So "Disponivel"</option><option value="sim">Quantidade exata</option></select>
-        </div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group">
-          <label class="form-label">Descricao (opcional)</label>
-          <input class="input-field" id="cat-descricao" type="text" placeholder="Descricao curta do produto..." style="width:100%">
-        </div>
-      </div>
-      <div style="border:2px dashed var(--border); border-radius:var(--radius-sm); padding:24px; text-align:center; cursor:pointer; transition:all 0.2s; margin-top:4px;" onclick="document.getElementById('cat-img-input').click()" id="cat-img-drop" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-        <input type="file" id="cat-img-input" accept="image/*" style="display:none" onchange="previewCatImg(this)">
-        <div id="cat-img-preview-wrap">
-          <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:var(--text-muted);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-          <div style="font-size:13px; font-weight:600; color:var(--text-secondary);">Clique para adicionar foto</div>
-          <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">JPG, PNG ou WEBP</div>
-        </div>
-      </div>
-      <div style="display:flex; align-items:center; gap:10px; margin-top:14px;">
-        <label style="font-size:13px; color:var(--text-secondary); font-weight:500; cursor:pointer; display:flex; align-items:center; gap:8px;">
-          <input type="checkbox" id="cat-visivel" checked style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;">
-          Visivel no catalogo publico
-        </label>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-outline" onclick="closeModal('add-catalogo-produto')">Cancelar</button>
-      <button class="btn-accent" onclick="saveCatProduto()">Salvar no Catalogo</button>
-    </div>
-  </div>
-</div>
 
 <div class="modal-overlay" id="modal-orcamento-print">
   <div class="modal" style="max-width:560px">
@@ -2727,7 +2444,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('orcamento-print')">Fechar</button>
       <button class="btn-accent" onclick="printModal()">
-        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
         🖨️ Imprimir
       </button>
     </div>
@@ -2803,7 +2520,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         Térmica (80mm)
       </button>
       <button class="btn-accent" onclick="gerarNFPDF(false)">
-        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#ffffff"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
         Gerar PDF A4
       </button>
     </div>
@@ -3014,8 +2731,7 @@ function criarCliente() {
     clientes:          '/clientes',
     notas_fiscais:     '/notas_fiscais',
     agendamentos:      '/agendamentos',
-    catalogo:          '/catalogo',
-    usuarios:          '/auth',
+      usuarios:          '/auth',
   };
 
   async function apiFetch(method, path, body) {
@@ -3408,7 +3124,7 @@ function toast(msg, col) {
 }
 
 // ━━━━ NAVEGAÇÃO
-const PAGES = ['dashboard','pdv','agenda','clientes','estoque','caixa','financeiro','nf','relatorios','catalogo','configuracoes'];
+const PAGES = ['dashboard','pdv','agenda','clientes','estoque','caixa','financeiro','nf','relatorios','configuracoes'];
 const TITLES = {
   dashboard:      ['Painel Geral',           'Visão geral do negócio em tempo real'],
   pdv:            ['PDV — Vendas',            'Ponto de Venda'],
@@ -3419,7 +3135,6 @@ const TITLES = {
   clientes:       ['Clientes',               'Cadastro e histórico de clientes'],
   relatorios:     ['Relatórios Gerenciais',   'Dashboards e análise de dados'],
   agenda:         ['Agenda & Serviços',        'Agendamentos, serviços e mensagens'],
-  catalogo:       ['Catálogo & Canais',       'Marketplaces e vendas online'],
   configuracoes:  ['Configurações',           'Dados da empresa e preferências do sistema'],
 };
 
@@ -3442,7 +3157,6 @@ function showPage(id) {
   if (id === 'clientes')   loadClientes();
   if (id === 'relatorios') loadRelatorios();
   if (id === 'nf')         loadNF();
-  if (id === 'catalogo')   loadCatalogo();
   if (id === 'agenda')         { if (!window.allClientes || !window.allClientes.length) loadClientes(); loadAgenda(); }
   if (id === 'configuracoes')  carregarDadosEmpresa();
 }
@@ -4032,7 +3746,7 @@ function pdvMostrarSucesso(venda, itens, cli, formaPag, total, recebido, troco) 
   const printBtn = document.querySelector('#modal-orcamento-print .btn-accent');
   if (printBtn) {
     printBtn.onclick = function() { gerarReciboPDF(venda, itens, cli, formaPag, total, recebido, troco); };
-    printBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg> Imprimir Recibo';
+    printBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg> Imprimir Recibo';
   }
 }
 
@@ -4279,7 +3993,7 @@ function gerarOrcamentoModal(cli, validade, desc, sub, total, num, data) {
   content.innerHTML =
     '<div style="border:1px solid var(--border);border-radius:8px;padding:20px;background:var(--bg-surface)">' +
     '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">' +
-      '<div><div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:var(--accent)">MotoStock</div>' +
+      '<div><div style="font-family:Inter,sans-serif;font-size:20px;font-weight:800;color:var(--accent)">MotoStock</div>' +
       '<div style="font-size:11px;color:var(--text-muted)">Peças e Acessórios para Motos</div></div>' +
       '<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">' + num + '</div>' +
       '<div style="font-size:11px;color:var(--text-muted)">Data: ' + data + '</div>' +
@@ -4951,7 +4665,7 @@ function catSwitchTab(tab) {
   const adminView  = $('cat-admin-view');
   const previewView= $('cat-preview-view');
   if (tab === 'admin') {
-    if (adminBtn)   { adminBtn.style.background = 'var(--gradient-accent)'; adminBtn.style.color = '#09090b'; }
+    if (adminBtn)   { adminBtn.style.background = 'var(--gradient-accent)'; adminBtn.style.color = '#ffffff'; }
     if (previewBtn) { previewBtn.style.background = 'none'; previewBtn.style.color = 'var(--text-secondary)'; }
     if (adminView)  adminView.style.display = '';
     if (previewView) previewView.style.display = 'none';
@@ -6463,7 +6177,7 @@ function renderCalendario() {
     }).sort(function(a,b){ return a.data_hora > b.data_hora ? 1 : -1; });
 
     const dayNum = isToday
-      ? '<div class="ag-cal-day"><span style="background:var(--accent);color:#09090b;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;">' + day + '</span></div>'
+      ? '<div class="ag-cal-day"><span style="background:var(--accent);color:#ffffff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;">' + day + '</span></div>'
       : '<div class="ag-cal-day" style="color:var(--text-muted);">' + day + '</div>';
 
     let eventsHtml = '';
@@ -6810,7 +6524,7 @@ function agEnviarWhatsapp() {
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('add-cliente')">Cancelar</button>
       <button class="btn-accent" onclick="saveCliente()">
-        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#ffffff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         Salvar Cliente
       </button>
     </div>
@@ -6879,7 +6593,7 @@ function agEnviarWhatsapp() {
       <div style="display:flex;gap:8px;margin-bottom:16px;">
         <input class="input-field" id="nova-cat-nome" type="text" placeholder="Nome da nova categoria..." style="flex:1">
         <button class="btn-accent" onclick="adicionarCategoria()" style="flex-shrink:0;">
-          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#ffffff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
           Adicionar
         </button>
       </div>
@@ -6923,7 +6637,7 @@ function agEnviarWhatsapp() {
           <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">PNG, JPG ou SVG. Máx 5MB. Será salvo no banco de dados.</div>
           <div style="display:flex;gap:8px;">
             <button class="btn-accent" onclick="document.getElementById('cfg-logo-input').click()" style="font-size:12px;padding:7px 14px;">
-              <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#ffffff"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
               Escolher Imagem
             </button>
             <button class="btn-outline" onclick="removerLogo()" style="font-size:12px;padding:7px 14px;color:var(--red);border-color:var(--red);" id="cfg-logo-remove-btn" style="display:none;">
@@ -6973,10 +6687,10 @@ function agEnviarWhatsapp() {
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#5d6888;flex-shrink:0;">Preview:</div>
         <div style="width:36px;height:36px;background:var(--gradient-accent);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
           <img id="cfg-preview-sidebar-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
-          <svg id="cfg-preview-sidebar-svg" viewBox="0 0 24 24" style="width:18px;height:18px;fill:#09090b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          <svg id="cfg-preview-sidebar-svg" viewBox="0 0 24 24" style="width:18px;height:18px;fill:#ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
         </div>
         <div>
-          <div id="cfg-preview-nome" style="font-size:15px;font-weight:800;color:#eef2ff;font-family:'Syne',sans-serif;letter-spacing:0.5px;">MotoStock</div>
+          <div id="cfg-preview-nome" style="font-size:15px;font-weight:800;color:#eef2ff;font-family:'Inter',sans-serif;letter-spacing:0.5px;">MotoStock</div>
           <div id="cfg-preview-slogan" style="font-size:10px;color:#5d6888;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">GESTAO COMPLETA</div>
         </div>
       </div>
@@ -6984,7 +6698,7 @@ function agEnviarWhatsapp() {
       <!-- Botão salvar -->
       <div style="display:flex;gap:10px;align-items:center;">
         <button class="btn-accent" onclick="salvarPerfil()" style="font-size:14px;padding:10px 24px;">
-          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
           Salvar Alterações
         </button>
         <span id="cfg-save-status" style="font-size:12px;color:var(--text-muted);"></span>
@@ -7003,7 +6717,7 @@ function agEnviarWhatsapp() {
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;" id="cfg-plano-grid">
         <div style="padding:18px;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Plano Atual</div>
-          <div id="cfg-plano-nome" style="font-size:20px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif;">—</div>
+          <div id="cfg-plano-nome" style="font-size:20px;font-weight:800;color:var(--accent);font-family:'Inter',sans-serif;">—</div>
         </div>
         <div style="padding:18px;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Expira em</div>
@@ -7187,7 +6901,7 @@ function agEnviarWhatsapp() {
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('add-agendamento')">Cancelar</button>
       <button class="btn-accent" onclick="saveAgendamento()">
-        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#09090b"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#ffffff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         Salvar Agendamento
       </button>
     </div>
@@ -7205,12 +6919,12 @@ function agEnviarWhatsapp() {
       <div style="margin-bottom:12px;">
         <label class="form-label" style="display:block;margin-bottom:6px;">Tipo de Mensagem</label>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
-          <button onclick="agSetMsgTemplate('confirmacao',this)" class="ag-msg-type active" style="padding:8px;border:1px solid var(--border-accent);border-radius:8px;background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">✅ Confirmação</button>
-          <button onclick="agSetMsgTemplate('lembrete',this)" class="ag-msg-type" style="padding:8px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">⏰ Lembrete</button>
-          <button onclick="agSetMsgTemplate('cobranca',this)" class="ag-msg-type" style="padding:8px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💰 Cobrança</button>
+          <button onclick="agSetMsgTemplate('confirmacao',this)" class="ag-msg-type active" style="padding:8px;border:1px solid var(--border-accent);border-radius:8px;background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Inter', sans-serif;">✅ Confirmação</button>
+          <button onclick="agSetMsgTemplate('lembrete',this)" class="ag-msg-type" style="padding:8px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Inter', sans-serif;">⏰ Lembrete</button>
+          <button onclick="agSetMsgTemplate('cobranca',this)" class="ag-msg-type" style="padding:8px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Inter', sans-serif;">💰 Cobrança</button>
         </div>
         <label class="form-label" style="display:block;margin-bottom:6px;">Mensagem</label>
-        <textarea id="ag-msg-texto" rows="7" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text-primary);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;line-height:1.6;resize:vertical;outline:none;"></textarea>
+        <textarea id="ag-msg-texto" rows="7" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text-primary);font-family:'Inter', sans-serif;font-size:13px;line-height:1.6;resize:vertical;outline:none;"></textarea>
         <div style="margin-top:10px;padding:10px;background:var(--bg-surface);border-radius:8px;border:1px solid var(--border);">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">Destinatário</div>
           <div id="ag-msg-destino" style="font-size:13px;color:var(--text-primary);font-weight:600;"></div>
