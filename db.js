@@ -250,8 +250,8 @@ CREATE TABLE IF NOT EXISTS orcamentos_numero_seq (
 // ── Seed admin ───────────────────────────────────────────────────────────────
 const ADMIN_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
 if (!db.prepare('SELECT id FROM usuarios WHERE email = ?').get('admin@motostock.com')) {
-  db.prepare(`INSERT INTO usuarios (id, nome, email, senha_hash, perfil, ativo, loja_token) VALUES (?, ?, ?, ?, ?, 1, ?)`)
-    .run(uuidv4(), 'Administrador', 'admin@motostock.com', ADMIN_HASH, 'admin', 'padrao');
+  db.prepare(`INSERT INTO usuarios (id, nome, email, senha_hash, senha_texto, perfil, ativo, loja_token) VALUES (?, ?, ?, ?, ?, ?, 1, ?)`)
+    .run(uuidv4(), 'Administrador', 'admin@motostock.com', ADMIN_HASH, 'admin123', 'admin', 'padrao');
   console.log('✅ Usuário admin criado: admin@motostock.com / admin123');
 }
 
