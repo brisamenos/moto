@@ -1756,7 +1756,7 @@ select { font-size: 13.5px; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<!-- MotoStock v2.1 — SQLite/REST backend (Supabase removido) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 
@@ -3368,13 +3368,13 @@ select { font-size: 13.5px; }
 <div class="modal-overlay" id="modal-setup-db">
   <div class="modal" style="max-width: 700px">
     <div class="modal-header">
-      <div class="modal-title">⚙ Configurar Banco de Dados — Supabase</div>
+      <div class="modal-title">⚙ Banco de Dados — SQLite</div>
       <div class="modal-close" onclick="closeModal('setup-db')">✕</div>
     </div>
     <div class="modal-body">
       <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">
-        Execute o SQL abaixo no <strong style="color:var(--accent)">SQL Editor</strong> do seu projeto Supabase 
-        para criar as tabelas necessarias. Acesse: <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px;font-size:11px">supabase.com → Seu projeto → SQL Editor</code>
+        O banco de dados <strong style="color:var(--accent)">SQLite</strong> é criado automaticamente ao iniciar o servidor Node.js na sua VPS. 
+        Não é necessário executar nenhum SQL manualmente — as tabelas são criadas pelo arquivo <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px;font-size:11px">backend/db.js</code> ao subir o container.
       </p>
       <textarea readonly style="width:100%;height:320px;background:var(--bg-base);border:1px solid var(--border);border-radius:8px;padding:16px;color:var(--green);font-family:monospace;font-size:11px;resize:vertical;outline:none;line-height:1.7">-- ============================================================
 -- MOTOSTOCK — RESET + SETUP COMPLETO DO BANCO DE DADOS
@@ -3542,53 +3542,396 @@ ALTER TABLE agendamentos DISABLE ROW LEVEL SECURITY;</textarea>
 
 <script>
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// MOTOSTOCK — SISTEMA COMPLETO v2.0
+// MOTOSTOCK — SISTEMA COMPLETO v2.1 (SQLite / REST)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 document.documentElement.setAttribute('data-theme', 'dark');
 
-// ━━━━ SUPABASE — MASTER (apenas para autenticação de usuários)
-const MASTER_URL = 'https://lhrzwccbvdintqgebisq.supabase.co';
-const MASTER_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxocnp3Y2NidmRpbnRxZ2ViaXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODY0NzEsImV4cCI6MjA4OTE2MjQ3MX0.gbljgt0rzOf9eBoTcXxxfl0e_0Y-6XYxve-HGY7meJo';
-let sbMaster; // conexão master (login)
-let sb;        // conexão do cliente (banco próprio)
+// ━━━━ URL base da API (mesmo servidor que serve este HTML)
+const API_BASE = window.location.origin + '/api';
 
-function criarFallback() {
-  const noop = () => Promise.resolve({ data: [], error: null });
-  const chainObj = () => {
-    const chain = {
-      select: () => chain, insert: () => chain, update: () => chain,
-      delete: () => chain, upsert: () => chain, single: noop,
-      eq: () => chain, gte: () => chain, lte: () => chain,
-      in: () => chain, order: () => chain, limit: () => chain,
-      then: (resolve) => resolve({ data: [], error: null })
-    };
-    return chain;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CAMADA DE COMPATIBILIDADE — substitui sb.from(...)
+// Imita a API do Supabase usando fetch() para a nossa
+// API REST local em Node.js + SQLite.
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function criarCliente() {
+  // Mapeamento tabela → endpoint REST
+  const ENDPOINTS = {
+    produtos:          '/produtos',
+    vendas:            '/vendas',
+    venda_itens:       '/vendas/itens',
+    caixa_lancamentos: '/caixa/lancamentos',
+    caixa_sessoes:     '/caixa/sessoes',
+    configuracoes:     '/configuracoes',
+    clientes:          '/clientes',
+    notas_fiscais:     '/notas_fiscais',
+    agendamentos:      '/agendamentos',
+    catalogo:          '/catalogo',
+    usuarios:          '/auth',
   };
-  return { from: () => chainObj(), storage: { from: () => ({ upload: noop, getPublicUrl: () => ({ data: { publicUrl: '' } }) }) } };
-}
 
-try {
-  sbMaster = supabase.createClient(MASTER_URL, MASTER_KEY);
-  sb = sbMaster; // fallback até o login
-} catch(e) {
-  console.error('Supabase CDN erro:', e.message);
-  sbMaster = criarFallback();
-  sb = criarFallback();
-}
-
-// Conecta no banco próprio do cliente após login
-function conectarBancoCliente(url, key) {
-  try {
-    sb = supabase.createClient(url, key);
-    console.log('✅ Conectado ao banco do cliente:', url.split('//')[1].split('.')[0]);
-  } catch(e) {
-    console.error('Erro ao conectar banco do cliente:', e.message);
-    sb = criarFallback();
+  async function apiFetch(method, path, body) {
+    try {
+      const opts = {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+      };
+      if (body !== undefined) opts.body = JSON.stringify(body);
+      const res = await fetch(API_BASE + path, opts);
+      const json = await res.json();
+      return json;
+    } catch(e) {
+      return { data: null, error: { message: e.message } };
+    }
   }
+
+  function fromTable(tabela) {
+    const ep = ENDPOINTS[tabela];
+    if (!ep) {
+      console.warn('Tabela não mapeada:', tabela);
+      return criarChain({ data: null, error: { message: 'Tabela não mapeada: ' + tabela } });
+    }
+
+    // Estado da query encadeada
+    let _method   = 'GET';
+    let _body     = undefined;
+    let _filters  = {};   // { eq, gte, lte, in_: [] }
+    let _order    = null; // { col, asc }
+    let _limit    = null;
+    let _single   = false;
+    let _isInsert = false;
+    let _isUpdate = false;
+    let _isDelete = false;
+    let _isUpsert = false;
+    let _id       = null; // usado em .eq('id', ...)
+
+    function buildQueryString(base) {
+      const params = new URLSearchParams();
+      // Sempre passa loja_token se disponível
+      if (_lojaToken) params.set('loja_token', _lojaToken);
+      // Filtros extras
+      for (const [k, v] of Object.entries(_filters)) {
+        if (k === 'gte') params.set('gte', v);
+        else if (k === 'lte') params.set('lte', v);
+        else if (k === 'in_') params.set('in', v.join(','));
+        else if (k !== 'id' && k !== 'loja_token' && k !== 'eq_loja')
+          params.set(k, v);
+      }
+      if (_order)  { params.set('order', _order.col); params.set('asc', _order.asc ? '1' : '0'); }
+      if (_limit)  params.set('limit', _limit);
+      const qs = params.toString();
+      return base + (qs ? '?' + qs : '');
+    }
+
+    async function execute() {
+      // ── INSERT ──
+      if (_isInsert) {
+        const payload = Array.isArray(_body) ? _body : [_body];
+        // Injeta loja_token automaticamente em cada item
+        const items = payload.map(item => {
+          if (!item.loja_token) item.loja_token = _lojaToken;
+          return item;
+        });
+
+        if (tabela === 'venda_itens') {
+          const r = await apiFetch('POST', '/vendas/itens', items.length === 1 ? items[0] : items);
+          if (_single) return { data: Array.isArray(r.data) ? r.data[0] : r.data, error: r.error };
+          return r;
+        }
+        if (tabela === 'notas_fiscais') {
+          const r = await apiFetch('POST', '/notas_fiscais', items[0]);
+          return { data: r.data, error: r.error };
+        }
+        if (tabela === 'agendamentos') {
+          const r = await apiFetch('POST', '/agendamentos', items[0]);
+          return { data: r.data, error: r.error };
+        }
+        if (tabela === 'catalogo') {
+          const r = await apiFetch('POST', '/catalogo', items[0]);
+          return { data: r.data, error: r.error };
+        }
+        if (tabela === 'clientes') {
+          const r = await apiFetch('POST', '/clientes', items[0]);
+          if (_single) return { data: r.data, error: r.error };
+          return r;
+        }
+        if (tabela === 'caixa_lancamentos') {
+          const r = await apiFetch('POST', '/caixa/lancamentos', items[0]);
+          return r;
+        }
+        if (tabela === 'caixa_sessoes') {
+          const r = await apiFetch('POST', '/caixa/sessoes', items[0]);
+          if (_single) return { data: r.data, error: r.error };
+          return r;
+        }
+        if (tabela === 'vendas') {
+          const r = await apiFetch('POST', '/vendas', items[0]);
+          if (_single) return { data: r.data, error: r.error };
+          return r;
+        }
+        if (tabela === 'produtos') {
+          const r = await apiFetch('POST', '/produtos', items[0]);
+          return r;
+        }
+        // fallback
+        return { data: null, error: null };
+      }
+
+      // ── UPSERT (configuracoes) ──
+      if (_isUpsert) {
+        if (tabela === 'configuracoes') {
+          const items = Array.isArray(_body) ? _body : [_body];
+          if (items.length === 1) {
+            const r = await apiFetch('POST', '/configuracoes/upsert', { ...items[0], loja_token: items[0].loja_token || _lojaToken });
+            return r;
+          } else {
+            const r = await apiFetch('POST', '/configuracoes/upsert-batch', items.map(i => ({ ...i, loja_token: i.loja_token || _lojaToken })));
+            return r;
+          }
+        }
+        return { data: null, error: null };
+      }
+
+      // ── UPDATE ──
+      if (_isUpdate) {
+        const id = _filters['id'];
+        if (!id) return { data: null, error: { message: 'UPDATE requer .eq("id", valor)' } };
+
+        if (tabela === 'produtos') {
+          const r = await apiFetch('PATCH', '/produtos/' + id, _body);
+          return r;
+        }
+        if (tabela === 'clientes') {
+          const r = await apiFetch('PUT', '/clientes/' + id, _body);
+          return r;
+        }
+        if (tabela === 'caixa_sessoes') {
+          const r = await apiFetch('PUT', '/caixa/sessoes/' + id, _body);
+          return r;
+        }
+        if (tabela === 'agendamentos') {
+          const r = await apiFetch('PUT', '/agendamentos/' + id, _body);
+          return r;
+        }
+        if (tabela === 'catalogo') {
+          const r = await apiFetch('PUT', '/catalogo/' + id, _body);
+          return r;
+        }
+        if (tabela === 'usuarios') {
+          // update último_acesso — silencioso
+          return { data: null, error: null };
+        }
+        return { data: null, error: null };
+      }
+
+      // ── DELETE ──
+      if (_isDelete) {
+        const id = _filters['id'];
+        if (!id) return { data: null, error: { message: 'DELETE requer .eq("id", valor)' } };
+
+        if (tabela === 'produtos')          return apiFetch('DELETE', '/produtos/' + id);
+        if (tabela === 'clientes')          return apiFetch('DELETE', '/clientes/' + id);
+        if (tabela === 'caixa_lancamentos') return apiFetch('DELETE', '/caixa/lancamentos/' + id);
+        if (tabela === 'notas_fiscais')     return apiFetch('DELETE', '/notas_fiscais/' + id);
+        if (tabela === 'agendamentos')      return apiFetch('DELETE', '/agendamentos/' + id);
+        if (tabela === 'catalogo')          return apiFetch('DELETE', '/catalogo/' + id);
+        return { data: null, error: null };
+      }
+
+      // ── SELECT ──
+      if (tabela === 'usuarios') {
+        // Usado em verificarSessao: .eq('id', sess.id).eq('ativo', true).single()
+        const id = _filters['id'];
+        if (id) {
+          const r = await apiFetch('GET', '/auth/me/' + id);
+          if (_single) return { data: r.data, error: r.error };
+          return { data: r.data ? [r.data] : [], error: r.error };
+        }
+        return { data: [], error: null };
+      }
+
+      if (tabela === 'configuracoes') {
+        const inParam = _filters['in_'];
+        const chave   = _filters['chave'];
+        const params  = new URLSearchParams({ loja_token: _lojaToken || 'padrao' });
+        if (inParam) params.set('in', inParam.join(','));
+        if (chave)   params.set('chave', chave);
+        const r = await apiFetch('GET', '/configuracoes?' + params.toString());
+        return r;
+      }
+
+      if (tabela === 'vendas') {
+        const params = new URLSearchParams({ loja_token: _lojaToken || 'padrao' });
+        if (_filters['gte']) params.set('gte', _filters['gte']);
+        if (_filters['lte']) params.set('lte', _filters['lte']);
+        if (_filters['status']) params.set('status', _filters['status']);
+        if (_limit) params.set('limit', _limit);
+        const r = await apiFetch('GET', '/vendas?' + params.toString());
+        return r;
+      }
+
+      if (tabela === 'venda_itens') {
+        const r = await apiFetch('GET', '/vendas/itens?loja_token=' + (_lojaToken || 'padrao'));
+        return r;
+      }
+
+      if (tabela === 'caixa_lancamentos') {
+        const params = new URLSearchParams({ loja_token: _lojaToken || 'padrao' });
+        if (_filters['data']) params.set('data', _filters['data']);
+        const r = await apiFetch('GET', '/caixa/lancamentos?' + params.toString());
+        return r;
+      }
+
+      if (tabela === 'caixa_sessoes') {
+        const params = new URLSearchParams({ loja_token: _lojaToken || 'padrao' });
+        if (_limit) params.set('limit', _limit);
+        const r = await apiFetch('GET', '/caixa/sessoes?' + params.toString());
+        return r;
+      }
+
+      if (tabela === 'notas_fiscais') {
+        const params = new URLSearchParams({ loja_token: _lojaToken || 'padrao' });
+        if (_limit) params.set('limit', _limit);
+        const r = await apiFetch('GET', '/notas_fiscais?' + params.toString());
+        return r;
+      }
+
+      if (tabela === 'agendamentos') {
+        const params = new URLSearchParams({ loja_token: _lojaToken || 'padrao' });
+        if (_filters['status']) params.set('status', _filters['status']);
+        const r = await apiFetch('GET', '/agendamentos?' + params.toString());
+        return r;
+      }
+
+      if (tabela === 'catalogo') {
+        const r = await apiFetch('GET', '/catalogo?loja_token=' + (_lojaToken || 'padrao'));
+        return r;
+      }
+
+      if (tabela === 'produtos') {
+        const r = await apiFetch('GET', '/produtos?loja_token=' + (_lojaToken || 'padrao'));
+        return r;
+      }
+
+      if (tabela === 'clientes') {
+        const r = await apiFetch('GET', '/clientes?loja_token=' + (_lojaToken || 'padrao'));
+        return r;
+      }
+
+      // Tabelas legadas usadas em relatórios antigos (caixa_movimentos) — retorna vazio
+      return { data: [], error: null };
+    }
+
+    // ── Builder encadeável ──
+    const chain = {
+      select: function(cols) { return chain; },
+
+      insert: function(data) {
+        _isInsert = true;
+        _body = data;
+        return chain;
+      },
+
+      update: function(data) {
+        _isUpdate = true;
+        _body = data;
+        return chain;
+      },
+
+      delete: function() {
+        _isDelete = true;
+        return chain;
+      },
+
+      upsert: function(data, opts) {
+        _isUpsert = true;
+        _body = data;
+        return chain;
+      },
+
+      eq: function(col, val) {
+        if (col === 'id') _filters['id'] = val;
+        else if (col === 'loja_token') _filters['loja_token'] = val;
+        else if (col === 'ativo') _filters['ativo'] = val;
+        else if (col === 'status') _filters['status'] = val;
+        else if (col === 'tipo') _filters['tipo'] = val;
+        else if (col === 'data') _filters['data'] = val;
+        else if (col === 'chave') _filters['chave'] = val;
+        else _filters[col] = val;
+        return chain;
+      },
+
+      gte: function(col, val) { _filters['gte'] = val; return chain; },
+      lte: function(col, val) { _filters['lte'] = val; return chain; },
+
+      in: function(col, vals) { _filters['in_'] = vals; return chain; },
+
+      order: function(col, opts) {
+        _order = { col, asc: opts && opts.ascending === true };
+        return chain;
+      },
+
+      limit: function(n) { _limit = n; return chain; },
+
+      single: function() {
+        _single = true;
+        return execute();
+      },
+
+      then: function(resolve, reject) {
+        return execute().then(resolve, reject);
+      }
+    };
+
+    return chain;
+  }
+
+  return {
+    from: fromTable,
+    // Storage — substituído por upload base64 salvo na configurações
+    storage: {
+      from: function(bucket) {
+        return {
+          upload: async function(path, file, opts) {
+            // Converte para base64 e salva como configuração
+            return new Promise(function(resolve) {
+              const reader = new FileReader();
+              reader.onload = async function(e) {
+                const base64 = e.target.result;
+                const chave = 'storage_' + bucket + '_' + path.replace(/[^a-z0-9]/gi, '_');
+                await apiFetch('POST', '/configuracoes/upsert', { chave, valor: base64, loja_token: _lojaToken });
+                resolve({ data: { path }, error: null });
+              };
+              reader.onerror = () => resolve({ data: null, error: { message: 'Erro ao ler arquivo' } });
+              reader.readAsDataURL(file);
+            });
+          },
+          getPublicUrl: function(path) {
+            const chave = 'storage_imagens_' + path.replace(/[^a-z0-9]/gi, '_');
+            // Retorna URL que pode ser resolvida pelo frontend
+            return { data: { publicUrl: API_BASE + '/configuracoes/storage/' + _lojaToken + '/' + encodeURIComponent(chave) } };
+          },
+          remove: async function(paths) {
+            return { data: null, error: null };
+          }
+        };
+      }
+    }
+  };
 }
 
-let SUPABASE_URL = MASTER_URL; // para compatibilidade com código existente
+// Instância global (usada em todo o código como "sb")
+let sb = criarCliente();
+
+// Compatibilidade com código legado que tentava usar supabase.createClient
+function conectarBancoCliente(url, key) {
+  console.log('✅ MotoStock: usando banco SQLite local');
+  // sb já está configurado para a API local, não precisa reconectar
+}
+
+let SUPABASE_URL = API_BASE; // compatibilidade com referências antigas
 
 
 // ━━━━ HELPERS
@@ -4978,7 +5321,7 @@ function editCatProduto(id) {
   openEditProduto(id);
 }
 
-// Upload de foto para Supabase Storage
+// Upload de foto — converte para base64 e salva direto no produto
 function uploadFotoSupabase(btn, prodId) {
   const input = document.createElement('input');
   input.type = 'file';
@@ -4986,18 +5329,41 @@ function uploadFotoSupabase(btn, prodId) {
   input.onchange = async function() {
     if (!input.files.length) return;
     const file = input.files[0];
-    const ext  = file.name.split('.').pop();
-    const path = prodId + '.' + ext;
-    toast('Enviando imagem...', 'y');
+    toast('Processando imagem...', 'y');
     try {
-      // Upload para Supabase Storage (bucket: produtos)
-      const { data: upData, error: upErr } = await sb.storage.from('produtos').upload(path, file, { upsert: true });
-      if (upErr) throw upErr;
-      const { data: urlData } = sb.storage.from('produtos').getPublicUrl(path);
-      const publicUrl = urlData.publicUrl;
-      // Atualizar produto com URL da imagem
-      await sb.from('produtos').update({ imagem_url: publicUrl }).eq('id', prodId);
-      // Atualizar preview no card
+      // Redimensiona e converte para base64
+      const b64 = await new Promise(function(resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX = 400;
+            let w = img.width, h = img.height;
+            if (w > MAX || h > MAX) {
+              if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+              else       { w = Math.round(w * MAX / h); h = MAX; }
+            }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.80));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      // Salva base64 como imagem_url do produto
+      const r = await fetch(API_BASE + '/produtos/' + prodId, {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ imagem_url: b64 })
+      });
+      if (!r.ok) throw new Error('Erro ao salvar imagem');
+
+      // Atualiza preview no card
       const card = btn.closest('.cat-prod-card');
       if (card) {
         const wrap = card.querySelector('.cat-prod-img-wrap');
@@ -5005,13 +5371,12 @@ function uploadFotoSupabase(btn, prodId) {
         if (placeholder) placeholder.remove();
         let img = wrap.querySelector('img');
         if (!img) { img = document.createElement('img'); img.style.cssText = 'width:100%;height:100%;object-fit:cover;'; wrap.insertBefore(img, wrap.firstChild); }
-        img.src = publicUrl;
+        img.src = b64;
       }
       toast('Foto salva com sucesso!');
       loadProdutos();
     } catch(e) {
       toast('Erro ao enviar foto: ' + e.message, 'r');
-      console.error(e);
     }
   };
   input.click();
@@ -5065,24 +5430,40 @@ async function saveCatProduto() {
   const promo   = parseFloat(($('cat-preco-promo') ? $('cat-preco-promo').value : 0)) || 0;
   const visivel = $('cat-visivel') ? $('cat-visivel').checked : true;
 
-  // Salvar no banco como produto
+  // Converte imagem para base64 se houver
   let imgUrl = null;
   if (catImgFile) {
-    const ext = catImgFile.name.split('.').pop();
-    const tempId = 'cat_' + Date.now();
     try {
-      const { error: upErr } = await sb.storage.from('produtos').upload(tempId + '.' + ext, catImgFile, { upsert: true });
-      if (!upErr) {
-        const { data } = sb.storage.from('produtos').getPublicUrl(tempId + '.' + ext);
-        imgUrl = data.publicUrl;
-      }
-    } catch(e) { console.error('Erro upload imagem:', e); }
+      imgUrl = await new Promise(function(resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX = 400;
+            let w = img.width, h = img.height;
+            if (w > MAX || h > MAX) {
+              if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+              else       { w = Math.round(w * MAX / h); h = MAX; }
+            }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.80));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(catImgFile);
+      });
+    } catch(e) { console.error('Erro ao processar imagem:', e); }
   }
 
   const r = await sb.from('produtos').insert({
     nome, sku: sku || ('CAT-' + Date.now()),
     categoria: cat || 'Catálogo', custo: promo > 0 ? promo : preco, preco_venda: preco,
-    estoque: 0, estoque_minimo: 0, imagem_url: imgUrl
+    estoque: 0, estoque_minimo: 0, imagem_url: imgUrl,
+    loja_token: _lojaToken
   });
   if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
 
@@ -5292,7 +5673,7 @@ function aplicarLogoNaSidebar(src) {
 }
 
 async function uploadLogoStorage(file) {
-  // Comprime para max 200x200 antes de fazer upload
+  // Comprime para max 200x200 e salva como base64 na tabela configuracoes
   const b64 = await new Promise(function(resolve) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -5312,25 +5693,14 @@ async function uploadLogoStorage(file) {
     reader.readAsDataURL(file);
   });
 
-  // Converte base64 para Blob
-  const arr = b64.split(','), mime = arr[0].match(/:(.*?);/)[1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8 = new Uint8Array(n);
-  while (n--) u8[n] = bstr.charCodeAt(n);
-  const blob = new Blob([u8], { type: mime });
-
-  // Upload para bucket "imagens/logo/"
-  const path = 'logo/logo_loja.jpg';
-  const { error } = await sb.storage.from('imagens').upload(path, blob, {
-    upsert: true,
-    contentType: 'image/jpeg'
+  // Salva o base64 como configuração (logo_url armazena o próprio base64)
+  await fetch(API_BASE + '/configuracoes/upsert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chave: 'logo_url', valor: b64, loja_token: _lojaToken || 'padrao' })
   });
-  if (error) throw error;
 
-  // Retorna URL pública com cache-busting
-  const { data } = sb.storage.from('imagens').getPublicUrl(path);
-  return data.publicUrl + '?t=' + Date.now();
+  return b64; // retorna o base64 diretamente como URL (funciona em <img src="data:...">)
 }
 
 async function salvarPerfil() {
@@ -5356,7 +5726,7 @@ async function salvarPerfil() {
     // Upload logo para Storage se tiver arquivo novo
     if (_logoRemover) {
       campos.push({ chave: 'logo_url', valor: '' });
-      await sb.storage.from('imagens').remove(['logo/logo_loja.jpg']);
+      // sem storage externo — só limpa a chave no banco
     } else if (_logoFilePendente) {
       try {
         const url = await uploadLogoStorage(_logoFilePendente);
@@ -5368,7 +5738,11 @@ async function salvarPerfil() {
 
     // Upsert em paralelo para todos os campos
     await Promise.all(campos.map(function(c) {
-      return sb.from('configuracoes').upsert({ chave: c.chave, valor: c.valor }, { onConflict: 'chave' });
+      return fetch(API_BASE + '/configuracoes/upsert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chave: c.chave, valor: c.valor, loja_token: _lojaToken || 'padrao' })
+      });
     }));
 
     _logoFilePendente = null; // limpa pendente
@@ -5819,42 +6193,28 @@ async function fazerLogin() {
 
   try {
     const hash = await sha256(senha);
-    const { data, error } = await sb.from('usuarios')
-      .select('*')
-      .eq('email', email)
-      .eq('senha_hash', hash)
-      .eq('ativo', true)
-      .single();
+    const res  = await fetch(API_BASE + '/auth/login', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email, senha_hash: hash })
+    });
+    const { data, error } = await res.json();
 
     if (error || !data) {
-      mostrarErroLogin('E-mail ou senha incorretos.');
+      mostrarErroLogin((error && error.message) || 'E-mail ou senha incorretos.');
       if (btn) { btn.textContent = 'Entrar'; btn.style.opacity = '1'; btn.disabled = false; }
       return;
-    }
-
-    // Verifica expiração do plano
-    if (data.plano_expiracao) {
-      const expira = new Date(data.plano_expiracao);
-      expira.setHours(23, 59, 59);
-      if (expira < new Date()) {
-        mostrarErroLogin('Seu plano expirou em ' + expira.toLocaleDateString('pt-BR') + '. Contate o administrador.');
-        if (btn) { btn.textContent = 'Entrar'; btn.style.opacity = '1'; btn.disabled = false; }
-        return;
-      }
     }
 
     // Salva sessão
     _sessaoUsuario = data;
     localStorage.setItem('ms_sessao', JSON.stringify({ id: data.id, nome: data.nome, email: data.email, perfil: data.perfil }));
 
-    // Atualiza último acesso
-    sb.from('usuarios').update({ ultimo_acesso: new Date().toISOString() }).eq('id', data.id);
-
     // Entra no sistema
     entrarNoSistema(data);
 
   } catch(e) {
-    mostrarErroLogin('Erro de conexão. Tente novamente.');
+    mostrarErroLogin('Erro de conexão. Verifique se o servidor está rodando.');
     if (btn) { btn.textContent = 'Entrar'; btn.style.opacity = '1'; btn.disabled = false; }
   }
 }
@@ -5889,13 +6249,13 @@ function fazerLogout() {
 }
 
 async function verificarSessao() {
-  // Verifica sessão salva
   const salva = localStorage.getItem('ms_sessao');
   if (!salva) { return; } // mostra login
 
   try {
     const sess = JSON.parse(salva);
-    const { data, error } = await sb.from('usuarios').select('*').eq('id', sess.id).eq('ativo', true).single();
+    const res  = await fetch(API_BASE + '/auth/me/' + sess.id);
+    const { data, error } = await res.json();
     if (error || !data) { localStorage.removeItem('ms_sessao'); return; }
 
     // Verifica expiração
@@ -5915,7 +6275,8 @@ async function verificarSessao() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 async function carregarBrandLogin() {
   try {
-    const { data } = await sb.from('configuracoes').select('chave,valor').in('chave', ['nome_loja', 'slogan', 'logo_url']);
+    const res = await fetch(API_BASE + '/configuracoes?loja_token=padrao&in=nome_loja,slogan,logo_url');
+    const { data } = await res.json();
     const cfg = {};
     (data || []).forEach(r => { cfg[r.chave] = r.valor; });
     if (cfg.nome_loja) {
@@ -6362,7 +6723,7 @@ async function loadNF() {
   const tb = document.getElementById('nf-tbody');
   if (!tb) return;
   try {
-    const { data, error } = await sb.from('notas_fiscais').select('*').order('emissao',{ascending:false}).limit(50);
+    const { data, error } = await sb.from('notas_fiscais').select('*').eq('loja_token', _lojaToken).order('emissao',{ascending:false}).limit(50);
     if (error) throw error;
     const list = data || [];
     const sub = document.getElementById('nf-subtitle');
@@ -6664,15 +7025,15 @@ function renderCalendario() {
     dayAgs.slice(0, maxShow).forEach(function(a) {
       const hora  = a.data_hora ? a.data_hora.substring(11,16) : '';
       const label = hora + ' ' + (a.cliente_nome || '?');
-      eventsHtml += '<div class="ag-cal-event ' + (a.status||'agendado') + '" onclick="agViewDetail(' + a.id + ');event.stopPropagation();" title="' + (a.servico||'') + '">' + label + '</div>';
+      eventsHtml += '<div class="ag-cal-event ' + (a.status||'agendado') + '" onclick="agViewDetail(\'' + a.id + '\');event.stopPropagation();" title="' + (a.servico||'') + '">' + label + '</div>';
     });
     if (dayAgs.length > maxShow) {
       eventsHtml += '<div class="ag-more-badge">+' + (dayAgs.length - maxShow) + ' mais</div>';
     }
 
-    const addBtn = !isOther ? '<div onclick="agOpenNewForDate(' + dateStr + ')" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity 0.15s;font-size:16px;color:var(--accent);cursor:pointer;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--accent-soft);" class="ag-add-btn">+</div>' : '';
+    const addBtn = !isOther ? '<div onclick="agOpenNewForDate(\'' + dateStr + '\')" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity 0.15s;font-size:16px;color:var(--accent);cursor:pointer;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--accent-soft);" class="ag-add-btn">+</div>' : '';
 
-    html += '<div class="ag-cal-cell' + (isOther ? ' other-month' : '') + (isToday ? ' today' : '') + '" onclick="agOpenNewForDate(' + dateStr + ')" style="position:relative;" onmouseover="var b=this.querySelector(\'.ag-add-btn\');if(b)b.style.opacity=\'1\';" onmouseout="var b=this.querySelector(\'.ag-add-btn\');if(b)b.style.opacity=\'0\';">' +
+    html += '<div class="ag-cal-cell' + (isOther ? ' other-month' : '') + (isToday ? ' today' : '') + '" onclick="agOpenNewForDate(\'' + dateStr + '\')" style="position:relative;" onmouseover="var b=this.querySelector(\'.ag-add-btn\');if(b)b.style.opacity=\'1\';" onmouseout="var b=this.querySelector(\'.ag-add-btn\');if(b)b.style.opacity=\'0\';">' +
       dayNum + eventsHtml + addBtn +
     '</div>';
   }
@@ -6718,11 +7079,11 @@ function renderAgendaList() {
       '<td>' + (a.servico||'—') + '</td>' +
       '<td class="mono">' + valor + '</td>' +
       '<td><span class="status-badge ag-status-' + st + '">' + stLbl + '</span></td>' +
-      '<td><button onclick="agOpenMsg(' + a.id + ')" style="background:var(--green-soft);border:1px solid rgba(16,232,158,0.3);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;display:flex;align-items:center;gap:4px;">💬 WA</button></td>' +
+      '<td><button onclick="agOpenMsg(\'' + a.id + '\')" style="background:var(--green-soft);border:1px solid rgba(16,232,158,0.3);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;display:flex;align-items:center;gap:4px;">💬 WA</button></td>' +
       '<td style="display:flex;gap:4px;">' +
-        '<button class="icon-btn" onclick="agViewDetail(' + a.id + ')" title="Ver"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>' +
-        '<button class="icon-btn" onclick="agOpenEdit(' + a.id + ')" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
-        '<button class="icon-btn del" onclick="agDelete(' + a.id + ')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+        '<button class="icon-btn" onclick="agViewDetail(\'' + a.id + '\')" title="Ver"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>' +
+        '<button class="icon-btn" onclick="agOpenEdit(\'' + a.id + '\')" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>' +
+        '<button class="icon-btn del" onclick="agDelete(\'' + a.id + '\')" title="Excluir"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
       '</td>' +
     '</tr>';
   });
@@ -6764,7 +7125,7 @@ function agSearchCliente(q) {
     return '<div style="padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.15s;" ' +
       'onmouseover="this.style.background=\'var(--bg-card-hover)\'" ' +
       'onmouseout="this.style.background=\'\'" ' +
-      'onclick="agSelectCliente(' + id + ',\'' + nome + '\',\'' + tel + '\')">' +
+      'onclick="agSelectCliente(\'' + id + '\',\'' + nome + '\',\'' + tel + '\')">' +
       '<strong>' + (c.nome||'') + '</strong>' + (c.telefone ? '<span style="color:var(--text-muted);font-size:11px;margin-left:8px;">' + c.telefone + '</span>' : '') +
     '</div>';
   }).join('');
