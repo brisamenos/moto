@@ -298,11 +298,11 @@ select.input-field{cursor:pointer}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
         <div class="form-group">
           <label class="form-label">Token do Bot</label>
-          <input class="input-field" id="tg-token" type="text" placeholder="1234567890:AAH..." value="8442744116:AAHWv3P01uGnHL5EC7aU5Od2TvyF61ahhRc">
+          <input class="input-field" id="tg-token" type="text" placeholder="1234567890:AAH..." oninput="tgSalvarConfig()">
         </div>
         <div class="form-group">
           <label class="form-label">Chat ID</label>
-          <input class="input-field" id="tg-chat" type="text" placeholder="677584042" value="677584042">
+          <input class="input-field" id="tg-chat" type="text" placeholder="677584042" oninput="tgSalvarConfig()">
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:center;">
@@ -830,6 +830,21 @@ let _autoTotal    = 0;
 function tgToken() { return (document.getElementById('tg-token')||{}).value.trim(); }
 function tgChat()  { return (document.getElementById('tg-chat')||{}).value.trim(); }
 
+// ── Persistência das config do Telegram ──────────────────────────────────────
+function tgSalvarConfig() {
+  localStorage.setItem('ms_tg_token', tgToken());
+  localStorage.setItem('ms_tg_chat',  tgChat());
+}
+
+function tgCarregarConfig() {
+  const token = localStorage.getItem('ms_tg_token') || '';
+  const chat  = localStorage.getItem('ms_tg_chat')  || '';
+  const elToken = document.getElementById('tg-token');
+  const elChat  = document.getElementById('tg-chat');
+  if (elToken) elToken.value = token;
+  if (elChat)  elChat.value  = chat;
+}
+
 function tgLog(msg, ok) {
   const log = document.getElementById('tg-log');
   if (!log) return;
@@ -1018,6 +1033,7 @@ async function admExportarClientesCSV() {
 // ── INIT ──
 function admCarregarTudo() {
   admCarregarUsuarios();
+  tgCarregarConfig();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
