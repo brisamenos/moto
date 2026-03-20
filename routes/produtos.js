@@ -17,11 +17,11 @@ router.post('/', (req, res) => {
   const p = req.body;
   if (!p.nome || !p.sku) return res.json({ data: null, error: { message: 'nome e sku obrigatórios' } });
   const id = uuidv4();
-  db.prepare(`INSERT INTO produtos (id, sku, nome, categoria, marca, custo, preco_venda, estoque, estoque_minimo, imagem_url, loja_token)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  db.prepare(`INSERT INTO produtos (id, sku, nome, categoria, marca, custo, preco_venda, estoque, estoque_minimo, imagem_url, fornecedor_id, loja_token)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(id, p.sku, p.nome, p.categoria || 'Geral', p.marca || '', Number(p.custo) || 0,
         Number(p.preco_venda) || 0, Number(p.estoque) || 0, Number(p.estoque_minimo) || 5,
-        p.imagem_url || null, p.loja_token || 'padrao');
+        p.imagem_url || null, p.fornecedor_id || null, p.loja_token || 'padrao');
   const row = db.prepare('SELECT * FROM produtos WHERE id = ?').get(id);
   res.json({ data: row, error: null });
 });
@@ -31,10 +31,10 @@ router.put('/:id', (req, res) => {
   const p = req.body;
   const { id } = req.params;
   db.prepare(`UPDATE produtos SET sku=?, nome=?, categoria=?, marca=?, custo=?, preco_venda=?,
-              estoque=?, estoque_minimo=?, imagem_url=? WHERE id=?`
+              estoque=?, estoque_minimo=?, imagem_url=?, fornecedor_id=? WHERE id=?`
   ).run(p.sku, p.nome, p.categoria || 'Geral', p.marca || '', Number(p.custo) || 0,
         Number(p.preco_venda) || 0, Number(p.estoque) || 0, Number(p.estoque_minimo) || 5,
-        p.imagem_url || null, id);
+        p.imagem_url || null, p.fornecedor_id || null, id);
   res.json({ data: { id }, error: null });
 });
 
@@ -42,7 +42,7 @@ router.put('/:id', (req, res) => {
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const fields = req.body;
-  const allowed = ['sku','nome','categoria','marca','custo','preco_venda','estoque','estoque_minimo','imagem_url'];
+  const allowed = ['sku','nome','categoria','marca','custo','preco_venda','estoque','estoque_minimo','imagem_url','fornecedor_id'];
   const sets = [];
   const vals = [];
   for (const k of allowed) {
