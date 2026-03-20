@@ -1576,7 +1576,6 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 
   <div class="sidebar-scroll">
 
-    <!-- ── VENDAS ── -->
     <div class="sidebar-section">
       <div class="sidebar-section-label">Vendas</div>
       <a class="nav-item active" onclick="showPage('dashboard')">
@@ -1588,14 +1587,8 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         PDV — Vendas
         <span class="nav-badge accent" id="badge-pdv">0</span>
       </a>
-      <a class="nav-item" onclick="showPage('orcamentos')">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-5 8v-2h8v2H8zm0-4v-2h8v2H8zm0-4V9h3v2H8z"/></svg></span>
-        Orçamentos
-        <span class="nav-badge" id="badge-orcamentos" style="display:none">0</span>
-      </a>
     </div>
 
-    <!-- ── ATENDIMENTO ── -->
     <div class="sidebar-section">
       <div class="sidebar-section-label">Atendimento</div>
       <a class="nav-item" onclick="showPage('clientes')">
@@ -1608,17 +1601,16 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         <span class="nav-badge accent" id="badge-agenda" style="display:none">0</span>
       </a>
       <a class="nav-item" onclick="showPage('os')">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M13.7 4.3a6 6 0 0 0-7.97 8.37L3 16h2v2h2v2h4l2.73-2.73A6 6 0 0 0 13.7 4.3zm-1.12 8.08l-3.54 3.54-.71-.71 3.54-3.54.71.71zm1.42-1.41-3.54 3.54-.71-.71 3.54-3.54.71.71zm1.41-1.42-3.54 3.54-.71-.71L14.7 8.88l.71.71zM19 11l-1-1 1.5-1.5-1.06-1.06L17 9 16 8l3-3 3 3-3 3z"/></svg></span>
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M13.7 4.3a6 6 0 0 0-7.97 8.37L3 16h2v2h2v2h4l2.73-2.73A6 6 0 0 0 13.7 4.3zm-1.12 8.08-3.54 3.54-.71-.71 3.54-3.54.71.71zm1.42-1.41-3.54 3.54-.71-.71 3.54-3.54.71.71zm1.41-1.42-3.54 3.54-.71-.71L14.7 8.88l.71.71zM19 11l-1-1 1.5-1.5-1.06-1.06L17 9 16 8l3-3 3 3-3 3z"/></svg></span>
         Ordens de Servico
         <span class="nav-badge" id="badge-os" style="display:none">0</span>
       </a>
     </div>
 
-    <!-- ── ESTOQUE ── -->
     <div class="sidebar-section">
       <div class="sidebar-section-label">Estoque</div>
       <a class="nav-item" onclick="showPage('estoque')">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A1 1 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.21v6.7zm8 3.38 6-3.38V9.21l-6 3.37v6.71z"/></svg></span>
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A1 1 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15 6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.21v6.7zm8 3.38 6-3.38V9.21l-6 3.37v6.71z"/></svg></span>
         Produtos
         <span class="nav-badge" id="badge-rupturas" style="display:none">0</span>
       </a>
@@ -1628,7 +1620,6 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       </a>
     </div>
 
-    <!-- ── FINANCEIRO ── -->
     <div class="sidebar-section">
       <div class="sidebar-section-label">Financeiro</div>
       <a class="nav-item" onclick="showPage('caixa')">
@@ -1645,7 +1636,6 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       </a>
     </div>
 
-    <!-- ── ANÁLISE ── -->
     <div class="sidebar-section">
       <div class="sidebar-section-label">Análise</div>
       <a class="nav-item" onclick="showPage('relatorios')">
@@ -2282,7 +2272,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
           <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5S15.01 22 17.5 22s4.5-2.01 4.5-4.5S19.99 13 17.5 13zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"/></svg>
           Categorias
         </button>
-        <button class="btn-accent" onclick="openModal('add-produto')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Novo Produto</button>
+        <button class="btn-accent" onclick="abrirModalNovoProduto()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Novo Produto</button>
       </div>
     </div>
 
@@ -2979,6 +2969,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="prod-sku" type="text" placeholder="FLT-001"></div><div class="form-group"><label class="form-label">Categoria</label><select id="prod-categoria"><option value="">Selecione a categoria...</option></select></div></div>
       <div class="form-row three"><div class="form-group"><label class="form-label">Custo (R$)</label><input class="input-field" id="prod-custo" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Preco Venda (R$)</label><input class="input-field" id="prod-preco" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Estoque Inicial</label><input class="input-field" id="prod-estoque" type="number" value="0"></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Estoque Minimo</label><input class="input-field" id="prod-estoque-min" type="number" value="5"></div><div class="form-group"><label class="form-label">Marca / Fabricante</label><input class="input-field" id="prod-marca" type="text" placeholder="Honda, Yamaha, NGK..."></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Fornecedor Principal</label><select class="input-field" id="prod-fornecedor"><option value="">— Nenhum —</option></select></div></div>
     </div>
     <div class="modal-footer"><button class="btn-outline" onclick="closeModal('add-produto')">Cancelar</button><button class="btn-accent" onclick="saveProduto()">Salvar Produto</button></div>
   </div>
@@ -2993,6 +2984,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="edit-prod-sku" type="text"></div><div class="form-group"><label class="form-label">Categoria</label><select id="edit-prod-categoria"><option value="">Selecione a categoria...</option></select></div></div>
       <div class="form-row three"><div class="form-group"><label class="form-label">Custo (R$)</label><input class="input-field" id="edit-prod-custo" type="text"></div><div class="form-group"><label class="form-label">Preco Venda (R$)</label><input class="input-field" id="edit-prod-preco" type="text"></div><div class="form-group"><label class="form-label">Estoque</label><input class="input-field" id="edit-prod-estoque" type="number"></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Estoque Minimo</label><input class="input-field" id="edit-prod-estoque-min" type="number"></div><div class="form-group"><label class="form-label">Marca / Fabricante</label><input class="input-field" id="edit-prod-marca" type="text"></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Fornecedor Principal</label><select class="input-field" id="edit-prod-fornecedor"><option value="">— Nenhum —</option></select></div></div>
     </div>
     <div class="modal-footer"><button class="btn-outline" onclick="closeModal('edit-produto')">Cancelar</button><button class="btn-accent" onclick="updateProduto()">Salvar Alteracoes</button></div>
   </div>
@@ -3864,21 +3856,20 @@ function toast(msg, col) {
 }
 
 // ━━━━ NAVEGAÇÃO
-const PAGES = ['dashboard','pdv','orcamentos','agenda','clientes','estoque','fornecedores','caixa','financeiro','nf','relatorios','os','configuracoes'];
+const PAGES = ['dashboard','pdv','agenda','clientes','estoque','fornecedores','caixa','financeiro','nf','relatorios','os','configuracoes'];
 const TITLES = {
-  dashboard:      ['Painel Geral',            'Visão geral do negócio em tempo real'],
-  pdv:            ['PDV — Vendas',             'Ponto de Venda'],
-  orcamentos:     ['Orçamentos',              'Criar e gerenciar orçamentos'],
-  clientes:       ['Clientes',                'Cadastro e histórico de clientes'],
+  dashboard:      ['Painel Geral',           'Visão geral do negócio em tempo real'],
+  pdv:            ['PDV — Vendas',            'Ponto de Venda'],
+  estoque:        ['Produtos & Estoque',      'Gestão de produtos e inventário'],
+  fornecedores:   ['Fornecedores',            'Cadastro e gestão de fornecedores'],
+  caixa:          ['Controle de Caixa',       'Fluxo de entradas e saídas'],
+  financeiro:     ['DRE / Financeiro',        'Resultado, lucros e análise financeira'],
+  nf:             ['Notas Fiscais',           'Emissão e gestão de NF-e e NFC-e'],
+  clientes:       ['Clientes',               'Cadastro e histórico de clientes'],
+  relatorios:     ['Relatórios Gerenciais',   'Dashboards e análise de dados'],
   agenda:         ['Agenda & Serviços',        'Agendamentos e serviços'],
   os:             ['Ordens de Serviço',        'Gestão de serviços e manutenções'],
-  estoque:        ['Produtos & Estoque',       'Gestão de produtos e inventário'],
-  fornecedores:   ['Fornecedores',             'Cadastro e gestão de fornecedores'],
-  caixa:          ['Controle de Caixa',        'Fluxo de entradas e saídas'],
-  financeiro:     ['DRE / Financeiro',         'Resultado, lucros e análise financeira'],
-  nf:             ['Notas Fiscais',            'Emissão e gestão de NF-e e NFC-e'],
-  relatorios:     ['Relatórios Gerenciais',    'Dashboards e análise de dados'],
-  configuracoes:  ['Configurações',            'Dados da empresa e preferências do sistema'],
+  configuracoes:  ['Configurações',           'Dados da empresa e preferências do sistema'],
 };
 
 function showPage(id) {
@@ -3894,7 +3885,6 @@ function showPage(id) {
   if (t) { set('topbar-title', t[0]); set('topbar-sub', t[1]); }
   if (id === 'dashboard')    loadDashboard();
   if (id === 'pdv')          { loadProdutos(); atualizarBadgeOrcSalvos(); setTimeout(function(){ var ts=document.getElementById('pdv-troco-section'); if(ts)ts.style.display=''; pdvUpdateQuickVals(); }, 200); }
-  if (id === 'orcamentos')   loadOrcamentos();
   if (id === 'estoque')      loadProdutos();
   if (id === 'fornecedores') loadFornecedores();
   if (id === 'caixa')        loadCaixa();
@@ -4258,24 +4248,123 @@ function setPdvCat(el, cat) {
   renderPDV(cat ? allProdutos.filter(p => p.categoria === cat) : allProdutos);
 }
 
+// ━━━━ FORNECEDORES — popular select e funções CRUD
+async function popularFornecedoresSelect(selectId, valorSelecionado) {
+  const sel = $(selectId);
+  if (!sel) return;
+  try {
+    const r = await apiFetch('GET', '/fornecedores?loja_token=' + encodeURIComponent(_lojaToken));
+    const lista = (r && r.data) ? r.data : [];
+    sel.innerHTML = '<option value="">— Nenhum —</option>';
+    lista.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.id; opt.textContent = f.nome;
+      if (valorSelecionado && f.id === valorSelecionado) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  } catch(e) {}
+}
+
+let allFornecedores = [];
+async function loadFornecedores() {
+  const tbody = $('fornec-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);"><span class="loader-ring"></span> Carregando...</td></tr>';
+  try {
+    const r = await apiFetch('GET', '/fornecedores?loja_token=' + encodeURIComponent(_lojaToken));
+    allFornecedores = (r && r.data) ? r.data : [];
+    renderFornecedores(allFornecedores);
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--red);">Erro ao carregar.</td></tr>';
+  }
+}
+function renderFornecedores(lista) {
+  const tbody = $('fornec-tbody');
+  const sub = $('fornec-subtitle');
+  if (sub) sub.textContent = lista.length + ' fornecedor(es) cadastrado(s)';
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:48px;color:var(--text-muted);">Nenhum fornecedor cadastrado.<br><button class="btn-accent" style="margin-top:12px" onclick="openModal('add-fornecedor')">+ Novo Fornecedor</button></td></tr>';
+    return;
+  }
+  tbody.innerHTML = lista.map(f => `
+    <tr style="border-bottom:1px solid var(--border);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background=''">
+      <td style="padding:11px 16px;font-size:13px;font-weight:600;">${f.nome}</td>
+      <td style="padding:11px 16px;font-size:12.5px;color:var(--text-secondary);">${f.telefone||'—'}</td>
+      <td style="padding:11px 16px;font-size:12.5px;color:var(--text-secondary);">${f.email||'—'}</td>
+      <td style="padding:11px 16px;font-size:12.5px;color:var(--text-secondary);">${f.cnpj||'—'}</td>
+      <td style="padding:11px 16px;font-size:12.5px;color:var(--text-secondary);">${f.endereco||'—'}</td>
+      <td style="padding:11px 8px;text-align:right;">
+        <button onclick="openEditFornecedor('${f.id}')" style="padding:5px 10px;font-size:11px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;margin-right:4px;">Editar</button>
+        <button onclick="deleteFornecedor('${f.id}','${f.nome.replace(/'/g,"\'")}')" style="padding:5px 10px;font-size:11px;background:var(--red-soft);border:1px solid var(--red);border-radius:var(--radius-sm);color:var(--red);cursor:pointer;">Excluir</button>
+      </td>
+    </tr>`).join('');
+}
+function filterFornecedores() {
+  const q = ($('fornec-search') ? $('fornec-search').value : '').toLowerCase();
+  renderFornecedores(allFornecedores.filter(f =>
+    f.nome.toLowerCase().includes(q)||(f.email||'').toLowerCase().includes(q)||(f.cnpj||'').includes(q)||(f.telefone||'').includes(q)));
+}
+async function saveFornecedor() {
+  const nome = $('fnew-nome') ? $('fnew-nome').value.trim() : '';
+  if (!nome) { toast('Informe o nome do fornecedor.', 'y'); return; }
+  const body = { nome, telefone: $('fnew-tel')?$('fnew-tel').value.trim():'', email: $('fnew-email')?$('fnew-email').value.trim():'', cnpj: $('fnew-cnpj')?$('fnew-cnpj').value.trim():'', endereco: $('fnew-end')?$('fnew-end').value.trim():'', obs: $('fnew-obs')?$('fnew-obs').value.trim():'', loja_token: _lojaToken };
+  const r = await apiFetch('POST', '/fornecedores', body);
+  if (r && r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
+  ['fnew-nome','fnew-tel','fnew-email','fnew-cnpj','fnew-end','fnew-obs'].forEach(id => { const e=$(id); if(e) e.value=''; });
+  closeModal('add-fornecedor'); toast('Fornecedor cadastrado!'); loadFornecedores();
+}
+function openEditFornecedor(id) {
+  const f = allFornecedores.find(x => x.id === id); if (!f) return;
+  if ($('fedit-id'))    $('fedit-id').value    = f.id;
+  if ($('fedit-nome'))  $('fedit-nome').value  = f.nome     ||'';
+  if ($('fedit-tel'))   $('fedit-tel').value   = f.telefone ||'';
+  if ($('fedit-email')) $('fedit-email').value = f.email    ||'';
+  if ($('fedit-cnpj'))  $('fedit-cnpj').value  = f.cnpj     ||'';
+  if ($('fedit-end'))   $('fedit-end').value   = f.endereco ||'';
+  if ($('fedit-obs'))   $('fedit-obs').value   = f.obs      ||'';
+  openModal('edit-fornecedor');
+}
+async function updateFornecedor() {
+  const id = $('fedit-id')?$('fedit-id').value:''; const nome = $('fedit-nome')?$('fedit-nome').value.trim():'';
+  if (!nome) { toast('Informe o nome.', 'y'); return; }
+  const body = { nome, telefone: $('fedit-tel')?$('fedit-tel').value.trim():'', email: $('fedit-email')?$('fedit-email').value.trim():'', cnpj: $('fedit-cnpj')?$('fedit-cnpj').value.trim():'', endereco: $('fedit-end')?$('fedit-end').value.trim():'', obs: $('fedit-obs')?$('fedit-obs').value.trim():'' };
+  const r = await apiFetch('PUT', '/fornecedores/' + id, body);
+  if (r && r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
+  closeModal('edit-fornecedor'); toast('Fornecedor atualizado!'); loadFornecedores();
+}
+async function deleteFornecedor(id, nome) {
+  if (!confirm('Excluir o fornecedor "' + nome + '"?')) return;
+  const r = await apiFetch('DELETE', '/fornecedores/' + id);
+  if (r && r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
+  toast('Fornecedor excluído.'); loadFornecedores();
+}
+
+// ━━━━ ABRIR MODAL NOVO PRODUTO (carrega fornecedores)
+function abrirModalNovoProduto() {
+  popularFornecedoresSelect('prod-fornecedor', null);
+  openModal('add-produto');
+}
+
 // ━━━━ SALVAR PRODUTO
 async function saveProduto() {
   const nome  = $('prod-nome')  ? $('prod-nome').value.trim()  : '';
   const sku   = $('prod-sku')   ? $('prod-sku').value.trim()   : '';
   if (!nome) { toast('Informe o nome do produto.', 'y'); return; }
   if (!sku)  { toast('Informe o código/SKU.', 'y'); return; }
-  const cat   = $('prod-categoria') ? $('prod-categoria').value : 'Geral';
-  const custo = parseFloat(($('prod-custo')  ? $('prod-custo').value  : '0').replace(',', '.')) || 0;
-  const preco = parseFloat(($('prod-preco')  ? $('prod-preco').value  : '0').replace(',', '.')) || 0;
-  const est   = parseInt($('prod-estoque') ? $('prod-estoque').value : '0') || 0;
-  const min   = parseInt($('prod-estoque-min') ? $('prod-estoque-min').value : '5') || 5;
-  const marca = $('prod-marca') ? $('prod-marca').value.trim() : '';
+  const cat        = $('prod-categoria')  ? $('prod-categoria').value  : 'Geral';
+  const custo      = parseFloat(($('prod-custo')  ? $('prod-custo').value  : '0').replace(',', '.')) || 0;
+  const preco      = parseFloat(($('prod-preco')  ? $('prod-preco').value  : '0').replace(',', '.')) || 0;
+  const est        = parseInt($('prod-estoque')     ? $('prod-estoque').value     : '0') || 0;
+  const min        = parseInt($('prod-estoque-min') ? $('prod-estoque-min').value : '5') || 5;
+  const marca      = $('prod-marca')      ? $('prod-marca').value.trim()       : '';
+  const fornecedor_id = $('prod-fornecedor') ? ($('prod-fornecedor').value || null) : null;
 
-  const r = await sb.from('produtos').insert({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca, loja_token: _lojaToken });
+  const r = await sb.from('produtos').insert({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca, fornecedor_id, loja_token: _lojaToken });
   if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
   ['prod-nome','prod-sku','prod-custo','prod-preco','prod-marca'].forEach(id => { const e=$(id); if(e) e.value=''; });
-  if ($('prod-estoque')) $('prod-estoque').value = '0';
+  if ($('prod-estoque'))     $('prod-estoque').value     = '0';
   if ($('prod-estoque-min')) $('prod-estoque-min').value = '5';
+  if ($('prod-fornecedor'))  $('prod-fornecedor').value  = '';
   closeModal('add-produto');
   toast('Produto cadastrado!');
   loadProdutos();
@@ -4295,6 +4384,7 @@ function openEditProduto(id) {
   if ($('edit-prod-marca'))    $('edit-prod-marca').value     = p.marca || '';
   const sel = $('edit-prod-categoria');
   if (sel) { Array.from(sel.options).forEach(o => { o.selected = (o.text === p.categoria || o.value === p.categoria); }); }
+  popularFornecedoresSelect('edit-prod-fornecedor', p.fornecedor_id || null);
   openModal('edit-produto');
 }
 
@@ -4309,121 +4399,12 @@ async function updateProduto() {
   const est   = parseInt($('edit-prod-estoque') ? $('edit-prod-estoque').value : '0') || 0;
   const min   = parseInt($('edit-prod-estoque-min') ? $('edit-prod-estoque-min').value : '5') || 5;
   const marca = $('edit-prod-marca') ? $('edit-prod-marca').value.trim() : '';
-  const r = await sb.from('produtos').update({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca }).eq('id', id);
+  const fornecedor_id = $('edit-prod-fornecedor') ? ($('edit-prod-fornecedor').value || null) : null;
+  const r = await sb.from('produtos').update({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca, fornecedor_id }).eq('id', id);
   if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
   closeModal('edit-produto');
   toast('Produto atualizado!');
   loadProdutos();
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// FORNECEDORES
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-let allFornecedores = [];
-
-async function loadFornecedores() {
-  const tbody = $('fornec-tbody');
-  if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);"><span class="loader-ring"></span> Carregando...</td></tr>';
-  try {
-    const r = await apiFetch('GET', '/fornecedores?loja_token=' + encodeURIComponent(_lojaToken));
-    allFornecedores = (r && r.data) ? r.data : [];
-    renderFornecedores(allFornecedores);
-  } catch(e) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--red);">Erro ao carregar.</td></tr>';
-  }
-}
-
-function renderFornecedores(lista) {
-  const tbody = $('fornec-tbody');
-  const sub   = $('fornec-subtitle');
-  if (sub) sub.textContent = lista.length + ' fornecedor(es) cadastrado(s)';
-  if (!lista.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:48px;color:var(--text-muted);">Nenhum fornecedor cadastrado.<br><button class="btn-accent" style="margin-top:12px" onclick="openModal(\'add-fornecedor\')">+ Novo Fornecedor</button></td></tr>';
-    return;
-  }
-  tbody.innerHTML = lista.map(f => `
-    <tr style="border-bottom:1px solid var(--border);transition:background 0.15s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background=''">
-      <td style="padding:11px 16px;font-size:13px;font-weight:600;color:var(--text-primary);">${f.nome}</td>
-      <td style="padding:11px 16px;font-size:12.5px;color:var(--text-secondary);">${f.telefone||'—'}</td>
-      <td style="padding:11px 16px;font-size:12.5px;color:var(--text-secondary);">${f.email||'—'}</td>
-      <td style="padding:11px 16px;font-size:12.5px;color:var(--text-secondary);">${f.cnpj||'—'}</td>
-      <td style="padding:11px 16px;font-size:12.5px;color:var(--text-secondary);">${f.endereco||'—'}</td>
-      <td style="padding:11px 8px;text-align:right;">
-        <button onclick="openEditFornecedor('${f.id}')" style="padding:5px 10px;font-size:11px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;margin-right:4px;">Editar</button>
-        <button onclick="deleteFornecedor('${f.id}','${f.nome.replace(/'/g,"\\'")}')" style="padding:5px 10px;font-size:11px;background:var(--red-soft);border:1px solid var(--red);border-radius:var(--radius-sm);color:var(--red);cursor:pointer;">Excluir</button>
-      </td>
-    </tr>`).join('');
-}
-
-function filterFornecedores() {
-  const q = ($('fornec-search') ? $('fornec-search').value : '').toLowerCase();
-  renderFornecedores(allFornecedores.filter(f =>
-    f.nome.toLowerCase().includes(q) ||
-    (f.email||'').toLowerCase().includes(q) ||
-    (f.cnpj||'').includes(q) ||
-    (f.telefone||'').includes(q)
-  ));
-}
-
-async function saveFornecedor() {
-  const nome = $('fnew-nome') ? $('fnew-nome').value.trim() : '';
-  if (!nome) { toast('Informe o nome do fornecedor.', 'y'); return; }
-  const body = {
-    nome,
-    telefone: $('fnew-tel')   ? $('fnew-tel').value.trim()   : '',
-    email:    $('fnew-email') ? $('fnew-email').value.trim() : '',
-    cnpj:     $('fnew-cnpj')  ? $('fnew-cnpj').value.trim()  : '',
-    endereco: $('fnew-end')   ? $('fnew-end').value.trim()   : '',
-    obs:      $('fnew-obs')   ? $('fnew-obs').value.trim()   : '',
-    loja_token: _lojaToken
-  };
-  const r = await apiFetch('POST', '/fornecedores', body);
-  if (r && r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
-  ['fnew-nome','fnew-tel','fnew-email','fnew-cnpj','fnew-end','fnew-obs'].forEach(id => { const e=$(id); if(e) e.value=''; });
-  closeModal('add-fornecedor');
-  toast('Fornecedor cadastrado!');
-  loadFornecedores();
-}
-
-function openEditFornecedor(id) {
-  const f = allFornecedores.find(x => x.id === id);
-  if (!f) return;
-  if ($('fedit-id'))    $('fedit-id').value    = f.id;
-  if ($('fedit-nome'))  $('fedit-nome').value  = f.nome      || '';
-  if ($('fedit-tel'))   $('fedit-tel').value   = f.telefone  || '';
-  if ($('fedit-email')) $('fedit-email').value = f.email     || '';
-  if ($('fedit-cnpj'))  $('fedit-cnpj').value  = f.cnpj      || '';
-  if ($('fedit-end'))   $('fedit-end').value   = f.endereco  || '';
-  if ($('fedit-obs'))   $('fedit-obs').value   = f.obs       || '';
-  openModal('edit-fornecedor');
-}
-
-async function updateFornecedor() {
-  const id   = $('fedit-id')   ? $('fedit-id').value         : '';
-  const nome = $('fedit-nome') ? $('fedit-nome').value.trim(): '';
-  if (!nome) { toast('Informe o nome.', 'y'); return; }
-  const body = {
-    nome,
-    telefone: $('fedit-tel')   ? $('fedit-tel').value.trim()   : '',
-    email:    $('fedit-email') ? $('fedit-email').value.trim() : '',
-    cnpj:     $('fedit-cnpj')  ? $('fedit-cnpj').value.trim()  : '',
-    endereco: $('fedit-end')   ? $('fedit-end').value.trim()   : '',
-    obs:      $('fedit-obs')   ? $('fedit-obs').value.trim()   : '',
-  };
-  const r = await apiFetch('PUT', '/fornecedores/' + id, body);
-  if (r && r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
-  closeModal('edit-fornecedor');
-  toast('Fornecedor atualizado!');
-  loadFornecedores();
-}
-
-async function deleteFornecedor(id, nome) {
-  if (!confirm('Excluir o fornecedor "' + nome + '"?')) return;
-  const r = await apiFetch('DELETE', '/fornecedores/' + id);
-  if (r && r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
-  toast('Fornecedor excluído.');
-  loadFornecedores();
 }
 
 // ━━━━ EXCLUIR PRODUTO
