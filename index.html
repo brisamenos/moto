@@ -3543,6 +3543,10 @@ function criarCliente() {
           const r = await apiFetch('POST', '/produtos', items[0]);
           return r;
         }
+        if (tabela === 'fornecedores') {
+          const r = await apiFetch('POST', '/fornecedores', items[0]);
+          return r;
+        }
         // fallback
         return { data: null, error: null };
       }
@@ -3591,6 +3595,10 @@ function criarCliente() {
           // update último_acesso — silencioso
           return { data: null, error: null };
         }
+        if (tabela === 'fornecedores') {
+          const r = await apiFetch('PUT', '/fornecedores/' + id, _body);
+          return r;
+        }
         return { data: null, error: null };
       }
 
@@ -3605,6 +3613,7 @@ function criarCliente() {
         if (tabela === 'notas_fiscais')     return apiFetch('DELETE', '/notas_fiscais/' + id);
         if (tabela === 'agendamentos')      return apiFetch('DELETE', '/agendamentos/' + id);
         if (tabela === 'catalogo')          return apiFetch('DELETE', '/catalogo/' + id);
+        if (tabela === 'fornecedores')      return apiFetch('DELETE', '/fornecedores/' + id);
         return { data: null, error: null };
       }
 
@@ -3685,6 +3694,11 @@ function criarCliente() {
 
       if (tabela === 'clientes') {
         const r = await apiFetch('GET', '/clientes?loja_token=' + (_lojaToken || 'padrao'));
+        return r;
+      }
+
+      if (tabela === 'fornecedores') {
+        const r = await apiFetch('GET', '/fornecedores?loja_token=' + (_lojaToken || 'padrao'));
         return r;
       }
 
