@@ -4223,24 +4223,6 @@ async function saveProduto() {
   toast('Produto cadastrado!');
   loadProdutos();
 }
-  if (!nome) { toast('Informe o nome do produto.', 'y'); return; }
-  if (!sku)  { toast('Informe o código/SKU.', 'y'); return; }
-  const cat   = $('prod-categoria') ? $('prod-categoria').value : 'Geral';
-  const custo = parseFloat(($('prod-custo')  ? $('prod-custo').value  : '0').replace(',', '.')) || 0;
-  const preco = parseFloat(($('prod-preco')  ? $('prod-preco').value  : '0').replace(',', '.')) || 0;
-  const est   = parseInt($('prod-estoque') ? $('prod-estoque').value : '0') || 0;
-  const min   = parseInt($('prod-estoque-min') ? $('prod-estoque-min').value : '5') || 5;
-  const marca = $('prod-marca') ? $('prod-marca').value.trim() : '';
-
-  const r = await sb.from('produtos').insert({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca, loja_token: _lojaToken });
-  if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
-  ['prod-nome','prod-sku','prod-custo','prod-preco','prod-marca'].forEach(id => { const e=$(id); if(e) e.value=''; });
-  if ($('prod-estoque')) $('prod-estoque').value = '0';
-  if ($('prod-estoque-min')) $('prod-estoque-min').value = '5';
-  closeModal('add-produto');
-  toast('Produto cadastrado!');
-  loadProdutos();
-}
 
 // ━━━━ EDITAR PRODUTO
 function openEditProduto(id) {
