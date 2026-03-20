@@ -2265,7 +2265,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
           <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5S15.01 22 17.5 22s4.5-2.01 4.5-4.5S19.99 13 17.5 13zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"/></svg>
           Categorias
         </button>
-        <button class="btn-accent" onclick="openModal('add-produto')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Novo Produto</button>
+        <button class="btn-accent" onclick="abrirModalNovoProduto()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Novo Produto</button>
       </div>
     </div>
 
@@ -2900,6 +2900,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="prod-sku" type="text" placeholder="FLT-001"></div><div class="form-group"><label class="form-label">Categoria</label><select id="prod-categoria"><option value="">Selecione a categoria...</option></select></div></div>
       <div class="form-row three"><div class="form-group"><label class="form-label">Custo (R$)</label><input class="input-field" id="prod-custo" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Preco Venda (R$)</label><input class="input-field" id="prod-preco" type="text" placeholder="0,00"></div><div class="form-group"><label class="form-label">Estoque Inicial</label><input class="input-field" id="prod-estoque" type="number" value="0"></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Estoque Minimo</label><input class="input-field" id="prod-estoque-min" type="number" value="5"></div><div class="form-group"><label class="form-label">Marca / Fabricante</label><input class="input-field" id="prod-marca" type="text" placeholder="Honda, Yamaha, NGK..."></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Fornecedor</label><select class="input-field" id="prod-fornecedor"><option value="">— Nenhum —</option></select></div></div>
     </div>
     <div class="modal-footer"><button class="btn-outline" onclick="closeModal('add-produto')">Cancelar</button><button class="btn-accent" onclick="saveProduto()">Salvar Produto</button></div>
   </div>
@@ -2914,6 +2915,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       <div class="form-row"><div class="form-group"><label class="form-label">Codigo / SKU</label><input class="input-field" id="edit-prod-sku" type="text"></div><div class="form-group"><label class="form-label">Categoria</label><select id="edit-prod-categoria"><option value="">Selecione a categoria...</option></select></div></div>
       <div class="form-row three"><div class="form-group"><label class="form-label">Custo (R$)</label><input class="input-field" id="edit-prod-custo" type="text"></div><div class="form-group"><label class="form-label">Preco Venda (R$)</label><input class="input-field" id="edit-prod-preco" type="text"></div><div class="form-group"><label class="form-label">Estoque</label><input class="input-field" id="edit-prod-estoque" type="number"></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Estoque Minimo</label><input class="input-field" id="edit-prod-estoque-min" type="number"></div><div class="form-group"><label class="form-label">Marca / Fabricante</label><input class="input-field" id="edit-prod-marca" type="text"></div></div>
+      <div class="form-row full"><div class="form-group"><label class="form-label">Fornecedor</label><select class="input-field" id="edit-prod-fornecedor"><option value="">— Nenhum —</option></select></div></div>
     </div>
     <div class="modal-footer"><button class="btn-outline" onclick="closeModal('edit-produto')">Cancelar</button><button class="btn-accent" onclick="updateProduto()">Salvar Alteracoes</button></div>
   </div>
@@ -4071,7 +4073,7 @@ function renderPDV(list) {
   if (!list.length) {
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-muted);line-height:2">' +
       'Nenhum produto cadastrado.<br>' +
-      '<button class="btn-accent" style="margin-top:12px" onclick="openModal(\'add-produto\')">+ Novo Produto</button></div>';
+      '<button class="btn-accent" style="margin-top:12px" onclick="abrirModalNovoProduto()">+ Novo Produto</button></div>';
     return;
   }
   let html = '';
@@ -4174,6 +4176,30 @@ function setPdvCat(el, cat) {
   renderPDV(cat ? allProdutos.filter(p => p.categoria === cat) : allProdutos);
 }
 
+// ━━━━ ABRIR MODAL NOVO PRODUTO (carrega fornecedores antes)
+function abrirModalNovoProduto() {
+  popularFornecedoresSelect('prod-fornecedor', null);
+  openModal('add-produto');
+}
+
+// ━━━━ POPULA SELECT DE FORNECEDORES NOS MODAIS DE PRODUTO
+async function popularFornecedoresSelect(selectId, valorSelecionado) {
+  const sel = $(selectId);
+  if (!sel) return;
+  try {
+    const r = await apiFetch('GET', '/fornecedores?loja_token=' + encodeURIComponent(_lojaToken));
+    const lista = (r && r.data) ? r.data : [];
+    sel.innerHTML = '<option value="">— Nenhum —</option>';
+    lista.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.id;
+      opt.textContent = f.nome;
+      if (valorSelecionado && f.id === valorSelecionado) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  } catch(e) { /* silencioso */ }
+}
+
 // ━━━━ SALVAR PRODUTO
 async function saveProduto() {
   const nome  = $('prod-nome')  ? $('prod-nome').value.trim()  : '';
@@ -4186,12 +4212,14 @@ async function saveProduto() {
   const est   = parseInt($('prod-estoque') ? $('prod-estoque').value : '0') || 0;
   const min   = parseInt($('prod-estoque-min') ? $('prod-estoque-min').value : '5') || 5;
   const marca = $('prod-marca') ? $('prod-marca').value.trim() : '';
+  const fornecedor_id = $('prod-fornecedor') ? ($('prod-fornecedor').value || null) : null;
 
-  const r = await sb.from('produtos').insert({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca, loja_token: _lojaToken });
+  const r = await sb.from('produtos').insert({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca, fornecedor_id, loja_token: _lojaToken });
   if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
   ['prod-nome','prod-sku','prod-custo','prod-preco','prod-marca'].forEach(id => { const e=$(id); if(e) e.value=''; });
   if ($('prod-estoque')) $('prod-estoque').value = '0';
   if ($('prod-estoque-min')) $('prod-estoque-min').value = '5';
+  if ($('prod-fornecedor')) $('prod-fornecedor').value = '';
   closeModal('add-produto');
   toast('Produto cadastrado!');
   loadProdutos();
@@ -4211,6 +4239,7 @@ function openEditProduto(id) {
   if ($('edit-prod-marca'))    $('edit-prod-marca').value     = p.marca || '';
   const sel = $('edit-prod-categoria');
   if (sel) { Array.from(sel.options).forEach(o => { o.selected = (o.text === p.categoria || o.value === p.categoria); }); }
+  popularFornecedoresSelect('edit-prod-fornecedor', p.fornecedor_id || null);
   openModal('edit-produto');
 }
 
@@ -4225,7 +4254,8 @@ async function updateProduto() {
   const est   = parseInt($('edit-prod-estoque') ? $('edit-prod-estoque').value : '0') || 0;
   const min   = parseInt($('edit-prod-estoque-min') ? $('edit-prod-estoque-min').value : '5') || 5;
   const marca = $('edit-prod-marca') ? $('edit-prod-marca').value.trim() : '';
-  const r = await sb.from('produtos').update({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca }).eq('id', id);
+  const fornecedor_id = $('edit-prod-fornecedor') ? ($('edit-prod-fornecedor').value || null) : null;
+  const r = await sb.from('produtos').update({ nome, sku, categoria: cat, custo, preco_venda: preco, estoque: est, estoque_minimo: min, marca, fornecedor_id }).eq('id', id);
   if (r.error) { toast('Erro: ' + r.error.message, 'r'); return; }
   closeModal('edit-produto');
   toast('Produto atualizado!');

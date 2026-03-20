@@ -284,6 +284,7 @@ CREATE TABLE IF NOT EXISTS os_itens (
 
 // ── Migrações seguras (colunas novas em tabelas existentes) ──────────────────
 [
+  `ALTER TABLE produtos ADD COLUMN fornecedor_id TEXT DEFAULT NULL`,
   `ALTER TABLE caixa_lancamentos ADD COLUMN categoria TEXT DEFAULT 'Geral'`,
   `ALTER TABLE clientes ADD COLUMN total_orcamentos INTEGER DEFAULT 0`,
   `ALTER TABLE clientes ADD COLUMN ultimo_orcamento_at TEXT DEFAULT NULL`,
