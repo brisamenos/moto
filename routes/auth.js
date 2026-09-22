@@ -3,53 +3,49 @@ const express = require('express');
 const router  = express.Router();
 const { db }  = require('../db');
 const { v4: uuidv4 } = require('uuid');
+const { criarSessao, planoExpirado } = require('../middleware/auth');
 
-// POST /api/auth/login
+function limpar(user) {
+  const { senha_hash, senha_texto, ...rest } = user;
+  return rest;
+}
+
+// POST /api/auth/login  (público)
 router.post('/login', (req, res) => {
-  const { email, senha_hash } = req.body;
-  if (!email || !senha_hash) return res.status(400).json({ error: 'email e senha_hash obrigatórios' });
+  const { email, senha_hash } = req.body || {};
+  if (!email || !senha_hash) return res.status(400).json({ data: null, error: { message: 'Informe e-mail e senha.' } });
 
-  const user = db.prepare(
-    'SELECT * FROM usuarios WHERE email = ? AND senha_hash = ? AND ativo = 1'
-  ).get(email.toLowerCase().trim(), senha_hash);
+  const user = db.prepare('SELECT * FROM usuarios WHERE email = ? AND senha_hash = ?')
+    .get(String(email).toLowerCase().trim(), senha_hash);
 
   if (!user) return res.json({ data: null, error: { message: 'E-mail ou senha incorretos.' } });
+  if (!user.ativo) return res.json({ data: null, error: { message: 'Acesso bloqueado. Entre em contato com o suporte.' } });
 
-  // Verifica expiração
-  if (user.plano_expiracao) {
-    const exp = new Date(user.plano_expiracao);
-    exp.setHours(23, 59, 59);
-    if (exp < new Date()) {
-      return res.json({ data: null, error: { message: 'Plano expirado em ' + exp.toLocaleDateString('pt-BR') } });
-    }
+  if (user.perfil !== 'superadmin' && planoExpirado(user)) {
+    const d = String(user.plano_expiracao).slice(0, 10).split('-').reverse().join('/');
+    return res.json({ data: null, error: { message: 'Seu plano venceu em ' + d + '. Entre em contato para renovar.' } });
   }
 
-  // Atualiza último acesso
-  db.prepare('UPDATE usuarios SET ultimo_acesso = ? WHERE id = ?')
-    .run(new Date().toISOString(), user.id);
-
-  // Remove senha antes de retornar
-  const { senha_hash: _, ...userData } = user;
-  res.json({ data: userData, error: null });
+  db.prepare('UPDATE usuarios SET ultimo_acesso = ? WHERE id = ?').run(new Date().toISOString(), user.id);
+  const token = criarSessao(user.id);
+  res.json({ data: { ...limpar(user), token }, error: null });
 });
 
-// GET /api/auth/me/:id
-router.get('/me/:id', (req, res) => {
-  const user = db.prepare('SELECT * FROM usuarios WHERE id = ? AND ativo = 1').get(req.params.id);
-  if (!user) return res.json({ data: null, error: { message: 'Sessão inválida' } });
-  if (user.plano_expiracao) {
-    const exp = new Date(user.plano_expiracao);
-    exp.setHours(23, 59, 59);
-    if (exp < new Date()) return res.json({ data: null, error: { message: 'Plano expirado' } });
-  }
-  const { senha_hash: _, ...userData } = user;
-  res.json({ data: userData, error: null });
+// POST /api/auth/logout
+router.post('/logout', (req, res) => {
+  if (req.token) db.prepare('DELETE FROM sessoes WHERE token = ?').run(req.token);
+  res.json({ data: { ok: true }, error: null });
 });
 
-// POST /api/auth/usuario (criar novo usuário — apenas admin)
+// GET /api/auth/me  e  /api/auth/me/:id  — devolve o usuário do token
+router.get(['/me', '/me/:id'], (req, res) => {
+  res.json({ data: req.usuario, error: null });
+});
+
+// POST /api/auth/usuario (apenas super admin — protegido no middleware)
 router.post('/usuario', (req, res) => {
   const { nome, email, senha_hash, perfil, loja_token, plano_expiracao } = req.body;
-  if (!nome || !email || !senha_hash) return res.status(400).json({ error: 'Campos obrigatórios faltando' });
+  if (!nome || !email || !senha_hash) return res.status(400).json({ data: null, error: { message: 'Campos obrigatórios faltando' } });
   const existe = db.prepare('SELECT id FROM usuarios WHERE email = ?').get(email.toLowerCase().trim());
   if (existe) return res.json({ data: null, error: { message: 'E-mail já cadastrado.' } });
   const id = uuidv4();
