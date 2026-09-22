@@ -293,13 +293,23 @@ CREATE TABLE IF NOT EXISTS os_itens (
   `ALTER TABLE usuarios ADD COLUMN senha_texto TEXT DEFAULT NULL`,
 ].forEach(sql => { try { db.exec(sql); } catch(e) {} });
 
+// ── Sessões de login (token por dispositivo) ────────────────────────────────
+db.exec(`CREATE TABLE IF NOT EXISTS sessoes (
+  token       TEXT PRIMARY KEY,
+  usuario_id  TEXT NOT NULL,
+  created_at  TEXT DEFAULT (datetime('now'))
+)`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_sessoes_usuario ON sessoes(usuario_id)`);
+
 // ── Seed admin ───────────────────────────────────────────────────────────────
 const ADMIN_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
 if (!db.prepare('SELECT id FROM usuarios WHERE email = ?').get('admin@motostock.com')) {
   db.prepare(`INSERT INTO usuarios (id, nome, email, senha_hash, senha_texto, perfil, ativo, loja_token) VALUES (?, ?, ?, ?, ?, ?, 1, ?)`)
-    .run(uuidv4(), 'Administrador', 'admin@motostock.com', ADMIN_HASH, 'admin123', 'admin', 'padrao');
+    .run(uuidv4(), 'Administrador', 'admin@motostock.com', ADMIN_HASH, 'admin123', 'superadmin', 'padrao');
   console.log('✅ Usuário admin criado: admin@motostock.com / admin123');
 }
+// A conta principal é o Super Admin (dono do sistema)
+db.prepare(`UPDATE usuarios SET perfil='superadmin' WHERE email='admin@motostock.com' AND perfil='admin'`).run();
 
 // ── Seed sessão de caixa ─────────────────────────────────────────────────────
 if (!db.prepare('SELECT id FROM caixa_sessoes WHERE loja_token = ?').get('padrao')) {

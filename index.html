@@ -9,11 +9,41 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>
+// ── Autenticação: envia o token de sessão em todas as chamadas à API ──
+(function () {
+  var CHAVE = 'ms_token';
+  var origFetch = window.fetch.bind(window);
+  var avisado = false;
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    var ehApi = url.indexOf(location.origin + '/api/') === 0 || url.indexOf('/api/') === 0;
+    if (!ehApi) return origFetch(input, init);
+    init = init || {};
+    var headers = new Headers(init.headers || (typeof input !== 'string' && input.headers) || {});
+    var token = localStorage.getItem(CHAVE);
+    if (token && !headers.has('Authorization')) headers.set('Authorization', 'Bearer ' + token);
+    init.headers = headers;
+    return origFetch(input, init).then(function (res) {
+      if (res.status === 401 && token && !avisado && url.indexOf('/auth/login') === -1) {
+        avisado = true;
+        res.clone().json().then(function (j) {
+          localStorage.removeItem(CHAVE);
+          localStorage.removeItem('ms_sessao');
+          alert((j && j.error && j.error.message) || 'Sessão expirada. Faça login novamente.');
+          location.reload();
+        }).catch(function () { localStorage.removeItem(CHAVE); location.reload(); });
+      }
+      return res;
+    });
+  };
+})();
+</script>
+<script>
 // Limpa caches antigos do Service Worker para garantir que o arquivo novo seja servido
 if ('serviceWorker' in navigator && 'caches' in window) {
   caches.keys().then(function(names) {
     names.forEach(function(name) {
-      if (name.indexOf('motostock') !== -1 && name !== 'motostock-v2.4' && name !== 'motostock-static-v2.4') {
+      if (name.indexOf('motostock') !== -1 && name !== 'motostock-v2.5' && name !== 'motostock-static-v2.5') {
         caches.delete(name);
       }
     });
@@ -6455,6 +6485,7 @@ async function fazerLogin() {
 
     // Salva sessão
     _sessaoUsuario = data;
+    localStorage.setItem('ms_token', data.token);
     localStorage.setItem('ms_sessao', JSON.stringify({ id: data.id, nome: data.nome, email: data.email, perfil: data.perfil }));
 
     // Entra no sistema
@@ -6496,6 +6527,8 @@ function entrarNoSistema(usuario) {
 }
 
 function fazerLogout() {
+  try { fetch(API_BASE + '/auth/logout', { method: 'POST' }); } catch(e) {}
+  localStorage.removeItem('ms_token');
   localStorage.removeItem('ms_sessao');
   _sessaoUsuario = null;
   location.reload();
@@ -6503,7 +6536,7 @@ function fazerLogout() {
 
 async function verificarSessao() {
   const salva = localStorage.getItem('ms_sessao');
-  if (!salva) { return; } // mostra login
+  if (!salva || !localStorage.getItem('ms_token')) { localStorage.removeItem('ms_sessao'); return; } // mostra login
 
   try {
     const sess = JSON.parse(salva);
@@ -6528,7 +6561,7 @@ async function verificarSessao() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 async function carregarBrandLogin() {
   try {
-    const res = await fetch(API_BASE + '/configuracoes?loja_token=padrao&in=nome_loja,slogan,logo_url');
+    const res = await fetch(API_BASE + '/publico/configuracoes?loja_token=padrao');
     const { data } = await res.json();
     const cfg = {};
     (data || []).forEach(r => { cfg[r.chave] = r.valor; });

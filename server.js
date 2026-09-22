@@ -19,7 +19,13 @@ function route(name) {
 app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => /\.(db|db-wal|db-shm|sqlite)$/i.test(req.path) ? res.status(404).end() : next());
 app.use(express.static(__dirname));
+
+// Login obrigatório + isolamento por loja em toda a API
+const { autenticar } = require('./middleware/auth');
+app.use('/api', autenticar);
+app.use('/api/publico',        route('publico'));
 
 app.use('/api/auth',           route('auth'));
 app.use('/api/produtos',       route('produtos'));

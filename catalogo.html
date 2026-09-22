@@ -682,7 +682,7 @@ async function init() {
 
 async function carregarConfig() {
   try {
-    const { data } = await apiFetch('/configuracoes?loja_token=' + _lojaToken);
+    const { data } = await apiFetch('/publico/configuracoes?loja_token=' + encodeURIComponent(_lojaToken));
     const cfg = {};
     (data || []).forEach(function(r) { cfg[r.chave] = r.valor; });
 
@@ -719,7 +719,7 @@ async function carregarConfig() {
 
 async function carregarProdutos() {
   try {
-    const { data, error } = await apiFetch('/produtos?loja_token=' + _lojaToken);
+    const { data, error } = await apiFetch('/publico/produtos?loja_token=' + encodeURIComponent(_lojaToken));
     if (error) throw new Error(error.message);
 
     // Catálogo mostra só produtos com estoque > 0 (visíveis)

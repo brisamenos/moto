@@ -1,8 +1,8 @@
 // sw.js — MotoStock Service Worker v2.3
 // Cache strategy: Network first para API, Cache first para assets estáticos
 
-const CACHE_NAME   = 'motostock-v2.4';
-const STATIC_CACHE = 'motostock-static-v2.4';
+const CACHE_NAME   = 'motostock-v2.5';
+const STATIC_CACHE = 'motostock-static-v2.5';
 
 // Assets para cache estático (shell da aplicação)
 const STATIC_ASSETS = [

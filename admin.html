@@ -266,6 +266,36 @@ select.input-field{cursor:pointer}
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// ── Autenticação: envia o token de sessão em todas as chamadas à API ──
+(function () {
+  var CHAVE = 'ms_adm_token';
+  var origFetch = window.fetch.bind(window);
+  var avisado = false;
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    var ehApi = url.indexOf(location.origin + '/api/') === 0 || url.indexOf('/api/') === 0;
+    if (!ehApi) return origFetch(input, init);
+    init = init || {};
+    var headers = new Headers(init.headers || (typeof input !== 'string' && input.headers) || {});
+    var token = localStorage.getItem(CHAVE);
+    if (token && !headers.has('Authorization')) headers.set('Authorization', 'Bearer ' + token);
+    init.headers = headers;
+    return origFetch(input, init).then(function (res) {
+      if (res.status === 401 && token && !avisado && url.indexOf('/auth/login') === -1) {
+        avisado = true;
+        res.clone().json().then(function (j) {
+          localStorage.removeItem(CHAVE);
+          localStorage.removeItem('ms_adm');
+          alert((j && j.error && j.error.message) || 'Sessão expirada. Faça login novamente.');
+          location.reload();
+        }).catch(function () { localStorage.removeItem(CHAVE); location.reload(); });
+      }
+      return res;
+    });
+  };
+})();
+</script>
 </head>
 <body>
 
@@ -640,9 +670,9 @@ select.input-field{cursor:pointer}
         <div class="form-group">
           <label class="form-label">Perfil</label>
           <select class="input-field" id="usr-perfil">
-            <option value="cliente">Cliente (Operador)</option>
-            <option value="admin">Admin</option>
-            <option value="superadmin">Super Admin</option>
+            <option value="admin">Dono da loja</option>
+            <option value="cliente">Funcionário (Operador)</option>
+            <option value="superadmin">Super Admin (acesso total)</option>
           </select>
         </div>
         <div class="form-group">
@@ -662,8 +692,12 @@ select.input-field{cursor:pointer}
       </div>
       <div class="form-grid">
         <div class="form-group">
-          <label class="form-label">Expira em</label>
+          <label class="form-label">Expira em (dia do vencimento)</label>
           <input class="input-field" id="usr-plano-expira" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Loja</label>
+          <select class="input-field" id="usr-loja"></select>
         </div>
       </div>
       <div class="form-group">
@@ -720,7 +754,9 @@ function toast(msg, col) {
   t._t = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-const fmtDate = d => d ? new Date(d).toLocaleDateString('pt-BR') : '—';
+const fmtDate = d => d ? (/^\d{4}-\d{2}-\d{2}$/.test(d) ? d.split('-').reverse().join('/') : new Date(d).toLocaleDateString('pt-BR')) : '—';
+// Data de vencimento vale até o fim do dia (evita mostrar um dia a menos por causa do fuso)
+const dataExp = d => new Date(String(d).slice(0, 10) + 'T23:59:59');
 const fmtDatetime = d => d ? new Date(d).toLocaleString('pt-BR') : '—';
 const fmtMoney = v => 'R$ ' + Number(v||0).toLocaleString('pt-BR', {minimumFractionDigits:2});
 
@@ -756,13 +792,14 @@ async function admLogin() {
       return;
     }
 
-    if (data.perfil !== 'admin' && data.perfil !== 'superadmin') {
+    if (data.perfil !== 'superadmin') {
       erro.textContent = 'Acesso negado. Apenas administradores podem entrar aqui.';
       erro.style.display = 'block';
       btn.textContent = 'Entrar como Admin'; btn.disabled = false;
       return;
     }
 
+    localStorage.setItem('ms_adm_token', data.token);
     localStorage.setItem('ms_adm', '1');
     localStorage.setItem('ms_adm_email', email);
     document.getElementById('admin-login').style.display = 'none';
@@ -776,7 +813,11 @@ async function admLogin() {
   }
 }
 
-function admLogout() { localStorage.removeItem('ms_adm'); location.reload(); }
+function admLogout() {
+  apiFetch('POST', '/auth/logout').catch(function(){}).finally(function() {
+    localStorage.removeItem('ms_adm_token'); localStorage.removeItem('ms_adm'); location.reload();
+  });
+}
 
 // ── TABS ──
 function admShowTab(id, el) {
@@ -800,10 +841,10 @@ async function admCarregarUsuarios() {
 function admAtualizarKPIs(list) {
   const hoje = new Date();
   const ativos   = list.filter(u => u.ativo).length;
-  const expirados = list.filter(u => u.plano_expiracao && new Date(u.plano_expiracao) < hoje).length;
+  const expirados = list.filter(u => u.plano_expiracao && dataExp(u.plano_expiracao) < hoje).length;
   const vencendo  = list.filter(u => {
     if (!u.plano_expiracao) return false;
-    const d = (new Date(u.plano_expiracao) - hoje) / 86400000;
+    const d = (dataExp(u.plano_expiracao) - hoje) / 86400000;
     return d >= 0 && d <= 7;
   }).length;
   document.getElementById('kpi-total').textContent    = list.length;
@@ -817,7 +858,7 @@ function admRenderUsuarios(list) {
   if (!list.length) { tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted)">Nenhum usuário encontrado.</td></tr>'; return; }
   const hoje = new Date();
   tb.innerHTML = list.map(u => {
-    const expira = u.plano_expiracao ? new Date(u.plano_expiracao) : null;
+    const expira = u.plano_expiracao ? dataExp(u.plano_expiracao) : null;
     const dias   = expira ? Math.ceil((expira - hoje) / 86400000) : null;
     let planoBadge = '';
     if (!expira) planoBadge = '<span class="badge badge-blue">Sem data</span>';
@@ -827,8 +868,8 @@ function admRenderUsuarios(list) {
 
     const perfilBadge = u.perfil === 'superadmin'
       ? '<span class="badge badge-purple">Super Admin</span>'
-      : u.perfil === 'admin' ? '<span class="badge badge-blue">Admin</span>'
-      : '<span class="badge" style="background:var(--bg-surface);color:var(--text-muted)">Cliente</span>';
+      : u.perfil === 'admin' ? '<span class="badge badge-blue">Dono da loja</span>'
+      : '<span class="badge" style="background:var(--bg-surface);color:var(--text-muted)">Funcionário</span>';
 
     const statusBadge = u.ativo
       ? '<span class="badge badge-green">Ativo</span>'
@@ -836,7 +877,7 @@ function admRenderUsuarios(list) {
 
     return '<tr>' +
       '<td style="font-weight:600;color:var(--text-primary)">' + u.nome + '</td>' +
-      '<td class="mono" style="font-size:12px">' + u.email + '</td>' +
+      '<td class="mono" style="font-size:12px">' + u.email + '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">🏪 ' + (u.loja_token || '—') + '</div></td>' +
       '<td>' +
         '<div style="display:flex;align-items:center;gap:6px">' +
           '<span id="pw-text-' + u.id + '" data-senha="' + (u.senha_texto||'').replace(/"/g,'&quot;') + '" style="font-family:monospace;font-size:12px;filter:blur(4px);cursor:pointer;transition:filter 0.2s;user-select:all;" onclick="toggleSenhaVis(this)" title="Clique para revelar">' + (u.senha_texto || '(hash)') + '</span>' +
@@ -866,6 +907,21 @@ function admFiltrarUsuarios() {
 }
 
 // ── MODAL USUÁRIO ──
+function admPopularLojas(selecionada) {
+  const sel = document.getElementById('usr-loja');
+  const lojas = {};
+  _allUsuarios.forEach(u => {
+    if (!u.loja_token || u.loja_token === '_admin') return;
+    if (!lojas[u.loja_token] || u.perfil === 'admin') lojas[u.loja_token] = u.nome;
+  });
+  let html = '<option value="">➕ Nova loja (separada)</option>';
+  Object.keys(lojas).sort().forEach(t => {
+    html += '<option value="' + t + '">' + lojas[t].replace(/</g,'&lt;') + ' (' + t + ')</option>';
+  });
+  sel.innerHTML = html;
+  sel.value = selecionada || '';
+}
+
 function admOpenNovoUsuario() {
   document.getElementById('usr-edit-id').value = '';
   document.getElementById('modal-usr-title').textContent = 'Novo Usuário';
@@ -873,7 +929,8 @@ function admOpenNovoUsuario() {
   document.getElementById('usr-email').value = '';
   document.getElementById('usr-senha').value = '';
   document.getElementById('usr-senha-label').textContent = 'Senha *';
-  document.getElementById('usr-perfil').value = 'cliente';
+  document.getElementById('usr-perfil').value = 'admin';
+  admPopularLojas('');
   document.getElementById('usr-plano').value = 'Mensal';
   document.getElementById('usr-plano-inicio').value = new Date().toISOString().split('T')[0];
   // Padrão: +30 dias
@@ -895,6 +952,7 @@ function admEditarUsuario(id) {
   document.getElementById('usr-senha').value = '';
   document.getElementById('usr-senha-label').textContent = 'Nova Senha (deixe em branco para manter)';
   document.getElementById('usr-perfil').value = u.perfil || 'cliente';
+  admPopularLojas(u.loja_token);
   document.getElementById('usr-plano').value = u.plano_nome || 'Mensal';
   document.getElementById('usr-plano-inicio').value = u.plano_inicio || '';
   document.getElementById('usr-plano-expira').value = u.plano_expiracao || '';
@@ -909,7 +967,7 @@ async function admRenovarPlano(id) {
   if (!u) return;
   const meses = prompt('Renovar por quantos meses?', '1');
   if (!meses || isNaN(meses)) return;
-  const base = u.plano_expiracao && new Date(u.plano_expiracao) > new Date() ? new Date(u.plano_expiracao) : new Date();
+  const base = u.plano_expiracao && dataExp(u.plano_expiracao) > new Date() ? new Date(String(u.plano_expiracao).slice(0,10) + 'T12:00:00') : new Date();
   base.setMonth(base.getMonth() + parseInt(meses));
   const { error } = await apiFetch('PUT', '/admin/usuarios/' + id, { ...(_allUsuarios.find(x=>x.id===id)||{}), plano_expiracao: base.toISOString().split('T')[0], ativo: true });
   if (error) { toast('Erro: ' + error.message, 'r'); return; }
@@ -943,7 +1001,8 @@ async function admSalvarUsuario() {
   const nome       = document.getElementById('usr-nome').value.trim();
   const email      = document.getElementById('usr-email').value.trim().toLowerCase();
   const senha      = document.getElementById('usr-senha').value;
-  const lojaToken  = email.split('@')[0].replace(/[^a-z0-9_-]/g,'') || 'padrao';
+  const lojaToken  = document.getElementById('usr-loja').value; // '' = nova loja
+  const lojaBase   = email.split('@')[0];
   const perfil     = document.getElementById('usr-perfil').value;
   const plano      = document.getElementById('usr-plano').value;
   const inicio     = document.getElementById('usr-plano-inicio').value;
@@ -961,7 +1020,7 @@ async function admSalvarUsuario() {
   btn.textContent = 'Salvando...'; btn.disabled = true;
 
   try {
-    const payload = { nome, email, perfil, loja_token: lojaToken, plano_nome: plano, plano_inicio: inicio || null, plano_expiracao: expira || null, obs, ativo };
+    const payload = { nome, email, perfil, loja_token: lojaToken, loja_base: lojaBase, plano_nome: plano, plano_inicio: inicio || null, plano_expiracao: expira || null, obs, ativo };
     if (senha) { payload.senha_hash = await sha256(senha); payload.senha_texto = senha; }
 
     let error;
@@ -1445,11 +1504,18 @@ function admCarregarTudo() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  if (localStorage.getItem('ms_adm') === '1') {
-    document.getElementById('admin-login').style.display = 'none';
-    document.getElementById('admin-app').style.display = 'block';
-    document.getElementById('adm-user-nome').textContent = 'Super Admin';
-    admCarregarTudo();
+  if (localStorage.getItem('ms_adm_token')) {
+    apiFetch('GET', '/auth/me').then(function(r) {
+      if (!r || !r.data || r.data.perfil !== 'superadmin') {
+        localStorage.removeItem('ms_adm_token'); localStorage.removeItem('ms_adm'); return;
+      }
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('admin-app').style.display = 'block';
+      document.getElementById('adm-user-nome').textContent = r.data.nome || 'Super Admin';
+      admCarregarTudo();
+    }).catch(function(){});
+  } else {
+    localStorage.removeItem('ms_adm');
   }
 
   document.getElementById('modal-usuario').addEventListener('click', function(e) {
