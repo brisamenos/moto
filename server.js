@@ -38,6 +38,7 @@ app.use('/api/orcamentos',     route('orcamentos'));
 app.use('/api/os',             route('ordens_servico'));
 app.use('/api/relatorios',     route('relatorios'));
 app.use('/api/fornecedores',   route('fornecedores'));
+app.use('/api/contas-pagar',   route('contas_pagar'));
 app.use('/api/notificacoes',   route('notificacoes'));
 app.use('/api',                route('extras'));
 

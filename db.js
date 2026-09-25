@@ -96,6 +96,20 @@ CREATE TABLE IF NOT EXISTS caixa_sessoes (
   updated_at     TEXT DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS contas_pagar (
+  id           TEXT PRIMARY KEY,
+  descricao    TEXT NOT NULL,
+  categoria    TEXT DEFAULT 'Outros',
+  valor        REAL NOT NULL,
+  vencimento   TEXT NOT NULL,
+  recorrente   INTEGER NOT NULL DEFAULT 0,
+  frequencia   TEXT DEFAULT NULL,
+  status       TEXT NOT NULL DEFAULT 'pendente' CHECK(status IN ('pendente','pago')),
+  pago_em      TEXT DEFAULT NULL,
+  loja_token   TEXT NOT NULL DEFAULT 'padrao',
+  created_at   TEXT DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS configuracoes (
   id         TEXT PRIMARY KEY,
   chave      TEXT NOT NULL,
