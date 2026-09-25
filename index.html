@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MotoStock — Gestão de Peças</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#B5720F">
+<meta name="theme-color" content="#D6222B">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>
@@ -73,13 +73,13 @@ if ('serviceWorker' in navigator && 'caches' in window) {
   --bg-input:      #0b0f1c;
   --bg-glass:      rgba(20,25,38,0.72);
 
-  /* Accent — âmbar oficina */
-  --accent:        #E5A438;
-  --accent-dim:    #B87816;
-  --accent-bright: #F3C878;
-  --accent-glow:   rgba(181,114,15,0.20);
-  --accent-soft:   rgba(181,114,15,0.10);
-  --accent-rgb:    181,114,15;
+  /* Accent — vermelho racing */
+  --accent:        #E5383B;
+  --accent-dim:    #B81E22;
+  --accent-bright: #F97070;
+  --accent-glow:   rgba(214,34,43,0.20);
+  --accent-soft:   rgba(214,34,43,0.10);
+  --accent-rgb:    214,34,43;
 
   /* Esmeralda */
   --green:         #3ecf8e;
@@ -97,6 +97,14 @@ if ('serviceWorker' in navigator && 'caches' in window) {
   --purple:        #a78bfa;
   --purple-soft:   rgba(167,139,250,0.11);
 
+  /* Âmbar (uso em ícones de KPI) */
+  --orange:        #f0a03a;
+  --orange-soft:   rgba(240,160,58,0.11);
+
+  /* Petróleo (uso em ícones de KPI) */
+  --teal:          #2dd4bf;
+  --teal-soft:     rgba(45,212,191,0.11);
+
   /* Texto */
   --text-primary:   #e8eaf4;
   --text-secondary: #9aa0bc;
@@ -105,16 +113,16 @@ if ('serviceWorker' in navigator && 'caches' in window) {
   /* Bordas */
   --border:         rgba(255,255,255,0.065);
   --border-strong:  rgba(255,255,255,0.11);
-  --border-accent:  rgba(181,114,15,0.38);
+  --border-accent:  rgba(214,34,43,0.38);
 
   /* Sombras */
   --shadow-card:    0 1px 3px rgba(0,0,0,0.4), 0 8px 28px rgba(0,0,0,0.28);
-  --shadow-accent:  0 0 40px rgba(181,114,15,0.12);
+  --shadow-accent:  0 0 40px rgba(214,34,43,0.12);
   --shadow-hover:   0 4px 6px rgba(0,0,0,0.3), 0 20px 60px rgba(0,0,0,0.4);
-  --shadow-glow:    0 0 0 1px rgba(181,114,15,0.22), 0 8px 32px rgba(181,114,15,0.14);
+  --shadow-glow:    0 0 0 1px rgba(214,34,43,0.22), 0 8px 32px rgba(214,34,43,0.14);
 
   /* Gradientes */
-  --gradient-accent: linear-gradient(135deg, #D89A2E 0%, #A66B0C 100%);
+  --gradient-accent: linear-gradient(135deg, #E5383B 0%, #C41E24 100%);
   --gradient-dark:   linear-gradient(180deg, #0f1428 0%, #0b0f1c 100%);
   --gradient-glass:  linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
 
@@ -132,16 +140,16 @@ if ('serviceWorker' in navigator && 'caches' in window) {
   --bg-surface:    #f9f8f6;
   --bg-card:       #ffffff;
   --bg-card-hover: #f5f4f1;
-  --bg-sidebar:    #15171e;
+  --bg-sidebar:    #ffffff;
   --bg-input:      #f1f0ee;
   --bg-glass:      rgba(255,255,255,0.85);
 
-  --accent:        #B5720F;
-  --accent-dim:    #8F5A0A;
-  --accent-bright: #E8A93E;
-  --accent-glow:   rgba(181,114,15,0.16);
-  --accent-soft:   rgba(181,114,15,0.09);
-  --accent-rgb:    181,114,15;
+  --accent:        #D6222B;
+  --accent-dim:    #A81920;
+  --accent-bright: #F0555C;
+  --accent-glow:   rgba(214,34,43,0.16);
+  --accent-soft:   rgba(214,34,43,0.09);
+  --accent-rgb:    214,34,43;
 
   --green:         #0d9268;
   --green-soft:    rgba(13,146,104,0.10);
@@ -151,6 +159,10 @@ if ('serviceWorker' in navigator && 'caches' in window) {
   --red-soft:      rgba(220,53,69,0.10);
   --purple:        #7c3aed;
   --purple-soft:   rgba(124,58,237,0.10);
+  --orange:        #d9770d;
+  --orange-soft:   rgba(217,119,13,0.10);
+  --teal:          #0d9488;
+  --teal-soft:     rgba(13,148,136,0.10);
 
   --text-primary:   #0d1022;
   --text-secondary: #3a405c;
@@ -158,12 +170,12 @@ if ('serviceWorker' in navigator && 'caches' in window) {
 
   --border:         rgba(0,0,0,0.07);
   --border-strong:  rgba(0,0,0,0.13);
-  --border-accent:  rgba(181,114,15,0.38);
+  --border-accent:  rgba(214,34,43,0.38);
 
   --shadow-card:    0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
-  --shadow-accent:  0 0 24px rgba(181,114,15,0.10);
+  --shadow-accent:  0 0 24px rgba(214,34,43,0.10);
   --shadow-hover:   0 4px 6px rgba(0,0,0,0.06), 0 16px 40px rgba(0,0,0,0.10);
-  --shadow-glow:    0 0 0 1px rgba(181,114,15,0.22), 0 6px 20px rgba(181,114,15,0.10);
+  --shadow-glow:    0 0 0 1px rgba(214,34,43,0.22), 0 6px 20px rgba(214,34,43,0.10);
 
   --gradient-dark: linear-gradient(180deg, #ffffff 0%, #f8f9fd 100%);
 }
@@ -208,13 +220,13 @@ body::before {
   width: var(--sidebar-w);
   height: 100vh;
   background: var(--bg-sidebar);
-  border-right: 1px solid rgba(255,255,255,0.05);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   position: fixed;
   left: 0; top: 0;
   z-index: 200;
-  transition: transform 0.32s cubic-bezier(0.22,1,0.36,1);
+  transition: transform 0.32s cubic-bezier(0.22,1,0.36,1), background 0.3s, border-color 0.3s;
   overflow: hidden;
 }
 
@@ -224,11 +236,11 @@ body::before {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(181,114,15,0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(214,34,43,0.6), transparent);
 }
 
-/* Sidebar sempre dark */
-.sidebar, .sidebar * {
+/* No tema escuro, a sidebar mantém-se sempre escura mesmo com --bg-sidebar já dark por padrão */
+[data-theme="dark"] .sidebar, [data-theme="dark"] .sidebar * {
   --bg-sidebar:     #15171e;
   --text-primary:   #dde2f4;
   --text-secondary: #636c88;
@@ -236,9 +248,9 @@ body::before {
   --border:         rgba(255,255,255,0.045);
   --bg-card:        rgba(255,255,255,0.03);
   --bg-card-hover:  rgba(255,255,255,0.055);
-  --accent-soft:    rgba(181,114,15,0.08);
-  --border-accent:  rgba(181,114,15,0.30);
-  --accent:         #E5A438;
+  --accent-soft:    rgba(214,34,43,0.08);
+  --border-accent:  rgba(214,34,43,0.30);
+  --accent:         #E5383B;
 }
 
 .sidebar-scroll {
@@ -249,11 +261,11 @@ body::before {
 }
 .sidebar-scroll::-webkit-scrollbar { width: 2px; }
 .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(181,114,15,0.2); border-radius: 2px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(214,34,43,0.2); border-radius: 2px; }
 
 .sidebar-brand {
   padding: 16px 18px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 11px;
   flex-shrink: 0;
   position: relative;
@@ -266,23 +278,23 @@ body::before {
   border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 3px 12px rgba(181,114,15,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  box-shadow: 0 3px 12px rgba(214,34,43,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
   overflow: hidden;
 }
 .brand-icon svg { width: 17px; height: 17px; fill: #ffffff; }
 .brand-icon img { width: 34px; height: 34px; object-fit: cover; border-radius: 9px; }
 
 .brand-text h1 {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #dde2f4;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
   line-height: 1;
 }
 .brand-text span {
   font-size: 9.5px;
-  color: #3a4060;
+  color: var(--text-muted);
   letter-spacing: 2px;
   text-transform: uppercase;
   font-weight: 500;
@@ -294,7 +306,7 @@ body::before {
   font-size: 9px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: #2a3050;
+  color: var(--text-muted);
   padding: 0 10px;
   margin-bottom: 4px;
   font-weight: 600;
@@ -309,7 +321,7 @@ body::before {
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.16s, color 0.16s;
-  color: #4e5870;
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 500;
   position: relative;
@@ -319,25 +331,17 @@ body::before {
 }
 
 .nav-item:hover {
-  background: rgba(255,255,255,0.04);
-  color: #b0b8d4;
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
 }
 
 .nav-item.active {
-  background: rgba(181,114,15,0.10);
-  color: #E5A438;
+  background: var(--gradient-accent);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(214,34,43,0.3);
 }
 
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 20%; bottom: 20%;
-  width: 2px;
-  background: #E5A438;
-  border-radius: 0 2px 2px 0;
-}
-
-.nav-item.active .nav-icon svg { fill: #E5A438; }
+.nav-item.active .nav-icon svg { fill: #ffffff; }
 
 .nav-icon {
   width: 28px; height: 28px;
@@ -358,20 +362,20 @@ body::before {
   font-family: 'JetBrains Mono', monospace;
 }
 .nav-badge.green  { background: rgba(62,207,142,0.75); color: #ffffff; }
-.nav-badge.accent { background: rgba(181,114,15,0.9);  color: #ffffff; }
+.nav-badge.accent { background: rgba(214,34,43,0.9);  color: #ffffff; }
 
-.sidebar-divider { height: 1px; background: rgba(255,255,255,0.04); margin: 8px 12px; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 12px; }
 
 .sidebar-user {
   padding: 14px 18px;
   display: flex;
   align-items: center;
   gap: 10px;
-  border-top: 1px solid rgba(255,255,255,0.04);
+  border-top: 1px solid var(--border);
   cursor: pointer;
   transition: background 0.15s;
 }
-.sidebar-user:hover { background: rgba(255,255,255,0.025); }
+.sidebar-user:hover { background: var(--bg-card-hover); }
 
 .user-avatar {
   width: 34px; height: 34px;
@@ -382,11 +386,11 @@ body::before {
   color: #ffffff;
   flex-shrink: 0;
   font-family: 'JetBrains Mono', monospace;
-  box-shadow: 0 2px 8px rgba(181,114,15,0.25);
+  box-shadow: 0 2px 8px rgba(214,34,43,0.25);
 }
 
-.user-info h4 { font-size: 12.5px; font-weight: 600; color: #c0c8e0; }
-.user-info span { font-size: 10px; color: #3a4060; font-family: 'JetBrains Mono', monospace; }
+.user-info h4 { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+.user-info span { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
 
 /* ══════════════════════════════════════
    MAIN
@@ -424,7 +428,7 @@ body::before {
 }
 
 [data-theme="light"] .topbar {
-  background: rgba(248,249,253,0.92);
+  background: rgba(249,248,246,0.92);
 }
 
 .topbar-title {
@@ -456,8 +460,8 @@ body::before {
   transition: all 0.2s;
 }
 .topbar-search:focus-within {
-  border-color: rgba(181,114,15,0.4);
-  box-shadow: 0 0 0 3px rgba(181,114,15,0.08);
+  border-color: rgba(214,34,43,0.4);
+  box-shadow: 0 0 0 3px rgba(214,34,43,0.08);
 }
 .topbar-search input {
   background: none; border: none; outline: none;
@@ -553,15 +557,15 @@ body::before {
   cursor: pointer;
   transition: all 0.18s;
   white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(181,114,15,0.25);
+  box-shadow: 0 1px 2px rgba(214,34,43,0.25);
   letter-spacing: 0.1px;
 }
 .btn-accent:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(181,114,15,0.28);
+  box-shadow: 0 4px 12px rgba(214,34,43,0.28);
   filter: brightness(1.05);
 }
-.btn-accent:active { transform: translateY(0) scale(0.98); filter: brightness(0.96); box-shadow: 0 1px 2px rgba(181,114,15,0.25); }
+.btn-accent:active { transform: translateY(0) scale(0.98); filter: brightness(0.96); box-shadow: 0 1px 2px rgba(214,34,43,0.25); }
 .btn-accent svg { width: 14px; height: 14px; fill: #ffffff; }
 
 .btn-outline {
@@ -642,53 +646,37 @@ body::before {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px 20px 18px;
-  transition: all 0.24s ease;
+  padding: 18px 20px;
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
   cursor: default;
 }
 
-/* Linha de cor no topo */
-.kpi-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1.5px;
-  background: var(--kpi-color, var(--accent));
-  opacity: 0.7;
-}
-
-/* Glow circular atrás do número */
-.kpi-card::after {
-  content: '';
-  position: absolute;
-  top: -30px; right: -15px;
-  width: 100px; height: 100px;
-  background: radial-gradient(circle, color-mix(in srgb, var(--kpi-color, var(--accent)) 12%, transparent), transparent 70%);
-  pointer-events: none;
-  opacity: 0.5;
-  transition: opacity 0.3s;
-}
-
 .kpi-card:hover {
-  border-color: color-mix(in srgb, var(--kpi-color, var(--accent)) 35%, transparent);
+  border-color: color-mix(in srgb, var(--kpi-color, var(--accent)) 30%, transparent);
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
-.kpi-card:hover::after { opacity: 0.8; }
 
 .kpi-header {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; gap: 10px;
   margin-bottom: 14px;
 }
 .kpi-icon {
-  width: 32px; height: 32px;
-  background: color-mix(in srgb, var(--kpi-color, var(--accent)) 12%, transparent);
-  border-radius: 8px;
+  width: 40px; height: 40px;
+  background: color-mix(in srgb, var(--kpi-color, var(--accent)) 14%, transparent);
+  border-radius: 11px;
   display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
-.kpi-icon svg { width: 15px; height: 15px; fill: var(--kpi-color, var(--accent)); }
+.kpi-icon svg { width: 18px; height: 18px; fill: var(--kpi-color, var(--accent)); }
+.kpi-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex: 1;
+}
 .kpi-trend {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px; font-weight: 500;
@@ -700,18 +688,17 @@ body::before {
 
 .kpi-value {
   font-family: 'Space Grotesk', 'Inter', sans-serif;
-  font-size: 29px; font-weight: 700;
+  font-size: 27px; font-weight: 700;
   color: var(--text-primary);
   line-height: 1;
   letter-spacing: -0.3px;
   margin-bottom: 4px;
 }
 .kpi-label {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--text-muted);
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.1px;
 }
 
 /* ══════════════════════════════════════
@@ -824,7 +811,7 @@ tr:hover td { background: rgba(255,255,255,0.018); }
   min-height: 4px;
   opacity: 0.85;
 }
-.chart-bar.secondary { background: rgba(181,114,15,0.22); }
+.chart-bar.secondary { background: rgba(214,34,43,0.22); }
 .chart-bar:hover { filter: brightness(1.2); opacity: 1; }
 .chart-labels {
   display: flex; justify-content: space-between;
@@ -874,8 +861,8 @@ tr:hover td { background: rgba(255,255,255,0.018); }
   width: 100%;
 }
 .input-field:focus, select:focus {
-  border-color: rgba(181,114,15,0.45);
-  box-shadow: 0 0 0 3px rgba(181,114,15,0.08);
+  border-color: rgba(214,34,43,0.45);
+  box-shadow: 0 0 0 3px rgba(214,34,43,0.08);
 }
 select { cursor: pointer; }
 select option { background: var(--bg-card); color: var(--text-primary); }
@@ -919,7 +906,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(181,114,15,0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(214,34,43,0.5), transparent);
 }
 
 @keyframes modalIn {
@@ -1142,8 +1129,8 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(181,114,15,0.4); }
-  50%      { box-shadow: 0 0 0 5px rgba(181,114,15,0); }
+  0%,100% { box-shadow: 0 0 0 0 rgba(214,34,43,0.4); }
+  50%      { box-shadow: 0 0 0 5px rgba(214,34,43,0); }
 }
 
 /* ══════════════════════════════════════
@@ -1221,12 +1208,12 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 .ag-cal-event:hover { filter: brightness(1.2); }
 .ag-cal-event.agendado   { background: rgba(91,156,246,0.15); color: var(--blue);   border-left: 1.5px solid var(--blue); }
 .ag-cal-event.confirmado { background: rgba(62,207,142,0.15); color: var(--green);  border-left: 1.5px solid var(--green); }
-.ag-cal-event.concluido  { background: rgba(181,114,15,0.15); color: var(--accent); border-left: 1.5px solid var(--accent); }
+.ag-cal-event.concluido  { background: rgba(214,34,43,0.15); color: var(--accent); border-left: 1.5px solid var(--accent); }
 .ag-cal-event.cancelado  { background: rgba(240,93,93,0.12);  color: var(--red);    border-left: 1.5px solid var(--red); text-decoration: line-through; }
 .ag-more-badge { font-size: 9.5px; color: var(--text-muted); font-weight: 600; cursor: pointer; padding: 1px 3px; font-family: 'JetBrains Mono', monospace; }
 .ag-status-agendado   { background: rgba(91,156,246,0.13);  color: var(--blue);   }
 .ag-status-confirmado { background: rgba(62,207,142,0.13);  color: var(--green);  }
-.ag-status-concluido  { background: rgba(181,114,15,0.13);  color: var(--accent); }
+.ag-status-concluido  { background: rgba(214,34,43,0.13);  color: var(--accent); }
 .ag-status-cancelado  { background: rgba(240,93,93,0.13);   color: var(--red);    }
 .ag-msg-type { transition: all 0.14s; }
 .ag-msg-type:hover { border-color: var(--border-accent) !important; color: var(--accent) !important; background: var(--accent-soft) !important; }
@@ -1503,14 +1490,14 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 .ag-cal-event:hover { filter: brightness(1.15); }
 .ag-cal-event.agendado   { background: rgba(77,159,255,0.18); color: var(--blue); border-left: 2px solid var(--blue); }
 .ag-cal-event.confirmado { background: rgba(16,232,158,0.18); color: var(--green); border-left: 2px solid var(--green); }
-.ag-cal-event.concluido  { background: rgba(181,114,15,0.15); color: var(--accent); border-left: 2px solid var(--accent); }
+.ag-cal-event.concluido  { background: rgba(214,34,43,0.15); color: var(--accent); border-left: 2px solid var(--accent); }
 .ag-cal-event.cancelado  { background: rgba(255,92,122,0.15); color: var(--red); border-left: 2px solid var(--red); text-decoration: line-through; }
 .ag-more-badge { font-size: 10px; color: var(--text-muted); font-weight: 600; cursor: pointer; padding: 1px 4px; }
 
 /* Status badges in table */
 .ag-status-agendado   { background: rgba(77,159,255,0.15);  color: var(--blue);  }
 .ag-status-confirmado { background: rgba(16,232,158,0.15);  color: var(--green); }
-.ag-status-concluido  { background: rgba(181,114,15,0.15);   color: var(--accent);}
+.ag-status-concluido  { background: rgba(214,34,43,0.15);   color: var(--accent);}
 .ag-status-cancelado  { background: rgba(255,92,122,0.15);  color: var(--red);   }
 
 .ag-msg-type { transition: all 0.15s; }
@@ -1536,7 +1523,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 
     <!-- Logo/Brand -->
     <div style="text-align:center;margin-bottom:32px;">
-      <div id="login-logo-wrap" style="width:60px;height:60px;background:var(--gradient-accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 24px rgba(181,114,15,0.4);overflow:hidden;">
+      <div id="login-logo-wrap" style="width:60px;height:60px;background:var(--gradient-accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 24px rgba(214,34,43,0.4);overflow:hidden;">
         <img id="login-logo-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
         <svg id="login-logo-svg" viewBox="0 0 24 24" style="width:28px;height:28px;fill:#ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
       </div>
@@ -1575,7 +1562,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         <div id="login-erro" style="display:none;padding:10px 14px;background:var(--red-soft);border-radius:var(--radius-sm);border-left:3px solid var(--red);font-size:12px;font-weight:600;color:var(--red);"></div>
 
         <button onclick="fazerLogin()" id="login-btn"
-          style="width:100%;padding:13px;background:var(--gradient-accent);color:#ffffff;border:none;border-radius:var(--radius-sm);font-family:'Inter', sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(181,114,15,0.35);margin-top:4px;">
+          style="width:100%;padding:13px;background:var(--gradient-accent);color:#ffffff;border:none;border-radius:var(--radius-sm);font-family:'Inter', sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(214,34,43,0.35);margin-top:4px;">
           Entrar
         </button>
       </div>
@@ -1734,9 +1721,35 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
 
   <!-- ══════════ DASHBOARD ══════════ -->
   <div class="content active" id="page-dashboard">
+    <!-- Faixa de boas-vindas -->
+    <div class="card" style="display:flex;align-items:center;gap:14px;padding:16px 20px;flex-wrap:wrap;">
+      <div style="width:44px;height:44px;border-radius:12px;background:var(--gradient-accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px rgba(214,34,43,0.3);">
+        <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      </div>
+      <div style="flex:1;min-width:180px;">
+        <h3 id="dash-greeting-nome" style="font-family:'Space Grotesk','Inter',sans-serif;font-size:18px;font-weight:700;color:var(--text-primary);">Olá!</h3>
+        <p style="font-size:12.5px;color:var(--text-muted);margin-top:2px;">Aqui está o resumo do seu negócio hoje.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg-surface);border:1px solid var(--border);border-radius:99px;padding:7px 14px;font-size:12px;color:var(--text-secondary);">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:var(--text-muted)"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM7 12h5v5H7z"/></svg>
+          <span id="dash-greeting-data">—</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg-surface);border:1px solid var(--border);border-radius:99px;padding:7px 14px;font-size:12px;color:var(--text-secondary);">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:var(--text-muted)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          <span id="dash-greeting-hora">—</span>
+        </div>
+        <button class="btn-accent" onclick="showPage('pdv')" style="padding:9px 18px;">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#ffffff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Nova Venda
+        </button>
+      </div>
+    </div>
+
     <div class="page-header">
       <div>
         <h2>Painel de Controle</h2>
+        <p>Acompanhe os principais indicadores da sua loja.</p>
       </div>
       <div class="page-actions">
         <button class="btn-outline" id="btn-instalar-app" onclick="installApp()" style="display:none;">
@@ -1762,70 +1775,77 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
     </div>
 
     <!-- KPIs -->
-    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
-      <div class="kpi-card" style="--kpi-color: var(--accent)">
-        <div class="kpi-header">
-          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
-          <span class="kpi-trend up" id="kpi-fat-trend">+0%</span>
-        </div>
-        <div class="kpi-value" id="kpi-fat">R$ 0,00</div>
-        <div class="kpi-label">Vendas do mês</div>
-      </div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr));">
       <div class="kpi-card" style="--kpi-color: var(--green)">
         <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+          <div class="kpi-title">Vendas Hoje</div>
+          <span class="kpi-trend up" id="kpi-fat-trend">hoje</span>
+        </div>
+        <div class="kpi-value" id="kpi-fat">R$ 0,00</div>
+        <div class="kpi-label">Vendas de hoje</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--blue)">
+        <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg></div>
-          <span class="kpi-trend up" id="kpi-pedidos-trend">hoje: 0</span>
+          <div class="kpi-title">Pedidos Hoje</div>
+          <span class="kpi-trend up" id="kpi-pedidos-trend">hoje</span>
         </div>
         <div class="kpi-value" id="kpi-pedidos">0</div>
-        <div class="kpi-label">Pedidos no mês</div>
+        <div class="kpi-label">Pedidos no dia</div>
       </div>
       <div class="kpi-card" style="--kpi-color: var(--purple)">
         <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
-          <span class="kpi-trend up" id="kpi-margem-trend">0%</span>
+          <div class="kpi-title">Ticket Médio</div>
+          <span class="kpi-trend up" id="kpi-ticket-trend">mês</span>
         </div>
-        <div class="kpi-value" id="kpi-margem">R$ 0,00</div>
-        <div class="kpi-label">Margem bruta / mês</div>
+        <div class="kpi-value" id="kpi-ticket">R$ 0,00</div>
+        <div class="kpi-label">Média por venda</div>
       </div>
-      <div class="kpi-card" style="--kpi-color: var(--blue)">
+      <div class="kpi-card" style="--kpi-color: var(--orange)">
         <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm-9-9h18v2H3V7zm3-4h12v2H6V3z"/></svg></div>
+          <div class="kpi-title">Itens em Estoque</div>
           <span class="kpi-trend down" id="kpi-rupt-badge">0 rupturas</span>
         </div>
         <div class="kpi-value" id="kpi-estoque">0</div>
-        <div class="kpi-label">Itens em estoque</div>
+        <div class="kpi-label">Produtos em estoque</div>
       </div>
       <div class="kpi-card" style="--kpi-color: var(--red)">
         <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"/></svg></div>
-          <span class="kpi-trend down" id="kpi-rupt-trend">+0</span>
+          <div class="kpi-title">Produtos em Ruptura</div>
         </div>
         <div class="kpi-value" id="kpi-rupt">0</div>
-        <div class="kpi-label">Produtos em ruptura</div>
+        <div class="kpi-label">Itens sem estoque</div>
       </div>
-      <div class="kpi-card" style="--kpi-color: var(--green)">
+      <div class="kpi-card" style="--kpi-color: var(--teal)">
         <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+          <div class="kpi-title">Saldo Caixa Hoje</div>
           <span class="kpi-trend up" id="kpi-caixa-trend">hoje</span>
         </div>
         <div class="kpi-value" id="kpi-caixa-saldo">R$ 0,00</div>
-        <div class="kpi-label">Saldo caixa hoje</div>
-      </div>
-      <div class="kpi-card" style="--kpi-color: var(--accent)">
-        <div class="kpi-header">
-          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
-          <span class="kpi-trend up" id="kpi-cli-trend">total</span>
-        </div>
-        <div class="kpi-value" id="kpi-clientes">0</div>
-        <div class="kpi-label">Clientes cadastrados</div>
+        <div class="kpi-label">Saldo atual</div>
       </div>
       <div class="kpi-card" style="--kpi-color: var(--purple)">
         <div class="kpi-header">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <div class="kpi-title">Clientes Cadastrados</div>
+          <span class="kpi-trend up" id="kpi-cli-trend">total</span>
+        </div>
+        <div class="kpi-value" id="kpi-clientes">0</div>
+        <div class="kpi-label">Total de clientes</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: var(--blue)">
+        <div class="kpi-header">
           <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+          <div class="kpi-title">Orçamentos em Aberto</div>
           <span class="kpi-trend up" id="kpi-orc-trend">abertos</span>
         </div>
         <div class="kpi-value" id="kpi-orcamentos">0</div>
-        <div class="kpi-label">Orçamentos em aberto</div>
+        <div class="kpi-label">Aguardando retorno</div>
       </div>
     </div>
 
@@ -2477,7 +2497,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
       </div>
       <div class="fin-card">
         <div class="fin-card-left">
-          <div class="fin-card-icon" style="background:rgba(181,114,15,0.12); color:var(--accent)">
+          <div class="fin-card-icon" style="background:rgba(214,34,43,0.12); color:var(--accent)">
             <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.6c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
           </div>
           <div>
@@ -2755,7 +2775,7 @@ textarea.input-field { resize: vertical; min-height: 80px; line-height: 1.6; }
         <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip" onclick="relatorioModuloPDF('margem')">PDF</button><button class="chip" onclick="relatorioModuloExcel('margem')">Excel</button></div>
       </div>
       <div class="report-module">
-        <div class="report-module-icon" style="background: rgba(181,114,15,0.12); color: var(--accent)"><svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg></div>
+        <div class="report-module-icon" style="background: rgba(214,34,43,0.12); color: var(--accent)"><svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg></div>
         <h4>Relatorio de OS</h4>
         <p>Ordens de servico por status, mecanico e faturamento do periodo.</p>
         <div style="display:flex; gap:8px; margin-top:4px;"><button class="chip" onclick="relatorioModuloPDF('os')">PDF</button><button class="chip" onclick="relatorioModuloExcel('os')">Excel</button></div>
@@ -3999,16 +4019,36 @@ async function loadConfig() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // DASHBOARD
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Saudação e relógio do painel — atualiza nome, data e hora em tempo real
+function atualizarSaudacaoDashboard() {
+  const nomeEl = $('dash-greeting-nome');
+  if (nomeEl) {
+    const primeiroNome = (_sessaoUsuario && _sessaoUsuario.nome) ? _sessaoUsuario.nome.split(' ')[0] : '';
+    nomeEl.textContent = primeiroNome ? ('Olá, ' + primeiroNome + '!') : 'Olá!';
+  }
+  const agora = new Date();
+  const dataEl = $('dash-greeting-data');
+  if (dataEl) dataEl.textContent = agora.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  const horaEl = $('dash-greeting-hora');
+  if (horaEl) horaEl.textContent = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+if (!window._relogioSaudacaoIniciado) {
+  window._relogioSaudacaoIniciado = true;
+  setInterval(atualizarSaudacaoDashboard, 30000);
+}
+
 async function loadDashboard() {
   try {
+    atualizarSaudacaoDashboard();
     const res  = await fetch(API_BASE + '/dashboard/stats?loja_token=' + (_lojaToken || 'padrao'));
     const json = await res.json();
     if (!json.data) throw new Error(json.error?.message || 'Erro stats');
     const d = json.data;
 
     // ── KPIs ────────────────────────────────────────────────────
-    set('kpi-fat',          fmt(d.vendas_mes.total));
-    set('kpi-pedidos',      d.vendas_mes.qtd);
+    set('kpi-fat',          fmt(d.vendas_hoje.total));
+    set('kpi-pedidos',      d.vendas_hoje.qtd);
+    set('kpi-ticket',       fmt(d.ticket_medio));
     set('kpi-estoque',      (d.estoque.total || 0).toLocaleString('pt-BR'));
     set('kpi-rupt',         d.estoque.rupturas || 0);
     set('kpi-margem',       fmt(d.margem_mes));
@@ -4023,16 +4063,12 @@ async function loadDashboard() {
     }, 600);
 
     // Badges e sub-labels
-    const fatPct = d.vendas_mes.total > 0 ? '' : 'R$ 0';
     const el_fat_trend = $('kpi-fat-trend');
-    if (el_fat_trend) el_fat_trend.textContent = 'Ticket: ' + fmt(d.ticket_medio);
+    if (el_fat_trend) el_fat_trend.textContent = d.vendas_hoje.qtd + ' venda' + (d.vendas_hoje.qtd !== 1 ? 's' : '');
     const el_ped_trend = $('kpi-pedidos-trend');
-    if (el_ped_trend) el_ped_trend.textContent = 'hoje: ' + d.vendas_hoje.qtd;
-    const el_margem_trend = $('kpi-margem-trend');
-    if (el_margem_trend) {
-      const pct = d.vendas_mes.total > 0 ? ((d.margem_mes / d.vendas_mes.total) * 100).toFixed(1) + '%' : '0%';
-      el_margem_trend.textContent = pct;
-    }
+    if (el_ped_trend) el_ped_trend.textContent = 'hoje';
+    const el_ticket_trend = $('kpi-ticket-trend');
+    if (el_ticket_trend) el_ticket_trend.textContent = 'mês';
     const el_rupt_badge = $('kpi-rupt-badge');
     if (el_rupt_badge) el_rupt_badge.textContent = d.estoque.rupturas + ' ruptura' + (d.estoque.rupturas !== 1 ? 's' : '');
     const el_orc_trend = $('kpi-orc-trend');
@@ -7999,7 +8035,7 @@ async function loadAtividadeRecente() {
     eventos.push({
       ts:    new Date(o.created_at),
       tipo:  'orcamento',
-      cor:   'var(--accent)', bg: 'rgba(181,114,15,0.12)',
+      cor:   'var(--accent)', bg: 'rgba(214,34,43,0.12)',
       icone: '<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>',
       titulo:'Orçamento #' + o.numero,
       texto: (o.cliente || 'Sem cliente') + ' — ' + fmt(o.total),
